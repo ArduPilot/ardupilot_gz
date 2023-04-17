@@ -1,128 +1,158 @@
 # ardupilot_gz
 
-Adapted from the [`ros_gz_project_template`](https://github.com/gazebosim/ros_gz_project_template) project integrating ROS 2 and Gazebo.
+This project contains ROS 2 packages for simulating models controlled
+by ArduPilot SITL with DDS support in Gazebo.
+
+The project is adapted from the [`ros_gz_project_template`](https://github.com/gazebosim/ros_gz_project_template) project.
 
 ## Included packages
 
-* `ardupilot_gz_description` - Contains the sdf description of the simulated
-  system and any other assets.
+* `ardupilot_gz_description` - Contains the SDFormat description of the simulated
+  system.
 
-* `ardupilot_gz_gazebo` - Contains Gazebo specific code and configurations such
-  as system plugins.
+* `ardupilot_gz_gazebo` - Contains Gazebo specific code such as system plugins.
 
 * `ardupilot_gz_application` - Contains ROS 2 specific code and configuration.
 
 * `ardupilot_gz_bringup` - Contains launch files and high level utilities.
 
 
+## Prerequisites
+
+- Install [ROS 2 Humble](https://docs.ros.org/en/humble/index.html)
+- Install [Gazebo Garden](https://gazebosim.org/docs/garden)
+
 ## Install
 
-### Dependencies
+#### 1. Create a workspace folder
 
-1. Install [ROS 2 Humble](https://docs.ros.org/en/humble/index.html)
+```bash
+mkdir -p ~/ros2_ws/src && cd ~/ros2_ws/src
+```
 
-1. Install [Gazebo Garden](https://gazebosim.org/docs/garden)
+#### 2. Get the project source
 
-1. Install necessary tools
+```bash
+cd ~/ros2_ws/src
+wget https://raw.githubusercontent.com/srmainwaring/ardupilot_gz/wips/wip-iris-camera/ros2_gz.repos
+vcs import --recursive < ros2_gz.repos
+```
 
-    `sudo apt install python3-vcstool python3-colcon-common-extensions git wget`
+#### 3. Set the Gazebo version to Garden:
 
-### Usage
+```bash
+export GZ_VERSION=garden
+```
 
-1. Create a workspace, for example:
+#### 4. Update ROS dependencies
 
-    ```
-    mkdir -p ~/ros2_ws/src
-    cd ~/ros2_ws/src
-    ```
+```bash
+cd ~/ros_ws
+source /opt/ros/humble/setup.bash
+sudo apt update
+rosdep update
+rosdep install --rosdistro humble --from-paths src -i -r -y
+```
 
-1. Clone the project:
+#### 5. Build
 
-    ```
-    TBC
-    ```
+```bash
+cd ~/ros2_ws
+colcon build --cmake-args -DBUILD_TESTING=ON
+```
 
-1. Set the Gazebo version to Garden:
+#### 6. Test
 
-    ```
-    export GZ_VERSION=garden
-    ```
+```bash
+source ./install/setup.bash
+colcon test --packages-select ardupilot_dds_sitl ardupilot_dds_tests ardupilot_gazebo ardupilot_gz_applications ardupilot_gz_description ardupilot_gz_gazebo ardupilot_gz_bringup 
+colcon test-result --all --verbose
+```
 
-1. Install ROS dependencies
+## Usage
 
-    ```
-    sudo rosdep init
-    rosdep update
-    rosdep install --from-paths src --ignore-src -r -y -i
-    ```
+#### 1. Source the workspace
 
-1. Build and install
+```bash
+source ~/ros2_ws/install/setup.sh
+```
 
-    ```
-    cd ~/ros2_ws
-    colcon build --cmake-args -DBUILD_TESTING=ON
-    ```
+#### 2. Launch the simulation
 
-### Run
+```bash
+ros2 launch ardupilot_gz_bringup bringup_iris.launch.py
+```
 
-1. Source the workspace
+#### 3. Launch a GCS (MAVPorxy)
 
-    `. ~/ros2_ws/install/setup.sh`
+```bash
+mavproxy.py --console --map
+```
 
-1. Launch the simulation
+#### 4. Inspect topics
 
-    `ros2 launch ardupilot_gz_bringup bringup_iris.launch.py`
-
-1. Launch the a GCS
-
-    `mavproxy.py --console --map`
-
-1. Inspect topics
-
-    ```bash
-    $ ros2 topic list
-    /ROS2_BatteryState0
-    /ROS2_NavSatFix0
-    /ROS2_Time
-    /clicked_point
-    /clock
-    /goal_pose
-    /initialpose
-    /iris/odometry
-    /joint_states
-    /parameter_events
-    /robot_description
-    /rosout
-    /tf
-    /tf_static
-    ```
-
+```bash
+$ ros2 topic list
+/ROS2_BatteryState0
+/ROS2_NavSatFix0
+/ROS2_Time
+/clicked_point
+/clock
+/goal_pose
+/initialpose
+/iris/odometry
+/joint_states
+/parameter_events
+/robot_description
+/rosout
+/tf
+/tf_static
+```
 
 ## Notes
 
-1. Additional dependency
+#### 1. Additional dependencies
 
-    `ros_gz` has a dependency on `gps_msgs` included in
+`ros_gz` has a dependency on `gps_msgs` included in
 
-    ```bash
-    git clone https://github.com/swri-robotics/gps_umd.git -b ros2-devel
-    ```
+```bash
+git clone https://github.com/swri-robotics/gps_umd.git -b ros2-devel
+```
 
-    Add `COLCON_IGNORE` to `gpsd_client` as this package is not required and
-    will not build on macOS. 
+Add `COLCON_IGNORE` to `gpsd_client` as this package is not required and
+will not build on macOS. 
 
-1. sdformat_urdf
+#### 2. `sdformat_urdf`
 
-    On macOS the `robot_state_publisher` node cannot load the
-    `sdformat_urdf_plugin` plugin unless the
-    suffix is changed:
+On macOS the `robot_state_publisher` node cannot load the
+`sdformat_urdf_plugin` plugin unless the
+suffix is changed:
 
-    ```bash
-    cd ./install/sdformat_urdf/lib
-    ln -s libsdformat_urdf_plugin.so libsdformat_urdf_plugin.dylib
-    ```
+```bash
+cd ./install/sdformat_urdf/lib
+ln -s libsdformat_urdf_plugin.so libsdformat_urdf_plugin.dylib
+```
 
-1. Model URIs
+#### 3. Model URIs
 
-    The `<uri>` element must use the `package` prefix for resource to be located
-    by RViz.
+The `sdformat_urdf` plugin requires that the `<uri>` element use
+the `package` prefix for a resource to be located by RViz.
+
+
+#### 4. SDFormat environment variables
+
+The `sdformat_urdf` plugin uses the `sdformat13` libraries to parse the
+model description. `sdformat13` relies on the environment variable
+`SDF_PATH` to resolve model resources. This is usually set in `gz-sim7`,
+however when using the plugins standalone, for instance in the bring-up
+launch files, `SDF_PATH` must be set otherwise the plugin will not resolve
+the models and their dependencies.
+
+```bash
+source ~/ros2_ws/install/setup.sh
+export SDF_PATH=$GZ_SIM_RESOURCE_PATH
+```
+
+This is checked in the launch file as `SDF_PATH` is not usually set
+by the `ament` environment hooks.
+

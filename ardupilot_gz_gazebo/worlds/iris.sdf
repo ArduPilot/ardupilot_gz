@@ -50,10 +50,29 @@
 
     <model name="iris">
       <pose>0 0 0.194923 0 0 0</pose>
+
       <include merge="true">
         <uri>package://ardupilot_gazebo/models/iris_with_standoffs</uri>
         <name>iris</name>
       </include>
+
+      <include merge="true">
+        <uri>package://ardupilot_gazebo/models/gimbal_small_2d</uri>
+        <name>gimbal</name>
+        <pose>0 -0.01 -0.11 1.57 0 1.57</pose>
+      </include>
+
+      <joint name="gimbal_joint" type="revolute">
+        <parent>base_link</parent>
+        <child>gimbal_link</child>
+        <axis>
+          <limit>
+            <lower>0</lower>
+            <upper>0</upper>
+          </limit>
+          <xyz>0 0 1</xyz>
+        </axis>
+      </joint>
 
       <plugin
         filename="gz-sim-joint-state-publisher-system"
@@ -233,8 +252,23 @@
         <joint_name>rotor_3_joint</joint_name>
       </plugin>
 
+      <plugin
+        filename="gz-sim-joint-position-controller-system"
+        name="gz::sim::systems::JointPositionController">
+        <joint_name>roll_joint</joint_name>
+        <topic>/gimbal/cmd_roll</topic>
+        <p_gain>2</p_gain>
+      </plugin>
+      <plugin
+        filename="gz-sim-joint-position-controller-system"
+        name="gz::sim::systems::JointPositionController">
+        <joint_name>tilt_joint</joint_name>
+        <topic>/gimbal/cmd_tilt</topic>
+        <p_gain>2</p_gain>
+      </plugin>
+
       <plugin name="ArduPilotPlugin"
-        filename="libArduPilotPlugin">
+        filename="ArduPilotPlugin">
         <fdm_addr>127.0.0.1</fdm_addr>
         <fdm_port_in>9002</fdm_port_in>
         <connectionTimeoutMaxCount>5</connectionTimeoutMaxCount>
@@ -316,6 +350,28 @@
           <cmd_max>2.5</cmd_max>
           <cmd_min>-2.5</cmd_min>
           <controlVelocitySlowdownSim>1</controlVelocitySlowdownSim>
+        </control>
+
+        <control channel="4">
+          <jointName>roll_joint</jointName>
+          <multiplier>3.14159265</multiplier>
+          <offset>-0.5</offset>
+          <servo_min>1100</servo_min>
+          <servo_max>1900</servo_max>
+          <type>COMMAND</type>
+          <cmd_topic>/gimbal/cmd_roll</cmd_topic>
+          <p_gain>3</p_gain>
+        </control>
+
+        <control channel="5">
+          <jointName>tilt_joint</jointName>
+          <multiplier>3.14159265</multiplier>
+          <offset>-0.5</offset>
+          <servo_min>1100</servo_min>
+          <servo_max>1900</servo_max>
+          <type>COMMAND</type>
+          <cmd_topic>/gimbal/cmd_tilt</cmd_topic>
+          <p_gain>3</p_gain>
         </control>
 
     </plugin>

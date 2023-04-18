@@ -16,7 +16,7 @@
 """
 Launch an iris quadcopter in Gazebo and Rviz.
 
-ros2 launch ardupilot_dds_tests bringup_sitl_dds.launch.py
+ros2 launch ardupilot_sitl sitl_dds.launch.py
 tty0:=./dev/ttyROS0
 tty1:=./dev/ttyROS1
 refs:=$(ros2 pkg prefix ardupilot_sitl)
@@ -57,14 +57,14 @@ def generate_launch_description():
     pkg_project_bringup = get_package_share_directory("ardupilot_gz_bringup")
 
     # Include component launch files.
-    bringup_sitl_dds = IncludeLaunchDescription(
+    sitl_dds = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             [
                 PathJoinSubstitution(
                     [
-                        FindPackageShare("ardupilot_dds_tests"),
+                        FindPackageShare("ardupilot_sitl"),
                         "launch",
-                        "bringup_sitl_dds.launch.py",
+                        "sitl_dds.launch.py",
                     ]
                 ),
             ]
@@ -160,7 +160,7 @@ def generate_launch_description():
 
     return LaunchDescription(
         [
-            bringup_sitl_dds,
+            sitl_dds,
             robot_state_publisher,
             bridge,
         ]

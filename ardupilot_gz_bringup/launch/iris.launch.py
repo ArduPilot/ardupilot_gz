@@ -62,7 +62,7 @@ def generate_launch_description():
         else:
             os.environ["SDF_PATH"] = gz_sim_resource_path
 
-    # Load the SDF file from "description" package
+    # Load SDF file.
     sdf_file = os.path.join(
         pkg_ardupilot_gazebo, "models", "iris_with_gimbal", "model.sdf"
     )
@@ -70,6 +70,7 @@ def generate_launch_description():
         robot_desc = infp.read()
         # print(robot_desc)
 
+    # Gazebo.
     gz_sim_server = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(pkg_ros_gz_sim, "launch", "gz_sim.launch.py")
@@ -87,26 +88,31 @@ def generate_launch_description():
         launch_arguments={"gz_args": "-v4 -g"}.items(),
     )
 
+    # Remap the /tf and /tf_static under /ignore as the TF is not correct.
     robot_state_publisher = Node(
         package="robot_state_publisher",
         executable="robot_state_publisher",
         name="robot_state_publisher",
         output="both",
         parameters=[
-            {"use_sim_time": True},
             {"robot_description": robot_desc},
+            {"frame_prefix": "iris/"},
+        ],
+        remappings=[
+            ("/tf", "/ignore/tf"),
+            ("/tf_static", "/ignore/tf_static"),
         ],
     )
 
-    # RViz
+    # RViz.
     rviz = Node(
         package="rviz2",
         executable="rviz2",
-        arguments=["-d", os.path.join(pkg_project_bringup, "config", "iris.rviz")],
+        arguments=["-d", os.path.join(pkg_project_bringup, "rviz", "iris.rviz")],
         condition=IfCondition(LaunchConfiguration("rviz")),
     )
 
-    # Bridge
+    # Bridge.
     bridge = Node(
         package="ros_gz_bridge",
         executable="parameter_bridge",

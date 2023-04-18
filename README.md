@@ -80,7 +80,7 @@ source ~/ros2_ws/install/setup.sh
 #### 2. Launch the simulation
 
 ```bash
-ros2 launch ardupilot_gz_bringup bringup_iris.launch.py
+ros2 launch ardupilot_gz_bringup iris_runway.launch.py
 ```
 
 #### 3. Launch a GCS (MAVPorxy)
@@ -111,7 +111,7 @@ $ ros2 topic list
 
 ## Notes
 
-#### 1. Additional dependencies
+### 1. Additional dependencies
 
 `ros_gz` has a dependency on `gps_msgs` included in
 
@@ -119,30 +119,39 @@ $ ros2 topic list
 git clone https://github.com/swri-robotics/gps_umd.git -b ros2-devel
 ```
 
-Add `COLCON_IGNORE` to `gpsd_client` as this package is not required and
-will not build on macOS. 
+When building from source add `COLCON_IGNORE` to `gpsd_client` as
+this package is not required and will not build on macOS. 
 
-#### 2. `sdformat_urdf`
+### 2. `sdformat_urdf`
+
+#### 2.1. Library extension
 
 On macOS the `robot_state_publisher` node cannot load the
-`sdformat_urdf_plugin` plugin unless the
-suffix is changed:
+`sdformat_urdf_plugin` plugin unless the extension is changed:
 
 ```bash
 cd ./install/sdformat_urdf/lib
 ln -s libsdformat_urdf_plugin.so libsdformat_urdf_plugin.dylib
 ```
 
-#### 3. Model URIs
+#### 2.3. Model URIs
 
-The `sdformat_urdf` plugin requires that the `<uri>` element use
-the `package` prefix for a resource to be located by RViz.
+The `sdformat_urdf` plugin requires the `<uri>` element to use
+the `package://` prefix for a resource to be located by RViz. At present
+this requires the models to be edited.
+
+All occurrences of
+
+    `model://{model_name}`
+must be replaced with
+
+    `package://{package_name}/models/{model_name}`
 
 
-#### 4. SDFormat environment variables
+#### 2.4. SDFormat environment variables
 
 The `sdformat_urdf` plugin uses the `sdformat13` libraries to parse the
-model description. `sdformat13` relies on the environment variable
+model description which relies on the environment variable
 `SDF_PATH` to resolve model resources. This is usually set in `gz-sim7`,
 however when using the plugins standalone, for instance in the bring-up
 launch files, `SDF_PATH` must be set otherwise the plugin will not resolve
@@ -153,6 +162,6 @@ source ~/ros2_ws/install/setup.sh
 export SDF_PATH=$GZ_SIM_RESOURCE_PATH
 ```
 
-This is checked in the launch file as `SDF_PATH` is not usually set
+This is assigned in the `iris.launch.py` file as `SDF_PATH` is not usually set
 by the `ament` environment hooks.
 

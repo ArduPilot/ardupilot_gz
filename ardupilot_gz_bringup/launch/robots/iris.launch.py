@@ -13,45 +13,102 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-# Adapted from https://github.com/gazebosim/ros_gz_project_template
-#
-# Copyright 2019 Open Source Robotics Foundation, Inc.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+"""
+Launch an iris quadcopter in Gazebo and Rviz.
 
-"""Launch an iris quadcopter in Gazebo and Rviz."""
+ros2 launch ardupilot_dds_tests bringup_sitl_dds.launch.py
+tty0:=./dev/ttyROS0
+tty1:=./dev/ttyROS1
+refs:=$(ros2 pkg prefix ardupilot_sitl)
+      /share/ardupilot_sitl/config/dds_xrce_profile.xml
+baudrate:=115200 device:=./dev/ttyROS0
+synthetic_clock:=True
+wipe:=True
+model:=json
+speedup:=1
+slave:=0
+instance:=0
+uartC:=uart:./dev/ttyROS1
+defaults:=$(ros2 pkg prefix ardupilot_sitl)
+          /share/ardupilot_sitl/config/default_params/gazebo-iris.parm,
+          $(ros2 pkg prefix ardupilot_sitl)
+          /share/ardupilot_sitl/config/default_params/dds.parm
+sim_address:=127.0.0.1
+master:=tcp:127.0.0.1:5760
+sitl:=127.0.0.1:5501
+"""
 import os
 
 from ament_index_python.packages import get_package_share_directory
 
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument
 from launch.actions import IncludeLaunchDescription
-from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import PathJoinSubstitution
 
 from launch_ros.actions import Node
+from launch_ros.substitutions import FindPackageShare
 
 
 def generate_launch_description():
     """Generate a launch description for a iris quadcopter."""
-    pkg_project_bringup = get_package_share_directory("ardupilot_gz_bringup")
-    pkg_project_gazebo = get_package_share_directory("ardupilot_gz_gazebo")
-    pkg_ros_gz_sim = get_package_share_directory("ros_gz_sim")
+    pkg_ardupilot_sitl = get_package_share_directory("ardupilot_sitl")
     pkg_ardupilot_gazebo = get_package_share_directory("ardupilot_gazebo")
+    pkg_project_bringup = get_package_share_directory("ardupilot_gz_bringup")
 
-    # Ensure `SDF_PATH` is populated as `sdformat_urdf` uses this rather
+    # Include component launch files.
+    bringup_sitl_dds = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            [
+                PathJoinSubstitution(
+                    [
+                        FindPackageShare("ardupilot_dds_tests"),
+                        "launch",
+                        "bringup_sitl_dds.launch.py",
+                    ]
+                ),
+            ]
+        ),
+        launch_arguments={
+            "tty0": "./dev/ttyROS0",
+            "tty1": "./dev/ttyROS1",
+            "refs": PathJoinSubstitution(
+                [
+                    FindPackageShare("ardupilot_sitl"),
+                    "config",
+                    "dds_xrce_profile.xml",
+                ]
+            ),
+            "baudrate": "115200",
+            "device": "./dev/ttyROS0",
+            "synthetic_clock": "True",
+            "wipe": "True",
+            "model": "json",
+            "speedup": "1",
+            "slave": "0",
+            "instance": "0",
+            "uartC": "uart:./dev/ttyROS1",
+            "defaults": os.path.join(
+                pkg_ardupilot_gazebo,
+                "config",
+                "gazebo-iris-gimbal.parm",
+            )
+            + ","
+            + os.path.join(
+                pkg_ardupilot_sitl,
+                "config",
+                "default_params",
+                "dds.parm",
+            ),
+            "sim_address": "127.0.0.1",
+            "master": "tcp:127.0.0.1:5760",
+            "sitl": "127.0.0.1:5501",
+        }.items(),
+    )
+
+    # Robot description.
+
+    # Ensure `SDF_PATH` is populated as `sdformat_urdf`` uses this rather
     # than `GZ_SIM_RESOURCE_PATH` to locate resources.
     if "GZ_SIM_RESOURCE_PATH" in os.environ:
         gz_sim_resource_path = os.environ["GZ_SIM_RESOURCE_PATH"]
@@ -70,25 +127,7 @@ def generate_launch_description():
         robot_desc = infp.read()
         # print(robot_desc)
 
-    # Gazebo.
-    gz_sim_server = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            os.path.join(pkg_ros_gz_sim, "launch", "gz_sim.launch.py")
-        ),
-        launch_arguments={
-            "gz_args": "-v4 -s -r "
-            + os.path.join(pkg_project_gazebo, "worlds", "iris.sdf")
-        }.items(),
-    )
-
-    gz_sim_gui = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            os.path.join(pkg_ros_gz_sim, "launch", "gz_sim.launch.py")
-        ),
-        launch_arguments={"gz_args": "-v4 -g"}.items(),
-    )
-
-    # Remap the /tf and /tf_static under /ignore as the TF is not correct.
+    # Remap the /tf and /tf_static under /ignore as the TF conflicts.
     robot_state_publisher = Node(
         package="robot_state_publisher",
         executable="robot_state_publisher",
@@ -102,14 +141,6 @@ def generate_launch_description():
             ("/tf", "/ignore/tf"),
             ("/tf_static", "/ignore/tf_static"),
         ],
-    )
-
-    # RViz.
-    rviz = Node(
-        package="rviz2",
-        executable="rviz2",
-        arguments=["-d", os.path.join(pkg_project_bringup, "rviz", "iris.rviz")],
-        condition=IfCondition(LaunchConfiguration("rviz")),
     )
 
     # Bridge.
@@ -129,13 +160,8 @@ def generate_launch_description():
 
     return LaunchDescription(
         [
-            DeclareLaunchArgument(
-                "rviz", default_value="true", description="Open RViz."
-            ),
+            bringup_sitl_dds,
             robot_state_publisher,
             bridge,
-            gz_sim_server,
-            gz_sim_gui,
-            rviz,
         ]
     )

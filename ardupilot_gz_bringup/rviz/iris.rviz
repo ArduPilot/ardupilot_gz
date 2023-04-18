@@ -5,6 +5,7 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /Iris1
+        - /Iris1/TF1
       Splitter Ratio: 0.5
     Tree Height: 288
   - Class: rviz_common/Selection
@@ -281,25 +282,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 38.860721588134766
+      Distance: 3.5634095668792725
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: -1.6802266836166382
-        Y: 2.1481130123138428
-        Z: 1.5829062461853027
+        X: -0.780073881149292
+        Y: 1.6334694623947144
+        Z: -0.6402829885482788
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.6397954225540161
+      Pitch: 0.4297952950000763
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 4.958576202392578
+      Yaw: 5.203584671020508
     Saved: ~
 Window Geometry:
   Displays:

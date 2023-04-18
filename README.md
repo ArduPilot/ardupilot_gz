@@ -65,7 +65,7 @@ colcon build --cmake-args -DBUILD_TESTING=ON
 
 ```bash
 source ./install/setup.bash
-colcon test --packages-select ardupilot_dds_sitl ardupilot_dds_tests ardupilot_gazebo ardupilot_gz_applications ardupilot_gz_description ardupilot_gz_gazebo ardupilot_gz_bringup 
+colcon test --packages-select ardupilot_sitl ardupilot_dds_tests ardupilot_gazebo ardupilot_gz_applications ardupilot_gz_description ardupilot_gz_gazebo ardupilot_gz_bringup 
 colcon test-result --all --verbose
 ```
 

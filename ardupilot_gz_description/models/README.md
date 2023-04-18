@@ -1,1 +1,1 @@
-# Placeholder for `ardupilot_gz_description` models.
+### Placeholder for `ardupilot_gz_description` models.

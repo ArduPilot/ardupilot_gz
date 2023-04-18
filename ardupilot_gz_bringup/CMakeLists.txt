@@ -22,6 +22,13 @@ install(
   DESTINATION share/${PROJECT_NAME}/config
 )
 
+# Install project rviz files.
+install(
+  DIRECTORY
+    rviz/
+  DESTINATION share/${PROJECT_NAME}/rviz
+)
+
 # --------------------------------------------------------------------------- #
 #  Build tests.
 

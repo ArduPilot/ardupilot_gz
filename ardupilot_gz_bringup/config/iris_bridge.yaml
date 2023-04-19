@@ -34,3 +34,40 @@
   ros_type_name: "sensor_msgs/msg/CameraInfo"
   gz_type_name: "gz.msgs.CameraInfo"
   direction: GZ_TO_ROS
+
+- ros_topic_name: "/air_pressure"
+  gz_topic_name: "/world/map/model/iris/link/base_link/sensor/air_pressure_sensor/air_pressure"
+  ros_type_name: "sensor_msgs/msg/FluidPressure"
+  gz_type_name: "gz.msgs.FluidPressure"
+  direction: GZ_TO_ROS
+
+# - ros_topic_name: "/air_speed"
+#   gz_topic_name: "/world/map/model/iris/link/base_link/sensor/air_speed_sensor/air_speed"
+#   ros_type_name: "geometry_msgs/msg/Vector3Stamped"
+#   gz_type_name: "gz.msgs.AirSpeedSensor"
+#   direction: GZ_TO_ROS
+
+# - ros_topic_name: "/altimeter"
+#   gz_topic_name: "/world/map/model/iris/link/base_link/sensor/altimeter_sensor/altimeter"
+#   ros_type_name: "geometry_msgs/msg/Vector3Stamped"
+#   gz_type_name: "gz.msgs.Altimeter"
+#   direction: GZ_TO_ROS
+
+- ros_topic_name: "/imu"
+  gz_topic_name: "/world/map/model/iris/link/imu_link/sensor/imu_sensor/imu"
+  ros_type_name: "sensor_msgs/msg/Imu"
+  gz_type_name: "gz.msgs.IMU"
+  direction: GZ_TO_ROS
+
+- ros_topic_name: "/magnetometer"
+  gz_topic_name: "/world/map/model/iris/link/base_link/sensor/magnetometer_sensor/magnetometer"
+  ros_type_name: "sensor_msgs/msg/MagneticField"
+  gz_type_name: "gz.msgs.Magnetometer"
+  direction: GZ_TO_ROS
+
+- ros_topic_name: "/navsat"
+  gz_topic_name: "/world/map/model/iris/link/base_link/sensor/navsat_sensor/navsat"
+  ros_type_name: "sensor_msgs/msg/NavSatFix"
+  gz_type_name: "gz.msgs.NavSat"
+  direction: GZ_TO_ROS
+

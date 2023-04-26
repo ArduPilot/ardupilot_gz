@@ -93,9 +93,10 @@ mavproxy.py --console --map
 
 ```bash
 $ ros2 topic list
-/ROS2_BatteryState0
-/ROS2_NavSatFix0
-/ROS2_Time
+/ap/battery/battery0
+/ap/clock
+/ap/navsat/navsat0
+/ap/tf_static
 /clicked_point
 /clock
 /goal_pose

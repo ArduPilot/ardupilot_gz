@@ -48,15 +48,23 @@ def generate_launch_description():
     """Generate a launch description for a iris quadcopter."""
     pkg_project_bringup = get_package_share_directory("ardupilot_gz_bringup")
     pkg_project_gazebo = get_package_share_directory("ardupilot_gz_gazebo")
-    # pkg_project_description = get_package_share_directory(
-    #       'ardupilot_gz_description')
     pkg_ros_gz_sim = get_package_share_directory("ros_gz_sim")
-
     pkg_ardupilot_gazebo = get_package_share_directory("ardupilot_gazebo")
+
+    # Ensure `SDF_PATH` is populated as `sdformat_urdf` uses this rather
+    # than `GZ_SIM_RESOURCE_PATH` to locate resources.
+    if "GZ_SIM_RESOURCE_PATH" in os.environ:
+        gz_sim_resource_path = os.environ["GZ_SIM_RESOURCE_PATH"]
+
+        if "SDF_PATH" in os.environ:
+            sdf_path = os.environ["SDF_PATH"]
+            os.environ["SDF_PATH"] = sdf_path + ":" + gz_sim_resource_path
+        else:
+            os.environ["SDF_PATH"] = gz_sim_resource_path
 
     # Load the SDF file from "description" package
     sdf_file = os.path.join(
-        pkg_ardupilot_gazebo, "models", "iris_with_standoffs", "model.sdf"
+        pkg_ardupilot_gazebo, "models", "iris_with_gimbal", "model.sdf"
     )
     with open(sdf_file, "r") as infp:
         robot_desc = infp.read()

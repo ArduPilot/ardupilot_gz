@@ -52,6 +52,7 @@ from launch_ros.substitutions import FindPackageShare
 def generate_launch_description():
     """Generate a launch description for a iris quadcopter."""
     pkg_ardupilot_sitl = get_package_share_directory("ardupilot_sitl")
+    pkg_ardupilot_gazebo = get_package_share_directory("ardupilot_gazebo")
 
     # Include component launch files.
     iris_gz = IncludeLaunchDescription(
@@ -100,10 +101,9 @@ def generate_launch_description():
             "instance": "0",
             "uartC": "uart:./dev/ttyROS1",
             "defaults": os.path.join(
-                pkg_ardupilot_sitl,
+                pkg_ardupilot_gazebo,
                 "config",
-                "default_params",
-                "gazebo-iris.parm",
+                "gazebo-iris-gimbal.parm",
             )
             + ","
             + os.path.join(

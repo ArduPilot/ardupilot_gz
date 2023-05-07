@@ -34,7 +34,7 @@ mkdir -p ~/ros2_ws/src && cd ~/ros2_ws/src
 
 ```bash
 cd ~/ros2_ws/src
-wget https://raw.githubusercontent.com/srmainwaring/ardupilot_gz/wips/wip-iris-camera/ros2_gz.repos
+wget https://raw.githubusercontent.com/srmainwaring/ardupilot_gz/ros2_gz.repos
 vcs import --recursive < ros2_gz.repos
 ```
 

@@ -10,7 +10,7 @@ repositories:
   ardupilot_gz:
     type: git
     url: https://github.com/srmainwaring/ardupilot_gz.git
-    version: wips/wip-iris-camera
+    version: main
   gps_umd:
     type: git
     url: https://github.com/swri-robotics/gps_umd.git

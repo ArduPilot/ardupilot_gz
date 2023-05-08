@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<sdf version="1.8">
+<sdf version="1.9">
   <world name="map">
     <physics name="1ms" type="ignore">
       <max_step_size>0.001</max_step_size>

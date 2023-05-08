@@ -16,23 +16,21 @@
 """
 Launch an iris quadcopter in Gazebo and Rviz.
 
-ros2 launch ardupilot_sitl sitl_dds.launch.py
-tty0:=./dev/ttyROS0
-tty1:=./dev/ttyROS1
+ros2 launch ardupilot_sitl sitl_dds_udp.launch.py
+transport:=udp4
 refs:=$(ros2 pkg prefix ardupilot_sitl)
       /share/ardupilot_sitl/config/dds_xrce_profile.xml
-baudrate:=115200 device:=./dev/ttyROS0
+port:=2019
 synthetic_clock:=True
-wipe:=True
+wipe:=False
 model:=json
 speedup:=1
 slave:=0
 instance:=0
-uartC:=uart:./dev/ttyROS1
 defaults:=$(ros2 pkg prefix ardupilot_sitl)
           /share/ardupilot_sitl/config/default_params/gazebo-iris.parm,
           $(ros2 pkg prefix ardupilot_sitl)
-          /share/ardupilot_sitl/config/default_params/dds.parm
+          /share/ardupilot_sitl/config/default_params/dds_udp.parm
 sim_address:=127.0.0.1
 master:=tcp:127.0.0.1:5760
 sitl:=127.0.0.1:5501
@@ -64,14 +62,13 @@ def generate_launch_description():
                     [
                         FindPackageShare("ardupilot_sitl"),
                         "launch",
-                        "sitl_dds.launch.py",
+                        "sitl_dds_udp.launch.py",
                     ]
                 ),
             ]
         ),
         launch_arguments={
-            "tty0": "./dev/ttyROS0",
-            "tty1": "./dev/ttyROS1",
+            "transport": "udp4",
             "refs": PathJoinSubstitution(
                 [
                     FindPackageShare("ardupilot_sitl"),
@@ -79,15 +76,13 @@ def generate_launch_description():
                     "dds_xrce_profile.xml",
                 ]
             ),
-            "baudrate": "115200",
-            "device": "./dev/ttyROS0",
+            "port": "2019",
             "synthetic_clock": "True",
-            "wipe": "True",
+            "wipe": "False",
             "model": "json",
             "speedup": "1",
             "slave": "0",
             "instance": "0",
-            "uartC": "uart:./dev/ttyROS1",
             "defaults": os.path.join(
                 pkg_ardupilot_gazebo,
                 "config",
@@ -98,7 +93,7 @@ def generate_launch_description():
                 pkg_ardupilot_sitl,
                 "config",
                 "default_params",
-                "dds.parm",
+                "dds_udp.parm",
             ),
             "sim_address": "127.0.0.1",
             "master": "tcp:127.0.0.1:5760",

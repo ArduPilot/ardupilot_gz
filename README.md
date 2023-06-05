@@ -34,7 +34,7 @@ mkdir -p ~/ros2_ws/src && cd ~/ros2_ws/src
 
 ```bash
 cd ~/ros2_ws/src
-wget https://raw.githubusercontent.com/srmainwaring/ardupilot_gz/main/ros2_gz.repos
+wget https://raw.githubusercontent.com/ArduPilot/ardupilot_gz/main/ros2_gz.repos
 vcs import --recursive < ros2_gz.repos
 ```
 
@@ -51,7 +51,7 @@ cd ~/ros2_ws
 source /opt/ros/humble/setup.bash
 sudo apt update
 rosdep update
-rosdep install --rosdistro humble --from-paths src -i -r -y
+rosdep install --rosdistro $ROS_DISTRO --from-paths src -i -r -y
 ```
 
 #### 5. Build

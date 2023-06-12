@@ -47,7 +47,7 @@ export GZ_VERSION=garden
 #### 4. Update ROS dependencies
 
 ```bash
-cd ~/ros_ws
+cd ~/ros2_ws
 source /opt/ros/humble/setup.bash
 sudo apt update
 rosdep update

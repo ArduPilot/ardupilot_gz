@@ -110,6 +110,18 @@ $ ros2 topic list
 /tf_static
 ```
 
+## Advanced variations
+
+Here's a list of all the additional use cases from this repository:
+
+### 1. Iris Maze
+
+This simulation has an iris copter equipped with a 360 degrees 2d lidar in a maze world.
+
+```bash
+ros2 launch ardupilot_gz_bringup iris_maze.launch.py
+```
+
 ## Notes
 
 ### 1. Additional dependencies

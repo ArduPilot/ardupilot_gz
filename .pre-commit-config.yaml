@@ -1,0 +1,23 @@
+repos:
+  -   repo: https://github.com/pre-commit/pre-commit-hooks
+      rev: v4.2.0
+      hooks:
+        -   id: trailing-whitespace
+        -   id: end-of-file-fixer
+        -   id: mixed-line-ending
+            name: Check line ending character (LF)
+            args: ["--fix=lf"]
+        -   id: check-added-large-files
+        -   id: check-merge-conflict
+        -   id: check-xml
+        -   id: check-yaml
+
+  -   repo: https://github.com/lsst-ts/pre-commit-xmllint
+      rev: v1.0.0
+      hooks:
+        - id: format-xmllint
+
+  -   repo: https://github.com/psf/black
+      rev: 23.1.0
+      hooks:
+        - id: black

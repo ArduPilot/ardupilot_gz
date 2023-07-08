@@ -6,9 +6,7 @@
   <description>Gazebo specific systems for `ardupilot_gz`.</description>
   <maintainer email="rhys.mainwaring@me.com">Rhys Mainwaring</maintainer>
   <license>GPL-3.0</license>
-
   <buildtool_depend>ament_cmake</buildtool_depend>
-
   <test_depend>ament_lint_auto</test_depend>
   <!-- <test_depend>ament_lint_common</test_depend> -->
   <!-- <test_depend>ament_cmake_clang_format</test_depend> -->
@@ -24,9 +22,7 @@
   <test_depend>ament_cmake_pycodestyle</test_depend>
   <!-- <test_depend>ament_cmake_uncrustify</test_depend> -->
   <test_depend>ament_cmake_xmllint</test_depend>
-
   <export>
     <build_type>ament_cmake</build_type>
   </export>
 </package>
-

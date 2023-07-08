@@ -65,7 +65,7 @@ colcon build --cmake-args -DBUILD_TESTING=ON
 
 ```bash
 source ./install/setup.bash
-colcon test --packages-select ardupilot_sitl ardupilot_dds_tests ardupilot_gazebo ardupilot_gz_applications ardupilot_gz_description ardupilot_gz_gazebo ardupilot_gz_bringup 
+colcon test --packages-select ardupilot_sitl ardupilot_dds_tests ardupilot_gazebo ardupilot_gz_applications ardupilot_gz_description ardupilot_gz_gazebo ardupilot_gz_bringup
 colcon test-result --all --verbose
 ```
 
@@ -122,6 +122,19 @@ This simulation has an iris copter equipped with a 360 degrees 2d lidar in a maz
 ros2 launch ardupilot_gz_bringup iris_maze.launch.py
 ```
 
+## Contributing to this repository
+Developers are required to use pre-commit.
+
+This will run `black` and `xmllint` automatically when you commit. If there are changes, just add them back your staging index and commit again.
+
+1. Install [pre-commit](https://pre-commit.com/#installation) python package.
+1. Install `ardupilot_gz`'s hooks in the root of the repo, then commit like normal
+  ```bash
+  cd ardupilot_gz
+  pre-commit install
+  git commit
+  ```
+
 ## Notes
 
 ### 1. Additional dependencies
@@ -133,7 +146,7 @@ git clone https://github.com/swri-robotics/gps_umd.git -b ros2-devel
 ```
 
 When building from source add `COLCON_IGNORE` to `gpsd_client` as
-this package is not required and will not build on macOS. 
+this package is not required and will not build on macOS.
 
 ### 2. `sdformat_urdf`
 
@@ -177,4 +190,3 @@ export SDF_PATH=$GZ_SIM_RESOURCE_PATH
 
 This is assigned in the `iris.launch.py` file as `SDF_PATH` is not usually set
 by the `ament` environment hooks.
-

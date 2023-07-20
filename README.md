@@ -21,6 +21,7 @@ The project is adapted from the [`ros_gz_project_template`](https://github.com/g
 
 - Install [ROS 2 Humble](https://docs.ros.org/en/humble/index.html)
 - Install [Gazebo Garden](https://gazebosim.org/docs/garden)
+- Follow the [`Installing Build Dependencies`](https://github.com/ArduPilot/ardupilot/tree/master/libraries/AP_DDS#installing-build-dependencies) section of `AP_DDS`'s README
 
 ## Install
 

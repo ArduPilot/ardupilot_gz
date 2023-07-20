@@ -65,7 +65,7 @@ colcon build --cmake-args -DBUILD_TESTING=ON
 
 ```bash
 source ./install/setup.bash
-colcon test --packages-select ardupilot_sitl ardupilot_dds_tests ardupilot_gazebo ardupilot_gz_applications ardupilot_gz_description ardupilot_gz_gazebo ardupilot_gz_bringup 
+colcon test --packages-select ardupilot_sitl ardupilot_dds_tests ardupilot_gazebo ardupilot_gz_applications ardupilot_gz_description ardupilot_gz_gazebo ardupilot_gz_bringup
 colcon test-result --all --verbose
 ```
 
@@ -133,7 +133,7 @@ git clone https://github.com/swri-robotics/gps_umd.git -b ros2-devel
 ```
 
 When building from source add `COLCON_IGNORE` to `gpsd_client` as
-this package is not required and will not build on macOS. 
+this package is not required and will not build on macOS.
 
 ### 2. `sdformat_urdf`
 
@@ -177,4 +177,3 @@ export SDF_PATH=$GZ_SIM_RESOURCE_PATH
 
 This is assigned in the `iris.launch.py` file as `SDF_PATH` is not usually set
 by the `ament` environment hooks.
-

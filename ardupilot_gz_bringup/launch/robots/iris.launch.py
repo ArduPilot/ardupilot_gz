@@ -133,8 +133,8 @@ def generate_launch_description():
             {"frame_prefix": "iris/"},
         ],
         remappings=[
-            ("/tf", "/ignore/tf"),
-            ("/tf_static", "/ignore/tf_static"),
+            ("/tf", "/ap/tf"),
+            ("/tf_static", "/ap/tf_static"),
         ],
     )
 

@@ -133,7 +133,6 @@ def generate_launch_description():
         output="both",
         parameters=[
             {"robot_description": robot_desc},
-            {"frame_prefix": "iris/"},
         ],
         remappings=[
             ("/tf", "/ap/tf"),

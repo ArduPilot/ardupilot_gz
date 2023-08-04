@@ -320,7 +320,7 @@
       </visual>
 
       <sensor name='gpu_lidar' type='gpu_lidar'>
-        <ignition_frame_id>iris/base_scan</ignition_frame_id>
+        <ignition_frame_id>base_scan</ignition_frame_id>
         <pose>0 0 0 0 0 0</pose>
         <topic>lidar</topic>
         <update_rate>10</update_rate>

@@ -134,10 +134,6 @@ def generate_launch_description():
         parameters=[
             {"robot_description": robot_desc},
         ],
-        remappings=[
-            ("/tf", "/ap/tf"),
-            ("/tf_static", "/ap/tf_static"),
-        ],
     )
 
     # Bridge.

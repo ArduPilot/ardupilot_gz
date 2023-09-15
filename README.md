@@ -87,7 +87,7 @@ ros2 launch ardupilot_gz_bringup iris_runway.launch.py
 #### 3. Launch a GCS (MAVPorxy)
 
 ```bash
-mavproxy.py --console --map
+mavproxy.py --master udp:127.0.0.1:14550  --console --map
 ```
 
 #### 4. Inspect topics

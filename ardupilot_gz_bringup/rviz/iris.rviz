@@ -4,8 +4,8 @@ Panels:
     Name: Displays
     Property Tree Widget:
       Expanded:
+        - /Global Options1
         - /Iris1
-        - /Iris1/TF1
       Splitter Ratio: 0.5
     Tree Height: 288
   - Class: rviz_common/Selection
@@ -122,7 +122,7 @@ Visualization Manager:
             Inertia: false
             Mass: false
           Name: RobotModel
-          TF Prefix: iris
+          TF Prefix: ""
           Update Interval: 0
           Value: true
           Visual Enabled: true
@@ -131,27 +131,25 @@ Visualization Manager:
           Frame Timeout: 15
           Frames:
             All Enabled: true
-            iris:
+            base_link:
               Value: true
-            iris/base_link:
+            gimbal_link:
               Value: true
-            iris/gimbal_link:
+            imu_link:
               Value: true
-            iris/imu_link:
+            odom:
               Value: true
-            iris/odom:
+            roll_link:
               Value: true
-            iris/roll_link:
+            rotor_0:
               Value: true
-            iris/rotor_0:
+            rotor_1:
               Value: true
-            iris/rotor_1:
+            rotor_2:
               Value: true
-            iris/rotor_2:
+            rotor_3:
               Value: true
-            iris/rotor_3:
-              Value: true
-            iris/tilt_link:
+            tilt_link:
               Value: true
           Marker Scale: 1
           Name: TF
@@ -159,26 +157,23 @@ Visualization Manager:
           Show Axes: true
           Show Names: false
           Tree:
-            iris/odom:
-              iris:
-                iris/base_link:
-                  {}
-                iris/gimbal_link:
-                  {}
-                iris/imu_link:
-                  {}
-                iris/roll_link:
-                  {}
-                iris/rotor_0:
-                  {}
-                iris/rotor_1:
-                  {}
-                iris/rotor_2:
-                  {}
-                iris/rotor_3:
-                  {}
-                iris/tilt_link:
-                  {}
+            base_link:
+              gimbal_link:
+                roll_link:
+                  tilt_link:
+                    {}
+              imu_link:
+                {}
+              rotor_0:
+                {}
+              rotor_1:
+                {}
+              rotor_2:
+                {}
+              rotor_3:
+                {}
+            odom:
+              {}
           Update Interval: 0
           Value: true
         - Angle Tolerance: 0.10000000149011612
@@ -239,7 +234,7 @@ Visualization Manager:
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
-    Fixed Frame: iris/odom
+    Fixed Frame: odom
     Frame Rate: 30
   Name: root
   Tools:
@@ -321,4 +316,4 @@ Window Geometry:
     collapsed: false
   Width: 1200
   X: 0
-  Y: 25
+  Y: 38

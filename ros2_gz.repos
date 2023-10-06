@@ -11,6 +11,10 @@ repositories:
     type: git
     url: https://github.com/ArduPilot/ardupilot_gz.git
     version: main
+  ardupilot_sitl_models:
+    type: git
+    url: https://github.com/ArduPilot/SITL_Models.git
+    version: main
   micro_ros_agent:
     type: git
     url: https://github.com/micro-ROS/micro-ROS-Agent.git

@@ -127,7 +127,7 @@ def generate_launch_description():
 
     # Load SDF file.
     sdf_file = os.path.join(
-        pkg_ardupilot_sitl_models, "models", "wildthumper", "model.sdf"
+        pkg_ardupilot_sitl_models, "models", "wildthumper_with_lidar", "model.sdf"
     )
     with open(sdf_file, "r") as infp:
         robot_desc = infp.read()
@@ -137,6 +137,10 @@ def generate_launch_description():
         robot_desc = robot_desc.replace(
             "model://wildthumper",
             "package://ardupilot_sitl_models/models/wildthumper")
+
+        robot_desc = robot_desc.replace(
+            "model://wildthumper_with_lidar",
+            "package://ardupilot_sitl_models/models/wildthumper_with_lidar")
 
     # Publish /tf and /tf_static.
     robot_state_publisher = Node(

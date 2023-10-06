@@ -48,7 +48,6 @@ from launch_ros.substitutions import FindPackageShare
 
 def generate_launch_description():
     """Generate a launch description for a wildthumper rover."""
-    pkg_ardupilot_sitl_models = get_package_share_directory("ardupilot_sitl_models")
     pkg_project_bringup = get_package_share_directory("ardupilot_gz_bringup")
     pkg_project_gazebo = get_package_share_directory("ardupilot_gz_gazebo")
     pkg_ros_gz_sim = get_package_share_directory("ros_gz_sim")
@@ -76,7 +75,7 @@ def generate_launch_description():
         ),
         launch_arguments={
             "gz_args": "-v4 -s -r "
-            + os.path.join(pkg_ardupilot_sitl_models, "worlds", "wildthumper_playpen.sdf")
+            + os.path.join(pkg_project_gazebo, "worlds", "wildthumper_playpen.sdf")
         }.items(),
     )
 

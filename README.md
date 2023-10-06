@@ -81,7 +81,7 @@ source ~/ros2_ws/install/setup.sh
 #### 2. Launch the simulation
 
 ```bash
-ros2 launch ardupilot_gz_bringup iris_runway.launch.py
+ros2 launch ardupilot_gz_bringup iris_runway.launch.py rviz:=true use_gz_tf:=true
 ```
 
 #### 3. Launch a GCS (MAVPorxy)
@@ -120,8 +120,18 @@ Here's a list of all the additional use cases from this repository:
 This simulation has an iris copter equipped with a 360 degrees 2d lidar in a maze world.
 
 ```bash
-ros2 launch ardupilot_gz_bringup iris_maze.launch.py
+ros2 launch ardupilot_gz_bringup iris_maze.launch.py rviz:=true use_gz_tf:=true
 ```
+
+### 2. Wild Thumper playpen
+
+This simulation includes a skid-steer rover equipped with a 2d lidar in a playpen world.
+
+
+```bash
+ros2 launch ardupilot_gz_bringup wildthumper_playpen.launch.py rviz:=true use_gz_tf:=true
+```
+
 
 ## Notes
 

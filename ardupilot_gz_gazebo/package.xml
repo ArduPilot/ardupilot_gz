@@ -7,6 +7,17 @@
   <maintainer email="rhys.mainwaring@me.com">Rhys Mainwaring</maintainer>
   <license>GPL-3.0</license>
   <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <depend>gz-common5</depend>
+  <depend>gz-cmake3</depend>
+  <depend>gz-plugin2</depend>
+
+  <!-- Garden (default) -->
+  <depend condition="$GZ_VERSION == garden">gz-sim7</depend>
+  <depend condition="$GZ_VERSION == ''">gz-sim7</depend>
+  <!-- Harmonic -->
+  <depend condition="$GZ_VERSION == harmonic">gz-sim8</depend>
+
   <test_depend>ament_lint_auto</test_depend>
   <!-- <test_depend>ament_lint_common</test_depend> -->
   <!-- <test_depend>ament_cmake_clang_format</test_depend> -->

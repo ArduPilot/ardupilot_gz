@@ -5,7 +5,11 @@ project(ardupilot_gz_gazebo)
 # Find dependencies.
 find_package(ament_cmake REQUIRED)
 
+# --------------------------------------------------------------------------- #
+# Find gz-sim and dependencies.
+
 find_package(gz-cmake3 REQUIRED)
+set(GZ_CMAKE_VER ${gz-cmake3_VERSION_MAJOR})
 
 find_package(gz-plugin2 REQUIRED COMPONENTS register)
 set(GZ_PLUGIN_VER ${gz-plugin2_VERSION_MAJOR})
@@ -13,8 +17,21 @@ set(GZ_PLUGIN_VER ${gz-plugin2_VERSION_MAJOR})
 find_package(gz-common5 REQUIRED COMPONENTS profiler)
 set(GZ_COMMON_VER ${gz-common5_VERSION_MAJOR})
 
-find_package(gz-sim7 REQUIRED)
-set(GZ_SIM_VER ${gz-sim7_VERSION_MAJOR})
+# Garden (default)
+if("$ENV{GZ_VERSION}" STREQUAL "garden" OR NOT DEFINED "ENV{GZ_VERSION}")
+  gz_find_package(gz-sim7 REQUIRED)
+  set(GZ_SIM_VER ${gz-sim7_VERSION_MAJOR})
+
+  message(STATUS "Compiling against Gazebo Garden")
+# Harmonic
+elseif("$ENV{GZ_VERSION}" STREQUAL "harmonic")
+  gz_find_package(gz-sim8 REQUIRED)
+  set(GZ_SIM_VER ${gz-sim8_VERSION_MAJOR})
+
+  message(STATUS "Compiling against Gazebo Harmonic")
+else()  
+  message(FATAL_ERROR "Unsupported GZ_VERSION: $ENV{GZ_VERSION}")
+endif()
 
 # --------------------------------------------------------------------------- #
 #  Build.

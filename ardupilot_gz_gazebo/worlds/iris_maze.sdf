@@ -429,7 +429,7 @@
     <include>
       <uri>model://iris_with_lidar</uri>
       <name>iris</name>
-      <pose degrees="true">0 0 0.194923 0 0 0</pose>
+      <pose degrees="true">0 0 0.195 0 0 0</pose>
     </include>
 
   </world>

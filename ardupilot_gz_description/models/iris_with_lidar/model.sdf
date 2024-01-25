@@ -311,7 +311,7 @@
       </visual>
 
       <sensor name='gpu_lidar' type='gpu_lidar'>
-        <ignition_frame_id>base_scan</ignition_frame_id>
+        <gz_frame_id>base_scan</gz_frame_id>
         <pose>0 0 0 0 0 0</pose>
         <topic>lidar</topic>
         <update_rate>10</update_rate>
@@ -320,8 +320,8 @@
             <horizontal>
               <samples>640</samples>
               <resolution>1</resolution>
-              <min_angle degrees="true">-180</min_angle>
-              <max_angle degrees="true">180</max_angle>
+              <min_angle>-3.14159265</min_angle>
+              <max_angle>3.14159265</max_angle>
             </horizontal>
             <vertical>
               <samples>1</samples>

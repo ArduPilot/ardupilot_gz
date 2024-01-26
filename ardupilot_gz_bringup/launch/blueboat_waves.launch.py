@@ -51,6 +51,7 @@ def generate_launch_description():
     pkg_project_bringup = get_package_share_directory("ardupilot_gz_bringup")
     pkg_project_gazebo = get_package_share_directory("ardupilot_gz_gazebo")
     pkg_ros_gz_sim = get_package_share_directory("ros_gz_sim")
+    pkg_mavros = get_package_share_directory("mavros")
 
     # Blueboat.
     blueboat = IncludeLaunchDescription(
@@ -86,6 +87,22 @@ def generate_launch_description():
         launch_arguments={"gz_args": "-v4 -g"}.items(),
     )
 
+    # MAVROS
+    mavros = Node(
+        package="mavros",
+        executable="mavros_node",
+        output="screen",
+        parameters=[{
+            "fcu_url": "udp://:14550@127.0.0.1:14551",
+            "gcs_url": "udp://:14551@127.0.0.1:14552",
+            "target_system_id": 1,
+            "target_component_id": 1,
+            "log_output": "screen",
+            "pluginlists_yaml": os.path.join(pkg_mavros, "launch", "apm_pluginlists.yaml"),
+            "config_yaml": os.path.join(pkg_mavros, "launch", "apm_config.yaml"),
+        }],
+    )
+
     # RViz.
     rviz = Node(
         package="rviz2",
@@ -102,6 +119,7 @@ def generate_launch_description():
             gz_sim_server,
             gz_sim_gui,
             blueboat,
+            mavros,
             rviz,
         ]
     )

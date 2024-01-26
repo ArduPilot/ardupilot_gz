@@ -61,7 +61,7 @@ def generate_launch_description():
     """Generate a launch description for a blueboat."""
     pkg_ardupilot_sitl = get_package_share_directory("ardupilot_sitl")
     pkg_project_bringup = get_package_share_directory("ardupilot_gz_bringup")
-    pkg_ardupilot_sitl_models = get_package_share_directory("ardupilot_sitl_models")
+    pkg_project_description = get_package_share_directory("ardupilot_gz_description")
 
     # Include component launch files.
     sitl_dds = IncludeLaunchDescription(
@@ -127,7 +127,7 @@ def generate_launch_description():
 
     # Load SDF file.
     sdf_file = os.path.join(
-        pkg_ardupilot_sitl_models, "models", "blueboat", "model.sdf"
+        pkg_project_description, "models", "blueboat", "model.sdf"
     )
     with open(sdf_file, "r") as infp:
         robot_desc = infp.read()

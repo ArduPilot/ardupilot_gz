@@ -99,8 +99,7 @@ def generate_launch_description():
             "target_component_id": 1,
             "log_output": "screen",
             "pluginlists_yaml": os.path.join(pkg_mavros, "launch", "apm_pluginlists.yaml"),
-            "config_yaml": os.path.join(pkg_mavros, "launch", "apm_config.yaml"),
-            "/mavros/conn/timesync_rate": 0,
+            "config_yaml": os.path.join(pkg_project_bringup, "launch", "apm_config.yaml"),
         }],
     )
              

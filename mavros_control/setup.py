@@ -21,6 +21,7 @@ setup(
     entry_points={
         'console_scripts': [
                 'guided_mission = mavros_control.guided_mission:main',
+                'onlineIPP = mavros_control.onlineIPP:main',
         ],
     },
 )

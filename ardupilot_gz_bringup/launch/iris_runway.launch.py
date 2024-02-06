@@ -30,7 +30,7 @@
 # limitations under the License.
 
 """Launch an iris quadcopter in Gazebo and Rviz."""
-import os
+from pathlib import Path
 
 from ament_index_python.packages import get_package_share_directory
 
@@ -71,17 +71,17 @@ def generate_launch_description():
     # Gazebo.
     gz_sim_server = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            os.path.join(pkg_ros_gz_sim, "launch", "gz_sim.launch.py")
+            f'{Path(pkg_ros_gz_sim) / "launch" / "gz_sim.launch.py"}'
         ),
         launch_arguments={
             "gz_args": "-v4 -s -r "
-            + os.path.join(pkg_project_gazebo, "worlds", "iris_runway.sdf")
+            f'{Path(pkg_project_gazebo) / "worlds" / "iris_runway.sdf"}'
         }.items(),
     )
 
     gz_sim_gui = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            os.path.join(pkg_ros_gz_sim, "launch", "gz_sim.launch.py")
+            f'{Path(pkg_ros_gz_sim) / "launch" / "gz_sim.launch.py"}'
         ),
         launch_arguments={"gz_args": "-v4 -g"}.items(),
     )
@@ -90,7 +90,7 @@ def generate_launch_description():
     rviz = Node(
         package="rviz2",
         executable="rviz2",
-        arguments=["-d", os.path.join(pkg_project_bringup, "rviz", "iris.rviz")],
+        arguments=["-d", f'{Path(pkg_project_bringup) / "rviz" / "iris.rviz"}'],
         condition=IfCondition(LaunchConfiguration("rviz")),
     )
 

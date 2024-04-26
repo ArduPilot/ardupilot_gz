@@ -33,5 +33,5 @@ repositories:
     version: humble
   sdformat_urdf:
     type: git
-    url: https://github.com/srmainwaring/sdformat_urdf.git
-    version: ros2-macos
+    url: https://github.com/ros/sdformat_urdf.git
+    version: humble

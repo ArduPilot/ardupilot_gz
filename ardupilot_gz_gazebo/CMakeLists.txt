@@ -17,14 +17,14 @@ set(GZ_PLUGIN_VER ${gz-plugin2_VERSION_MAJOR})
 find_package(gz-common5 REQUIRED COMPONENTS profiler)
 set(GZ_COMMON_VER ${gz-common5_VERSION_MAJOR})
 
-# Garden (default)
-if("$ENV{GZ_VERSION}" STREQUAL "garden" OR NOT DEFINED "ENV{GZ_VERSION}")
+# Garden
+if("$ENV{GZ_VERSION}" STREQUAL "garden")
   gz_find_package(gz-sim7 REQUIRED)
   set(GZ_SIM_VER ${gz-sim7_VERSION_MAJOR})
 
   message(STATUS "Compiling against Gazebo Garden")
-# Harmonic
-elseif("$ENV{GZ_VERSION}" STREQUAL "harmonic")
+# Harmonic (default)
+elseif("$ENV{GZ_VERSION}" STREQUAL "harmonic" OR NOT DEFINED "ENV{GZ_VERSION}")
   gz_find_package(gz-sim8 REQUIRED)
   set(GZ_SIM_VER ${gz-sim8_VERSION_MAJOR})
 

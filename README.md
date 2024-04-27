@@ -20,7 +20,7 @@ The project is adapted from the [`ros_gz_project_template`](https://github.com/g
 ## Prerequisites
 
 - Install [ROS 2 Humble](https://docs.ros.org/en/humble/index.html)
-- Install [Gazebo Garden](https://gazebosim.org/docs/garden)
+- Install [Gazebo Harmonic (recommended)](https://gazebosim.org/docs/harmonic) or [Gazebo Garden](https://gazebosim.org/docs/garden)
 - Follow the [`Installing Build Dependencies`](https://github.com/ArduPilot/ardupilot/tree/master/libraries/AP_DDS#installing-build-dependencies) section of `AP_DDS`'s README
 
 ## Install
@@ -28,21 +28,23 @@ The project is adapted from the [`ros_gz_project_template`](https://github.com/g
 #### 1. Create a workspace folder
 
 ```bash
-mkdir -p ~/ros2_ws/src && cd ~/ros2_ws/src
+mkdir -p ~/ros2_ws/src && cd ~/ros2_ws
 ```
 
 #### 2. Get the project source
 
 ```bash
-cd ~/ros2_ws/src
-wget https://raw.githubusercontent.com/ArduPilot/ardupilot_gz/main/ros2_gz.repos
-vcs import --recursive < ros2_gz.repos
+cd ~/ros2_ws
+mkdir src
+vcs import --input https://raw.githubusercontent.com/ArduPilot/ardupilot_gz/main/ros2_gz.repos --recursive src
 ```
 
-#### 3. Set the Gazebo version to Garden:
+#### 3. Set the Gazebo version to Harmonic or Garden:
+
+It is recommended to put this in your `~/.bashrc` or equivalent file.
 
 ```bash
-export GZ_VERSION=garden
+export GZ_VERSION=harmonic
 ```
 
 #### 4. Update ROS dependencies
@@ -52,14 +54,14 @@ cd ~/ros2_ws
 source /opt/ros/humble/setup.bash
 sudo apt update
 rosdep update
-rosdep install --rosdistro $ROS_DISTRO --from-paths src -i -r -y
+rosdep install --from-paths src --ignore-src -y
 ```
 
 #### 5. Build
 
 ```bash
 cd ~/ros2_ws
-colcon build --cmake-args -DBUILD_TESTING=ON
+colcon build
 ```
 
 #### 6. Test

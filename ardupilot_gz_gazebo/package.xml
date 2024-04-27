@@ -12,10 +12,10 @@
   <depend>gz-cmake3</depend>
   <depend>gz-plugin2</depend>
 
-  <!-- Garden (default) -->
+  <!-- Garden -->
   <depend condition="$GZ_VERSION == garden">gz-sim7</depend>
-  <depend condition="$GZ_VERSION == ''">gz-sim7</depend>
-  <!-- Harmonic -->
+  <!-- Harmonic (default) -->
+  <depend condition="$GZ_VERSION == ''">gz-sim8</depend>
   <depend condition="$GZ_VERSION == harmonic">gz-sim8</depend>
 
   <test_depend>ament_lint_auto</test_depend>

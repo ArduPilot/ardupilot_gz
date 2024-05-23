@@ -18,8 +18,6 @@ Launch an iris quadcopter in Gazebo and Rviz.
 
 ros2 launch ardupilot_sitl sitl_dds_udp.launch.py
 transport:=udp4
-refs:=$(ros2 pkg prefix ardupilot_sitl)
-      /share/ardupilot_sitl/config/dds_xrce_profile.xml
 port:=2019
 synthetic_clock:=True
 wipe:=False
@@ -79,13 +77,6 @@ def generate_launch_description():
         ),
         launch_arguments={
             "transport": "udp4",
-            "refs": PathJoinSubstitution(
-                [
-                    FindPackageShare("ardupilot_sitl"),
-                    "config",
-                    "dds_xrce_profile.xml",
-                ]
-            ),
             "port": "2019",
             "synthetic_clock": "True",
             "wipe": "False",

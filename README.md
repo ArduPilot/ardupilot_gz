@@ -28,14 +28,13 @@ The project is adapted from the [`ros_gz_project_template`](https://github.com/g
 #### 1. Create a workspace folder
 
 ```bash
-mkdir -p ~/ros2_ws/src && cd ~/ros2_ws
+mkdir -p ~/ros2_ws/src
 ```
 
 #### 2. Get the project source
 
 ```bash
 cd ~/ros2_ws
-mkdir src
 vcs import --input https://raw.githubusercontent.com/ArduPilot/ardupilot_gz/main/ros2_gz.repos --recursive src
 ```
 

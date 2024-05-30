@@ -11,6 +11,7 @@
   <depend>gz-common5</depend>
   <depend>gz-cmake3</depend>
   <depend>gz-plugin2</depend>
+  <depend>ardupilot_gz_description</depend>
 
   <!-- Garden -->
   <depend condition="$GZ_VERSION == garden">gz-sim7</depend>

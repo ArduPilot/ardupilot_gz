@@ -19,57 +19,7 @@ The project is adapted from the [`ros_gz_project_template`](https://github.com/g
 
 ## Prerequisites
 
-- Install [ROS 2 Humble](https://docs.ros.org/en/humble/index.html)
-- Install [Gazebo Harmonic (recommended)](https://gazebosim.org/docs/harmonic) or [Gazebo Garden](https://gazebosim.org/docs/garden)
-- Follow the [`Installing Build Dependencies`](https://github.com/ArduPilot/ardupilot/tree/master/libraries/AP_DDS#installing-build-dependencies) section of `AP_DDS`'s README
-
-## Install
-
-#### 1. Create a workspace folder
-
-```bash
-mkdir -p ~/ros2_ws/src
-```
-
-#### 2. Get the project source
-
-```bash
-cd ~/ros2_ws
-vcs import --input https://raw.githubusercontent.com/ArduPilot/ardupilot_gz/main/ros2_gz.repos --recursive src
-```
-
-#### 3. Set the Gazebo version to Harmonic or Garden:
-
-It is recommended to put this in your `~/.bashrc` or equivalent file.
-
-```bash
-export GZ_VERSION=harmonic
-```
-
-#### 4. Update ROS dependencies
-
-```bash
-cd ~/ros2_ws
-source /opt/ros/humble/setup.bash
-sudo apt update
-rosdep update
-rosdep install --from-paths src --ignore-src -y
-```
-
-#### 5. Build
-
-```bash
-cd ~/ros2_ws
-colcon build
-```
-
-#### 6. Test
-
-```bash
-source ./install/setup.bash
-colcon test --packages-select ardupilot_sitl ardupilot_dds_tests ardupilot_gazebo ardupilot_gz_applications ardupilot_gz_description ardupilot_gz_gazebo ardupilot_gz_bringup
-colcon test-result --all --verbose
-```
+Follow the installation instructions in the [ArduPilot Wiki](https://ardupilot.org/dev/docs/ros2-gazebo.html)
 
 ## Usage
 

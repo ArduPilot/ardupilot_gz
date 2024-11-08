@@ -33,9 +33,21 @@ mkdir -p ~/ros2_ws/src
 
 #### 2. Get the project source
 
+By default, `ardupilot_gz` uses the `main` branch for ROS 2 `rolling` development.
+We also maintain stable branches for LTS ROS distributions.
+Be sure to check out the appropriate branch.
+
 ```bash
 cd ~/ros2_ws
+
+# For ROS 2 Rolling
 vcs import --input https://raw.githubusercontent.com/ArduPilot/ardupilot_gz/main/ros2_gz.repos --recursive src
+
+# For ROS 2 Jazzy
+vcs import --input https://raw.githubusercontent.com/ArduPilot/ardupilot_gz/jazzy/ros2_gz.repos --recursive src
+
+# For ROS 2 Humble
+vcs import --input https://raw.githubusercontent.com/ArduPilot/ardupilot_gz/humble/ros2_gz.repos --recursive src
 ```
 
 #### 3. Set the Gazebo version to Harmonic or Garden:
@@ -189,3 +201,8 @@ export SDF_PATH=$GZ_SIM_RESOURCE_PATH
 
 This is assigned in the `iris.launch.py` file as `SDF_PATH` is not usually set
 by the `ament` environment hooks.
+
+## Contributing
+
+`ardupilot_gz` uses the `main` branch for `rolling` development.
+PR's must be targeted to that branch and can be backported to the stable branches.

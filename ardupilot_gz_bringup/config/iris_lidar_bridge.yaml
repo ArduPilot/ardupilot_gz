@@ -42,3 +42,9 @@
   ros_type_name: "sensor_msgs/msg/BatteryState"
   gz_type_name: "gz.msgs.BatteryState"
   direction: GZ_TO_ROS
+
+- ros_topic_name: "cloud_in"
+  gz_topic_name: "/lidar/points"
+  ros_type_name: "sensor_msgs/msg/PointCloud2"
+  gz_type_name: "gz.msgs.PointCloudPacked"
+  direction: GZ_TO_ROS

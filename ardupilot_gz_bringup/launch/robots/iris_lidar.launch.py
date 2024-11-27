@@ -1,4 +1,4 @@
-# Copyright 2023 ArduPilot.org.
+# Copyright 2024 ArduPilot.org.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -38,28 +38,74 @@ import os
 from ament_index_python.packages import get_package_share_directory
 
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument
-from launch.actions import IncludeLaunchDescription
-from launch.actions import RegisterEventHandler
+from launch.actions import DeclareLaunchArgument, OpaqueFunction, LogInfo, IncludeLaunchDescription, RegisterEventHandler
 
 from launch.conditions import IfCondition
 
 from launch.event_handlers import OnProcessStart
 
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration
-from launch.substitutions import PathJoinSubstitution
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 
 
-def generate_launch_description():
-    """Generate a launch description for a iris quadcopter."""
-    pkg_ardupilot_sitl = get_package_share_directory("ardupilot_sitl")
+"""Declare the launch options"""
+launch_args = [
+    DeclareLaunchArgument(
+                "use_gz_tf", default_value="true", description="Use Gazebo TF."
+            ),
+    DeclareLaunchArgument(
+                "lidar_dim", default_value="2", description="Whether to use a 2D or 3D lidar"
+            ),
+]
+
+
+def launch_setup_for_robot_state_publisher(context):
+    # Robot description chosen based on passed lidar_dimension argument
+    lidar_dim = LaunchConfiguration("lidar_dim").perform(context)
     pkg_ardupilot_gz_description = get_package_share_directory(
         "ardupilot_gz_description"
     )
+
+    # Load SDF file based on lidar dimensions
+    if lidar_dim == "2":
+        log = LogInfo(msg="Using iris_with_2d_lidar_model ")
+        sdf_file = os.path.join(
+        pkg_ardupilot_gz_description, "models", "iris_with_2d_lidar", "model.sdf"
+    )
+    elif lidar_dim == "3":
+        log = LogInfo(msg="Using iris_with_3d_lidar_model")
+        sdf_file = os.path.join(
+        pkg_ardupilot_gz_description, "models", "iris_with_3d_lidar", "model.sdf"
+    )
+    else:
+        log = LogInfo(msg="ERROR: unknown lidar dimensions!")
+        return [log]
+
+    with open(sdf_file, "r") as infp:
+        robot_desc = infp.read()
+        # print(robot_desc)
+
+    # Publish /tf and /tf_static.
+    robot_state_publisher = Node(
+        package="robot_state_publisher",
+        executable="robot_state_publisher",
+        name="robot_state_publisher",
+        output="both",
+        parameters=[
+            {"robot_description": robot_desc},
+            {"frame_prefix": ""},
+        ],
+    )
+
+    return [log, robot_state_publisher]
+
+
+def generate_launch_description():
+    """Generate a launch description for a iris quadcopter."""
+    pkg_ardupilot_sitl = get_package_share_directory("ardupilot_sitl")
     pkg_project_bringup = get_package_share_directory("ardupilot_gz_bringup")
 
     # Include component launch files.
@@ -103,8 +149,6 @@ def generate_launch_description():
         }.items(),
     )
 
-    # Robot description.
-
     # Ensure `SDF_PATH` is populated as `sdformat_urdf`` uses this rather
     # than `GZ_SIM_RESOURCE_PATH` to locate resources.
     if "GZ_SIM_RESOURCE_PATH" in os.environ:
@@ -115,26 +159,6 @@ def generate_launch_description():
             os.environ["SDF_PATH"] = sdf_path + ":" + gz_sim_resource_path
         else:
             os.environ["SDF_PATH"] = gz_sim_resource_path
-
-    # Load SDF file.
-    sdf_file = os.path.join(
-        pkg_ardupilot_gz_description, "models", "iris_with_lidar", "model.sdf"
-    )
-    with open(sdf_file, "r") as infp:
-        robot_desc = infp.read()
-        # print(robot_desc)
-
-    # Publish /tf and /tf_static.
-    robot_state_publisher = Node(
-        package="robot_state_publisher",
-        executable="robot_state_publisher",
-        name="robot_state_publisher",
-        output="both",
-        parameters=[
-            {"robot_description": robot_desc},
-            {"frame_prefix": ""},
-        ],
-    )
 
     # Bridge.
     bridge = Node(
@@ -182,21 +206,20 @@ def generate_launch_description():
         condition=IfCondition(LaunchConfiguration("use_gz_tf")),
     )
 
-    return LaunchDescription(
-        [
-            DeclareLaunchArgument(
-                "use_gz_tf", default_value="true", description="Use Gazebo TF."
-            ),
-            sitl_dds,
-            robot_state_publisher,
-            bridge,
-            RegisterEventHandler(
+    event = RegisterEventHandler(
                 OnProcessStart(
                     target_action=bridge,
                     on_start=[
                         topic_tools_tf
                     ]
                 )
-            ),
-        ]
-    )
+            )
+
+    opfunc_robot_state_publisher = OpaqueFunction(function=launch_setup_for_robot_state_publisher)
+    ld = LaunchDescription(launch_args)
+    ld.add_action(sitl_dds)
+    ld.add_action(opfunc_robot_state_publisher)
+    ld.add_action(bridge)
+    ld.add_action(event)
+
+    return ld

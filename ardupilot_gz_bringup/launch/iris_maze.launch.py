@@ -65,7 +65,10 @@ def generate_launch_description():
                     ]
                 ),
             ]
-        )
+        ),
+        launch_arguments={
+            "lidar_dim": "3",
+        }.items(),
     )
 
     # Gazebo.

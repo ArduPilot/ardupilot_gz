@@ -39,54 +39,82 @@ from ament_index_python.packages import get_package_share_directory
 
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, OpaqueFunction, LogInfo, IncludeLaunchDescription, RegisterEventHandler
-
 from launch.conditions import IfCondition
-
 from launch.event_handlers import OnProcessStart
-
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
-
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 
+def launch_spawn_robot(context):
+    """Return a Gazebo spawn robot launch description"""
+    # Get substitutions for arguments
+    name = LaunchConfiguration("name")
+    pos_x = LaunchConfiguration("x")
+    pos_y = LaunchConfiguration("y")
+    pos_z = LaunchConfiguration("z")
+    rot_r = LaunchConfiguration("R")
+    rot_p = LaunchConfiguration("P")
+    rot_y = LaunchConfiguration("Y")
 
-"""Declare the launch options"""
-launch_args = [
-    DeclareLaunchArgument(
-                "use_gz_tf", default_value="true", description="Use Gazebo TF."
-            ),
-    DeclareLaunchArgument(
-                "lidar_dim", default_value="2", description="Whether to use a 2D or 3D lidar"
-            ),
-]
+    # spawn robot
+    spawn_robot =  Node(
+        package="ros_gz_sim",
+        executable="create",
+        namespace=name,
+        arguments=[
+            "-world",
+            "",
+            "-param",
+            "",
+            "-name",
+            name,
+            "-topic",
+            "/robot_description",
+            "-x",
+            pos_x,
+            "-y",
+            pos_y,
+            "-z",
+            pos_z,
+            "-R",
+            rot_r,
+            "-P",
+            rot_p,
+            "-Y",
+            rot_y,
+        ],
+        output="screen",
+    )
+    return [spawn_robot]
 
 
-def launch_setup_for_robot_state_publisher(context):
+def launch_robot_state_publisher(context):
     # Robot description chosen based on passed lidar_dimension argument
     lidar_dim = LaunchConfiguration("lidar_dim").perform(context)
     pkg_ardupilot_gz_description = get_package_share_directory(
         "ardupilot_gz_description"
     )
 
-    # Load SDF file based on lidar dimensions
-    if lidar_dim == "2":
-        log = LogInfo(msg="Using iris_with_2d_lidar_model ")
-        sdf_file = os.path.join(
-        pkg_ardupilot_gz_description, "models", "iris_with_2d_lidar", "model.sdf"
+    sdf_file = os.path.join(
+        pkg_ardupilot_gz_description, "models", "iris_with_lidar", "model.sdf"
     )
-    elif lidar_dim == "3":
-        log = LogInfo(msg="Using iris_with_3d_lidar_model")
-        sdf_file = os.path.join(
-        pkg_ardupilot_gz_description, "models", "iris_with_3d_lidar", "model.sdf"
-    )
-    else:
-        log = LogInfo(msg="ERROR: unknown lidar dimensions!")
-        return [log]
 
     with open(sdf_file, "r") as infp:
         robot_desc = infp.read()
         # print(robot_desc)
+
+    # Load SDF file based on lidar dimensions
+    if lidar_dim == "2":
+        log = LogInfo(msg="Using iris_with_2d_lidar_model ")
+        robot_desc = robot_desc.replace("<uri>model://lidar_2d</uri>", "<uri>model://lidar_2d</uri>")
+    elif lidar_dim == "3":
+        log = LogInfo(msg="Using iris_with_3d_lidar_model")
+        robot_desc = robot_desc.replace("<uri>model://lidar_2d</uri>", "<uri>model://lidar_3d</uri>")
+    else:
+        log = LogInfo(msg="ERROR: unknown lidar dimensions! Defaulting to 3d lidar")
+        robot_desc = robot_desc.replace("<uri>model://lidar_2d</uri>", "<uri>model://lidar_3d</uri>")
+
 
     # Publish /tf and /tf_static.
     robot_state_publisher = Node(
@@ -102,9 +130,67 @@ def launch_setup_for_robot_state_publisher(context):
 
     return [log, robot_state_publisher]
 
+def generate_launch_arguments():
+    """Generate a list of launch arguments"""
+    return [
+        DeclareLaunchArgument(
+                "use_gz_tf", 
+                default_value="true", 
+                description="Use Gazebo TF."
+            ),
+        DeclareLaunchArgument(
+                "lidar_dim", 
+                default_value="3", 
+                description="Whether to use a 2D or 3D lidar"
+            ),
+        # Gazebo model launch arguments.
+        DeclareLaunchArgument(
+            "model",
+            default_value="iris_with_lidar",
+            description="Name or filepath of the model to load.",
+        ),
+        DeclareLaunchArgument(
+            "name",
+            default_value="iris",
+            description="Name for the model instance.",
+        ),
+        DeclareLaunchArgument(
+            "x",
+            default_value="0",
+            description="The intial 'x' position (m).",
+        ),
+        DeclareLaunchArgument(
+            "y",
+            default_value="0",
+            description="The intial 'y' position (m).",
+        ),
+        DeclareLaunchArgument(
+            "z",
+            default_value="0",
+            description="The intial 'z' position (m).",
+        ),
+        DeclareLaunchArgument(
+            "R",
+            default_value="0",
+            description="The intial roll angle (radians).",
+        ),
+        DeclareLaunchArgument(
+            "P",
+            default_value="0",
+            description="The intial pitch angle (radians).",
+        ),
+        DeclareLaunchArgument(
+            "Y",
+            default_value="0",
+            description="The intial yaw angle (radians).",
+        ),
+    ]
 
 def generate_launch_description():
-    """Generate a launch description for a iris quadcopter."""
+    """Generate a launch description for a iris quadrotor"""
+
+    launch_arguments = generate_launch_arguments()
+
     pkg_ardupilot_sitl = get_package_share_directory("ardupilot_sitl")
     pkg_project_bringup = get_package_share_directory("ardupilot_gz_bringup")
 
@@ -215,10 +301,12 @@ def generate_launch_description():
                 )
             )
 
-    opfunc_robot_state_publisher = OpaqueFunction(function=launch_setup_for_robot_state_publisher)
-    ld = LaunchDescription(launch_args)
+    opfunc_robot_state_publisher = OpaqueFunction(function=launch_robot_state_publisher)
+    opfunc_spawn_robot = OpaqueFunction(function=launch_spawn_robot)
+    ld = LaunchDescription(launch_arguments)
     ld.add_action(sitl_dds)
     ld.add_action(opfunc_robot_state_publisher)
+    ld.add_action(opfunc_spawn_robot)
     ld.add_action(bridge)
     ld.add_action(event)
 

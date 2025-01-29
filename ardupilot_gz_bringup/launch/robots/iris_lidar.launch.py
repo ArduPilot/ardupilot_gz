@@ -89,13 +89,12 @@ def launch_spawn_robot(context):
     return [spawn_robot]
 
 
-def launch_robot_state_publisher(context):
-    # Robot description chosen based on passed lidar_dimension argument
+def launch_state_pub_with_bridge(context):
+    # Robot description and ros_gz bridge config chosen based on passed lidar_dimension argument
     lidar_dim = LaunchConfiguration("lidar_dim").perform(context)
-    pkg_ardupilot_gz_description = get_package_share_directory(
-        "ardupilot_gz_description"
-    )
-
+    pkg_ardupilot_gz_description = get_package_share_directory("ardupilot_gz_description")
+    pkg_project_bringup = get_package_share_directory("ardupilot_gz_bringup")
+    
     sdf_file = os.path.join(
         pkg_ardupilot_gz_description, "models", "iris_with_lidar", "model.sdf"
     )
@@ -104,16 +103,21 @@ def launch_robot_state_publisher(context):
         robot_desc = infp.read()
         # print(robot_desc)
 
-    # Load SDF file based on lidar dimensions
+    ros_gz_bridge_config = "iris_3Dlidar_bridge.yaml"
+
+    # Load SDF file and choose ros_gz bridge config based on lidar dimensions
     if lidar_dim == "2":
         log = LogInfo(msg="Using iris_with_2d_lidar_model ")
         robot_desc = robot_desc.replace("<uri>model://lidar_2d</uri>", "<uri>model://lidar_2d</uri>")
+        ros_gz_bridge_config = "iris_2Dlidar_bridge.yaml"
     elif lidar_dim == "3":
         log = LogInfo(msg="Using iris_with_3d_lidar_model")
         robot_desc = robot_desc.replace("<uri>model://lidar_2d</uri>", "<uri>model://lidar_3d</uri>")
+        ros_gz_bridge_config = "iris_3Dlidar_bridge.yaml"
     else:
         log = LogInfo(msg="ERROR: unknown lidar dimensions! Defaulting to 3d lidar")
         robot_desc = robot_desc.replace("<uri>model://lidar_2d</uri>", "<uri>model://lidar_3d</uri>")
+        ros_gz_bridge_config = "iris_3Dlidar_bridge.yaml"
 
 
     # Publish /tf and /tf_static.
@@ -128,7 +132,44 @@ def launch_robot_state_publisher(context):
         ],
     )
 
-    return [log, robot_state_publisher]
+    # Bridge
+    bridge = Node(
+        package="ros_gz_bridge",
+        executable="parameter_bridge",
+        parameters=[
+            {
+                "config_file": os.path.join(
+                    pkg_project_bringup, "config", ros_gz_bridge_config
+                ),
+                "qos_overrides./tf_static.publisher.durability": "transient_local",
+            }
+        ],
+        output="screen",
+    )
+
+    # Relay - use instead of transform when Gazebo is only publishing odom -> base_link
+    topic_tools_tf = Node(
+        package="topic_tools",
+        executable="relay",
+        arguments=[
+            "/gz/tf",
+            "/tf",
+        ],
+        output="screen",
+        respawn=False,
+        condition=IfCondition(LaunchConfiguration("use_gz_tf")),
+    )
+
+    event = RegisterEventHandler(
+                OnProcessStart(
+                    target_action=bridge,
+                    on_start=[
+                        topic_tools_tf
+                    ]
+                )
+            )
+
+    return [log, robot_state_publisher, bridge, event]
 
 def generate_launch_arguments():
     """Generate a list of launch arguments"""
@@ -192,7 +233,6 @@ def generate_launch_description():
     launch_arguments = generate_launch_arguments()
 
     pkg_ardupilot_sitl = get_package_share_directory("ardupilot_sitl")
-    pkg_project_bringup = get_package_share_directory("ardupilot_gz_bringup")
 
     # Include component launch files.
     sitl_dds = IncludeLaunchDescription(
@@ -246,68 +286,11 @@ def generate_launch_description():
         else:
             os.environ["SDF_PATH"] = gz_sim_resource_path
 
-    # Bridge.
-    bridge = Node(
-        package="ros_gz_bridge",
-        executable="parameter_bridge",
-        parameters=[
-            {
-                "config_file": os.path.join(
-                    pkg_project_bringup, "config", "iris_lidar_bridge.yaml"
-                ),
-                "qos_overrides./tf_static.publisher.durability": "transient_local",
-            }
-        ],
-        output="screen",
-    )
-
-    # Transform - use if the model includes "gz::sim::systems::PosePublisher"
-    #             and a filter is required.
-    # topic_tools_tf = Node(
-    #     package="topic_tools",
-    #     executable="transform",
-    #     arguments=[
-    #         "/gz/tf",
-    #         "/tf",
-    #         "tf2_msgs/msg/TFMessage",
-    #         "tf2_msgs.msg.TFMessage(transforms=[x for x in m.transforms if x.header.frame_id == 'odom'])",
-    #         "--import",
-    #         "tf2_msgs",
-    #         "geometry_msgs",
-    #     ],
-    #     output="screen",
-    #     respawn=True,
-    # )
-
-    # Relay - use instead of transform when Gazebo is only publishing odom -> base_link
-    topic_tools_tf = Node(
-        package="topic_tools",
-        executable="relay",
-        arguments=[
-            "/gz/tf",
-            "/tf",
-        ],
-        output="screen",
-        respawn=False,
-        condition=IfCondition(LaunchConfiguration("use_gz_tf")),
-    )
-
-    event = RegisterEventHandler(
-                OnProcessStart(
-                    target_action=bridge,
-                    on_start=[
-                        topic_tools_tf
-                    ]
-                )
-            )
-
-    opfunc_robot_state_publisher = OpaqueFunction(function=launch_robot_state_publisher)
+    opfunc_robot_state_publisher = OpaqueFunction(function=launch_state_pub_with_bridge)
     opfunc_spawn_robot = OpaqueFunction(function=launch_spawn_robot)
     ld = LaunchDescription(launch_arguments)
     ld.add_action(sitl_dds)
     ld.add_action(opfunc_robot_state_publisher)
     ld.add_action(opfunc_spawn_robot)
-    ld.add_action(bridge)
-    ld.add_action(event)
 
     return ld

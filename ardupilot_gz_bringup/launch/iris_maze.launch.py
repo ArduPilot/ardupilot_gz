@@ -67,7 +67,6 @@ def generate_launch_description():
             ]
         ),
         launch_arguments={
-            "lidar_dim": "2",
             "model": "iris_with_lidar",
             "name": "iris",
             "x": "0",

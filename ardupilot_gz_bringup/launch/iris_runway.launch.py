@@ -96,8 +96,13 @@ def generate_launch_description():
     rviz = Node(
         package="rviz2",
         executable="rviz2",
+        namespace="iris",
         arguments=["-d", f'{Path(pkg_project_bringup) / "rviz" / "iris.rviz"}'],
         condition=IfCondition(LaunchConfiguration("rviz")),
+        remappings=[
+            ("/tf", "tf"),
+            ("/tf_static", "tf_static"),
+        ]
     )
 
     return LaunchDescription(

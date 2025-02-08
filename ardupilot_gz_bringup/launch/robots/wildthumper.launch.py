@@ -36,89 +36,68 @@ sitl:=127.0.0.1:5501
 import os
 
 from ament_index_python.packages import get_package_share_directory
-
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument
-from launch.actions import IncludeLaunchDescription
-from launch.actions import RegisterEventHandler
-
+from launch.actions import (DeclareLaunchArgument, IncludeLaunchDescription,
+                            OpaqueFunction, RegisterEventHandler)
 from launch.conditions import IfCondition
-
 from launch.event_handlers import OnProcessStart
-
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration
-from launch.substitutions import PathJoinSubstitution
-
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 
 
+def launch_spawn_robot(context):
+    """Return a Gazebo spawn robot launch description"""
+    # Get substitutions for arguments
+    name = LaunchConfiguration("name")
+    pos_x = LaunchConfiguration("x")
+    pos_y = LaunchConfiguration("y")
+    pos_z = LaunchConfiguration("z")
+    rot_r = LaunchConfiguration("R")
+    rot_p = LaunchConfiguration("P")
+    rot_y = LaunchConfiguration("Y")
 
-def generate_launch_description():
-    """Generate a launch description for a wild thumper rover."""
-    pkg_ardupilot_sitl = get_package_share_directory("ardupilot_sitl")
+    # spawn robot
+    spawn_robot =  Node(
+        package="ros_gz_sim",
+        executable="create",
+        namespace=name,
+        arguments=[
+            "-world",
+            "",
+            "-param",
+            "",
+            "-name",
+            name,
+            "-topic",
+            "/robot_description",
+            "-x",
+            pos_x,
+            "-y",
+            pos_y,
+            "-z",
+            pos_z,
+            "-R",
+            rot_r,
+            "-P",
+            rot_p,
+            "-Y",
+            rot_y,
+        ],
+        output="screen",
+    )
+    return [spawn_robot]
+
+
+def launch_state_pub_with_bridge(context):
+    model_name = LaunchConfiguration("model").perform(context)
     pkg_ardupilot_sitl_models = get_package_share_directory("ardupilot_sitl_models")
     pkg_project_bringup = get_package_share_directory("ardupilot_gz_bringup")
-
-    # Include component launch files.
-    sitl_dds = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            [
-                PathJoinSubstitution(
-                    [
-                        FindPackageShare("ardupilot_sitl"),
-                        "launch",
-                        "sitl_dds_udp.launch.py",
-                    ]
-                ),
-            ]
-        ),
-        launch_arguments={
-            "transport": "udp4",
-            "port": "2019",
-            "command": "ardurover",
-            "synthetic_clock": "True",
-            "wipe": "False",
-            "model": "json",
-            "speedup": "1",
-            "slave": "0",
-            "instance": "0",
-            "defaults": os.path.join(
-                pkg_ardupilot_sitl,
-                "config",
-                "default_params",
-                "rover-skid.parm",
-            )
-            + ","
-            + os.path.join(
-                pkg_ardupilot_sitl,
-                "config",
-                "default_params",
-                "dds_udp.parm",
-            ),
-            "sim_address": "127.0.0.1",
-            "master": "tcp:127.0.0.1:5760",
-            "sitl": "127.0.0.1:5501",
-        }.items(),
-    )
-
-    # Robot description.
-
-    # Ensure `SDF_PATH` is populated as `sdformat_urdf`` uses this rather
-    # than `GZ_SIM_RESOURCE_PATH` to locate resources.
-    if "GZ_SIM_RESOURCE_PATH" in os.environ:
-        gz_sim_resource_path = os.environ["GZ_SIM_RESOURCE_PATH"]
-
-        if "SDF_PATH" in os.environ:
-            sdf_path = os.environ["SDF_PATH"]
-            os.environ["SDF_PATH"] = sdf_path + ":" + gz_sim_resource_path
-        else:
-            os.environ["SDF_PATH"] = gz_sim_resource_path
-
+    
     # Load SDF file.
     sdf_file = os.path.join(
-        pkg_ardupilot_sitl_models, "models", "wildthumper_with_lidar", "model.sdf"
+        pkg_ardupilot_sitl_models, "models", model_name, "model.sdf"
     )
     with open(sdf_file, "r") as infp:
         robot_desc = infp.read()
@@ -172,22 +151,135 @@ def generate_launch_description():
         respawn=False,
         condition=IfCondition(LaunchConfiguration("use_gz_tf")),
     )
-
-    return LaunchDescription(
-        [
-            DeclareLaunchArgument(
-                "use_gz_tf", default_value="true", description="Use Gazebo TF."
-            ),
-            sitl_dds,
-            robot_state_publisher,
-            bridge,
-            RegisterEventHandler(
-                OnProcessStart(
-                    target_action=bridge,
-                    on_start=[
-                        topic_tools_tf
-                    ]
-                )
-            ),
-        ]
+    
+    event = RegisterEventHandler(
+        OnProcessStart(
+            target_action=bridge,
+            on_start=[
+                topic_tools_tf
+            ]
+        )
     )
+    
+    return [robot_state_publisher, bridge, event]
+
+def generate_launch_arguments():
+    """Generate a list of launch arguments"""
+    return [
+        DeclareLaunchArgument(
+            "use_gz_tf", 
+            default_value="true", 
+            description="Use Gazebo TF."
+        ),
+        # Gazebo model launch arguments.
+        DeclareLaunchArgument(
+            "model",
+            default_value="wildthumper_with_lidar",
+            description="Name or filepath of the model to load.",
+        ),
+        DeclareLaunchArgument(
+            "name",
+            default_value="wildthumper",
+            description="Name for the model instance.",
+        ),
+        DeclareLaunchArgument(
+            "x",
+            default_value="0",
+            description="The intial 'x' position (m).",
+        ),
+        DeclareLaunchArgument(
+            "y",
+            default_value="0",
+            description="The intial 'y' position (m).",
+        ),
+        DeclareLaunchArgument(
+            "z",
+            default_value="0",
+            description="The intial 'z' position (m).",
+        ),
+        DeclareLaunchArgument(
+            "R",
+            default_value="0",
+            description="The intial roll angle (radians).",
+        ),
+        DeclareLaunchArgument(
+            "P",
+            default_value="0",
+            description="The intial pitch angle (radians).",
+        ),
+        DeclareLaunchArgument(
+            "Y",
+            default_value="0",
+            description="The intial yaw angle (radians).",
+        ),
+    ]
+
+
+def generate_launch_description():
+    """Generate a launch description for a wild thumper rover."""
+    
+    launch_arguments = generate_launch_arguments()
+    
+    pkg_ardupilot_sitl = get_package_share_directory("ardupilot_sitl")
+
+    # Include component launch files.
+    sitl_dds = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            [
+                PathJoinSubstitution(
+                    [
+                        FindPackageShare("ardupilot_sitl"),
+                        "launch",
+                        "sitl_dds_udp.launch.py",
+                    ]
+                ),
+            ]
+        ),
+        launch_arguments={
+            "transport": "udp4",
+            "port": "2019",
+            "command": "ardurover",
+            "synthetic_clock": "True",
+            "wipe": "False",
+            "model": "json",
+            "speedup": "1",
+            "slave": "0",
+            "instance": "0",
+            "defaults": os.path.join(
+                pkg_ardupilot_sitl,
+                "config",
+                "default_params",
+                "rover-skid.parm",
+            )
+            + ","
+            + os.path.join(
+                pkg_ardupilot_sitl,
+                "config",
+                "default_params",
+                "dds_udp.parm",
+            ),
+            "sim_address": "127.0.0.1",
+            "master": "tcp:127.0.0.1:5760",
+            "sitl": "127.0.0.1:5501",
+        }.items(),
+    )
+
+    # Ensure `SDF_PATH` is populated as `sdformat_urdf`` uses this rather
+    # than `GZ_SIM_RESOURCE_PATH` to locate resources.
+    if "GZ_SIM_RESOURCE_PATH" in os.environ:
+        gz_sim_resource_path = os.environ["GZ_SIM_RESOURCE_PATH"]
+
+        if "SDF_PATH" in os.environ:
+            sdf_path = os.environ["SDF_PATH"]
+            os.environ["SDF_PATH"] = sdf_path + ":" + gz_sim_resource_path
+        else:
+            os.environ["SDF_PATH"] = gz_sim_resource_path
+
+    opfunc_robot_state_publisher = OpaqueFunction(function=launch_state_pub_with_bridge)
+    opfunc_spawn_robot = OpaqueFunction(function=launch_spawn_robot)
+    ld = LaunchDescription(launch_arguments)
+    ld.add_action(opfunc_robot_state_publisher)
+    ld.add_action(sitl_dds)
+    ld.add_action(opfunc_spawn_robot)
+
+    return ld

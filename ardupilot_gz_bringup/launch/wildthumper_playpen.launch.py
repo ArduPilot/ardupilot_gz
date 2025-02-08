@@ -33,15 +33,11 @@
 from pathlib import Path
 
 from ament_index_python.packages import get_package_share_directory
-
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument
-from launch.actions import IncludeLaunchDescription
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
 from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration
-from launch.substitutions import PathJoinSubstitution
-
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 
@@ -65,7 +61,17 @@ def generate_launch_description():
                     ]
                 ),
             ]
-        )
+        ),
+        launch_arguments={
+            "model": "wildthumper_with_lidar",
+            "name": "wildthumper",
+            "x": "0.0",
+            "y": "0.0",
+            "z": "0.15",
+            "R": "0.0",
+            "P": "0.0",
+            "Y": "0.0"
+        }.items(),
     )
 
     # Gazebo.

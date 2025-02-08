@@ -62,12 +62,5 @@
       <pose degrees="true">0 0 0 0 0 0</pose>
       <uri>model://rover_playpen</uri>
     </include>
-
-    <include>
-      <pose degrees="true">0 0 0.15 0 0 0</pose>
-      <uri>model://wildthumper_with_lidar</uri>
-      <name>wildthumper</name>
-    </include>
-
   </world>
 </sdf>

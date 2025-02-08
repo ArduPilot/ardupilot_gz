@@ -65,8 +65,8 @@ def generate_launch_description():
         launch_arguments={
             "model": "iris_with_gimbal",
             "name": "iris",
-            "x": "0",
-            "y": "0",
+            "x": "0.0",
+            "y": "0.0",
             "z": "0.195",
             "R": "0.0",
             "P": "0.0",

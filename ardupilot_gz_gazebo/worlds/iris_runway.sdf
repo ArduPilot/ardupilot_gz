@@ -72,11 +72,5 @@
         <pose degrees="true">-29 545 0 0 0 363</pose>
     </include>
 
-    <include>
-      <uri>model://iris_with_gimbal</uri>
-      <name>iris</name>
-      <pose degrees="true">0 0 0.195 0 0 90</pose>
-    </include>
-
   </world>
 </sdf>

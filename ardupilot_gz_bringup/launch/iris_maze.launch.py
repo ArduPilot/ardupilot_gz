@@ -33,15 +33,11 @@
 from pathlib import Path
 
 from ament_index_python.packages import get_package_share_directory
-
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument
-from launch.actions import IncludeLaunchDescription
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
 from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration
-from launch.substitutions import PathJoinSubstitution
-
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 
@@ -67,7 +63,6 @@ def generate_launch_description():
             ]
         ),
         launch_arguments={
-            "model": "iris_with_lidar",
             "name": "iris",
             "x": "0",
             "y": "0",
@@ -99,11 +94,16 @@ def generate_launch_description():
     rviz = Node(
         package="rviz2",
         executable="rviz2",
+        namespace="iris",
         arguments=[
             "-d",
             f'{Path(pkg_project_bringup) / "rviz" / "iris_with_lidar.rviz"}',
         ],
         condition=IfCondition(LaunchConfiguration("rviz")),
+        remappings=[
+            ("/tf", "tf"),
+            ("/tf_static", "tf_static"),
+        ]
     )
 
     return LaunchDescription(

@@ -67,7 +67,7 @@ Visualization Manager:
             Durability Policy: Volatile
             History Policy: Keep Last
             Reliability Policy: Reliable
-            Value: /robot_description
+            Value: robot_description
           Enabled: true
           Links:
             All Links Enabled: true
@@ -197,7 +197,7 @@ Visualization Manager:
             Filter size: 10
             History Policy: Keep Last
             Reliability Policy: Reliable
-            Value: /odometry
+            Value: odometry
           Value: true
         - Alpha: 1
           Autocompute Intensity Bounds: true
@@ -229,7 +229,7 @@ Visualization Manager:
             Filter size: 10
             History Policy: Keep Last
             Reliability Policy: Reliable
-            Value: /scan
+            Value: scan
           Use Fixed Frame: true
           Use rainbow: true
           Value: true
@@ -265,7 +265,7 @@ Visualization Manager:
         Filter size: 10
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /cloud_in
+        Value: cloud_in
       Use Fixed Frame: true
       Use rainbow: true
       Value: true

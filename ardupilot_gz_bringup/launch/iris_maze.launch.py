@@ -104,7 +104,7 @@ def generate_launch_description():
         remappings=[
             ("/tf", "tf"),
             ("/tf_static", "tf_static"),
-        ]
+        ],
     )
 
     return LaunchDescription(
@@ -113,7 +113,9 @@ def generate_launch_description():
                 "rviz", default_value="true", description="Open RViz."
             ),
             DeclareLaunchArgument(
-                "gui", default_value="true", description="Run Gazebo simulation headless."
+                "gui",
+                default_value="true",
+                description="Run Gazebo simulation headless.",
             ),
             gz_sim_server,
             gz_sim_gui,

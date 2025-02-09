@@ -33,14 +33,17 @@ sim_address:=127.0.0.1
 master:=tcp:127.0.0.1:5760
 sitl:=127.0.0.1:5501
 """
-import os
 import tempfile
+from pathlib import Path
 from typing import List
 
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchContext, LaunchDescription, LaunchDescriptionEntity
-from launch.actions import (DeclareLaunchArgument, IncludeLaunchDescription,
-                            OpaqueFunction)
+from launch.actions import (
+    DeclareLaunchArgument,
+    IncludeLaunchDescription,
+    OpaqueFunction,
+)
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.substitutions import FindPackageShare
@@ -49,13 +52,13 @@ from launch_ros.substitutions import FindPackageShare
 def substitue_name(context: LaunchContext):
     pkg_ardupilot_gazebo = get_package_share_directory("ardupilot_gazebo")
     pkg_project_bringup = get_package_share_directory("ardupilot_gz_bringup")
-    
+
     name = LaunchConfiguration("name").perform(context)
-    
-    sdf_file = os.path.join(
-        pkg_ardupilot_gazebo, "models", "iris_with_gimbal", "model.sdf"
+
+    sdf_file = str(
+        Path(pkg_ardupilot_gazebo) / "models" / "iris_with_gimbal" / "model.sdf"
     )
-    
+
     with open(sdf_file, "r") as infp:
         robot_desc = infp.read()
 
@@ -64,14 +67,14 @@ def substitue_name(context: LaunchContext):
     temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".yaml")
     sdf_file_modified = temp_file.name
 
-    with open(sdf_file_modified, 'w') as temp_file:
+    with open(sdf_file_modified, "w") as temp_file:
         temp_file.write(robot_desc)
-    
-    sitl_config_file = os.path.join(
-        pkg_ardupilot_gazebo, "config", "gazebo-iris-gimbal.parm",
+
+    sitl_config_file = str(
+        Path(pkg_ardupilot_gazebo) / "config" / "gazebo-iris-gimbal.parm"
     )
-    
-    bridge_config_file = os.path.join(pkg_project_bringup, "config", "iris_bridge.yaml")
+
+    bridge_config_file = str(Path(pkg_project_bringup) / "config" / "iris_bridge.yaml")
 
     robot = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -103,7 +106,7 @@ def substitue_name(context: LaunchContext):
             "sysid": LaunchConfiguration("sysid"),
         }.items(),
     )
-    
+
     return [robot]
 
 
@@ -111,9 +114,7 @@ def generate_launch_arguments() -> List[LaunchDescriptionEntity]:
     """Generate a list of launch arguments"""
     return [
         DeclareLaunchArgument(
-            "use_gz_tf", 
-            default_value="true", 
-            description="Use Gazebo TF."
+            "use_gz_tf", default_value="true", description="Use Gazebo TF."
         ),
         DeclareLaunchArgument(
             "instance",
@@ -167,12 +168,9 @@ def generate_launch_arguments() -> List[LaunchDescriptionEntity]:
 
 def generate_launch_description() -> LaunchDescription:
     """Generate a launch description for a iris quadcopter."""
-    
+
     launch_arguments = generate_launch_arguments()
-    
 
     return LaunchDescription(
-        launch_arguments + [
-            OpaqueFunction(function=substitue_name)
-        ]
+        launch_arguments + [OpaqueFunction(function=substitue_name)]
     )

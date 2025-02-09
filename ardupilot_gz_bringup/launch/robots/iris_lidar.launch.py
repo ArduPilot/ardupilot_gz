@@ -33,14 +33,18 @@ sim_address:=127.0.0.1
 master:=tcp:127.0.0.1:5760
 sitl:=127.0.0.1:5501
 """
-import os
 import tempfile
+from pathlib import Path
 from typing import List
 
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchContext, LaunchDescription, LaunchDescriptionEntity
-from launch.actions import (DeclareLaunchArgument, IncludeLaunchDescription,
-                            LogInfo, OpaqueFunction)
+from launch.actions import (
+    DeclareLaunchArgument,
+    IncludeLaunchDescription,
+    LogInfo,
+    OpaqueFunction,
+)
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.substitutions import FindPackageShare
@@ -50,12 +54,14 @@ def choose_lidar(context: LaunchContext) -> List[LaunchDescriptionEntity]:
     # Robot description and ros_gz bridge config chosen based on passed lidar_dimension argument
     lidar_dim = LaunchConfiguration("lidar_dim").perform(context)
     name = LaunchConfiguration("name")
-    pkg_ardupilot_gz_description = get_package_share_directory("ardupilot_gz_description")
+    pkg_ardupilot_gz_description = get_package_share_directory(
+        "ardupilot_gz_description"
+    )
     pkg_project_bringup = get_package_share_directory("ardupilot_gz_bringup")
     pkg_ardupilot_sitl = get_package_share_directory("ardupilot_sitl")
-    
-    sdf_file = os.path.join(
-        pkg_ardupilot_gz_description, "models", "iris_with_lidar", "model.sdf"
+
+    sdf_file = str(
+        Path(pkg_ardupilot_gz_description) / "models" / "iris_with_lidar" / "model.sdf"
     )
 
     with open(sdf_file, "r") as infp:
@@ -66,29 +72,35 @@ def choose_lidar(context: LaunchContext) -> List[LaunchDescriptionEntity]:
     # Load SDF file and choose ros_gz bridge config based on lidar dimensions
     if lidar_dim == "2":
         log = LogInfo(msg="Using iris_with_2d_lidar_model ")
-        robot_desc = robot_desc.replace("<uri>model://lidar_2d</uri>", "<uri>model://lidar_2d</uri>")
+        robot_desc = robot_desc.replace(
+            "<uri>model://lidar_2d</uri>", "<uri>model://lidar_2d</uri>"
+        )
         ros_gz_bridge_config = "iris_2Dlidar_bridge.yaml"
     elif lidar_dim == "3":
         log = LogInfo(msg="Using iris_with_3d_lidar_model")
-        robot_desc = robot_desc.replace("<uri>model://lidar_2d</uri>", "<uri>model://lidar_3d</uri>")
+        robot_desc = robot_desc.replace(
+            "<uri>model://lidar_2d</uri>", "<uri>model://lidar_3d</uri>"
+        )
         ros_gz_bridge_config = "iris_3Dlidar_bridge.yaml"
     else:
         log = LogInfo(msg="ERROR: unknown lidar dimensions! Defaulting to 3d lidar")
-        robot_desc = robot_desc.replace("<uri>model://lidar_2d</uri>", "<uri>model://lidar_3d</uri>")
+        robot_desc = robot_desc.replace(
+            "<uri>model://lidar_2d</uri>", "<uri>model://lidar_3d</uri>"
+        )
         ros_gz_bridge_config = "iris_3Dlidar_bridge.yaml"
-    
+
     temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".yaml")
     sdf_file_modified = temp_file.name
 
-    with open(sdf_file_modified, 'w') as temp_file:
+    with open(sdf_file_modified, "w") as temp_file:
         temp_file.write(robot_desc)
 
-    sitl_config_file = os.path.join(
-        pkg_ardupilot_sitl, "config", "default_params", "gazebo-iris.parm",
+    sitl_config_file = str(
+        Path(pkg_ardupilot_sitl) / "config" / "default_params" / "gazebo-iris.parm"
     )
 
-    bridge_config_file = os.path.join(
-        pkg_project_bringup, "config", ros_gz_bridge_config
+    bridge_config_file = str(
+        Path(pkg_project_bringup) / "config" / ros_gz_bridge_config
     )
 
     robot = IncludeLaunchDescription(
@@ -124,18 +136,17 @@ def choose_lidar(context: LaunchContext) -> List[LaunchDescriptionEntity]:
 
     return [log, robot]
 
+
 def generate_launch_arguments() -> List[LaunchDescriptionEntity]:
     """Generate a list of launch arguments"""
     return [
         DeclareLaunchArgument(
-            "use_gz_tf", 
-            default_value="true", 
-            description="Use Gazebo TF."
+            "use_gz_tf", default_value="true", description="Use Gazebo TF."
         ),
         DeclareLaunchArgument(
-            "lidar_dim", 
-            default_value="3", 
-            description="Whether to use a 2D or 3D lidar"
+            "lidar_dim",
+            default_value="3",
+            description="Whether to use a 2D or 3D lidar",
         ),
         DeclareLaunchArgument(
             "instance",
@@ -186,13 +197,10 @@ def generate_launch_arguments() -> List[LaunchDescriptionEntity]:
         ),
     ]
 
+
 def generate_launch_description() -> LaunchDescription:
     """Generate a launch description for a iris quadrotor"""
 
     launch_arguments = generate_launch_arguments()
 
-    return LaunchDescription(
-        launch_arguments + [
-            OpaqueFunction(function=choose_lidar)
-        ]
-    )
+    return LaunchDescription(launch_arguments + [OpaqueFunction(function=choose_lidar)])

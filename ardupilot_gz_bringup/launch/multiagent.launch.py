@@ -54,17 +54,27 @@ def generate_launch_description():
     pkg_project_bringup = get_package_share_directory("ardupilot_gz_bringup")
     pkg_project_gazebo = get_package_share_directory("ardupilot_gz_gazebo")
     pkg_ros_gz_sim = get_package_share_directory("ros_gz_sim")
-    
+
     robots = [
-        {'name': 'drone1', "model": Vehicle.IRIS, 'position': ['0.0', '0.0', '0.195', '0', '0', '1.5708']}, # [x, y, z, roll, pitch, yaw]
-        {'name': 'drone2', "model": Vehicle.IRIS_LIDAR, 'position': ['1.0', '0.0', '0.195', '0', '0', '1.5708']},
-        {'name': 'rover1', "model": Vehicle.WILD_THUMPER, 'position': ['-1.0', '0.0', '0.195', '0', '0', '1.5708']}
+        {
+            "name": "drone1",
+            "model": Vehicle.IRIS,
+            "position": ["0.0", "0.0", "0.195", "0", "0", "1.5708"],
+        },  # [x, y, z, roll, pitch, yaw]
+        {
+            "name": "drone2",
+            "model": Vehicle.IRIS_LIDAR,
+            "position": ["1.0", "0.0", "0.195", "0", "0", "1.5708"],
+        },
+        {
+            "name": "rover1",
+            "model": Vehicle.WILD_THUMPER,
+            "position": ["-1.0", "0.0", "0.195", "0", "0", "1.5708"],
+        },
     ]
 
     launch_actions = [
-        DeclareLaunchArgument(
-            "rviz", default_value="true", description="Open RViz."
-        ),
+        DeclareLaunchArgument("rviz", default_value="true", description="Open RViz."),
         DeclareLaunchArgument(
             "gui", default_value="true", description="Run Gazebo simulation headless."
         ),
@@ -83,16 +93,16 @@ def generate_launch_description():
             ),
             launch_arguments={"gz_args": "-v4 -g"}.items(),
             condition=IfCondition(LaunchConfiguration("gui")),
-        )
+        ),
     ]
 
     for i, robot in enumerate(robots):
         instance = i
         sysid = i + 1
 
-        name = robot['name']
-        model = robot['model']
-        position = robot['position']
+        name = robot["name"]
+        model = robot["model"]
+        position = robot["position"]
 
         drone = IncludeLaunchDescription(
             PythonLaunchDescriptionSource(
@@ -125,12 +135,15 @@ def generate_launch_description():
             package="rviz2",
             executable="rviz2",
             namespace=name,
-            arguments=["-d", f'{Path(pkg_project_bringup) / "rviz" / VEHICLE_PATHS[model]["rviz"]}'],
+            arguments=[
+                "-d",
+                f'{Path(pkg_project_bringup) / "rviz" / VEHICLE_PATHS[model]["rviz"]}',
+            ],
             condition=IfCondition(LaunchConfiguration("rviz")),
             remappings=[
                 ("/tf", "tf"),
                 ("/tf_static", "tf_static"),
-            ]
+            ],
         )
         launch_actions.append(rviz)
 

@@ -49,7 +49,7 @@ from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 
 
-def replace_robot_name(input_file, robot_name):
+def replace_robot_name(input_file: str, robot_name: str) -> str:
     with open(input_file, 'r') as file:
         content = file.read()
 
@@ -121,7 +121,6 @@ def launch_state_pub_with_bridge(context: LaunchContext) -> List[LaunchDescripti
     with open(sdf_file, "r") as infp:
         robot_desc = infp.read()
 
-    robot_desc = robot_desc.replace("<name>iris</name>", f"<name>{name}</name>") # Only needed for iris_with_gimbal
     robot_desc = robot_desc.replace(
         "<fdm_port_in>9002</fdm_port_in>", f"<fdm_port_in>{control_port}</fdm_port_in>"
     )
@@ -188,6 +187,7 @@ def launch_sitl_dds(context: LaunchContext) -> List[LaunchDescriptionEntity]:
     
     # Required arguments.
     name = LaunchConfiguration("name").perform(context)
+    command = LaunchConfiguration("command").perform(context)
     sitl_config_file = LaunchConfiguration("sitl_config_file").perform(context)
     instance = int(LaunchConfiguration("instance").perform(context))
 
@@ -223,10 +223,11 @@ def launch_sitl_dds(context: LaunchContext) -> List[LaunchDescriptionEntity]:
             "tty0": tty0,
             "tty1": tty1,
             # micro_ros_agent
-            "micro_ros_agent_ns": f"{name}",
+            "micro_ros_agent_ns": name,
             "baudrate": "115200",
             "device": tty0,
             # ardupilot_sitl
+            "command": command,
             "synthetic_clock": "True",
             "wipe": "False",
             "model": "json",
@@ -252,7 +253,7 @@ def launch_sitl_dds(context: LaunchContext) -> List[LaunchDescriptionEntity]:
     return [sitl_dds]
 
 
-def generate_launch_arguments():
+def generate_launch_arguments() -> List[LaunchDescriptionEntity]:
     """Generate a list of launch arguments"""
     pkg_ardupilot_gazebo = get_package_share_directory("ardupilot_gazebo")
     pkg_project_bringup = get_package_share_directory("ardupilot_gz_bringup")
@@ -282,6 +283,31 @@ def generate_launch_arguments():
             "bridge_config_file",
             default_value=os.path.join(pkg_project_bringup, "config", "iris_bridge.yaml"),
             description="Path to ROS Gazebo Bridge config file.",
+        ),
+        DeclareLaunchArgument(
+            "command",
+            default_value="arducopter",
+            description="Type of vehicle to.",
+            choices=[
+                "antennatracker",
+                "arducopter-heli",
+                "ardurover",
+                "blimp",
+                "arducopter",
+                "arduplane",
+                "ardusub",
+            ],
+        ),
+        DeclareLaunchArgument(
+            "instance",
+            default_value="0",
+            description="Set instance of SITL "
+            "(adds 10*instance to all port numbers).",
+        ),
+        DeclareLaunchArgument(
+            "sysid",
+            default_value="",
+            description="Set SYSID_THISMAV.",
         ),
         # Gazebo model launch arguments.
         DeclareLaunchArgument(
@@ -319,21 +345,10 @@ def generate_launch_arguments():
             default_value="0",
             description="The intial yaw angle (radians).",
         ),
-        DeclareLaunchArgument(
-            "instance",
-            default_value="0",
-            description="Set instance of SITL "
-            "(adds 10*instance to all port numbers).",
-        ),
-        DeclareLaunchArgument(
-            "sysid",
-            default_value="",
-            description="Set SYSID_THISMAV.",
-        ),
     ]
 
 
-def generate_launch_description():
+def generate_launch_description() -> LaunchDescription:
     """Generate a launch description for a iris quadcopter."""
     
     launch_arguments = generate_launch_arguments()

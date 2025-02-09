@@ -35,9 +35,10 @@ sitl:=127.0.0.1:5501
 """
 import os
 import tempfile
+from typing import List
 
 from ament_index_python.packages import get_package_share_directory
-from launch import LaunchDescription
+from launch import LaunchContext, LaunchDescription, LaunchDescriptionEntity
 from launch.actions import (DeclareLaunchArgument, IncludeLaunchDescription,
                             LogInfo, OpaqueFunction)
 from launch.launch_description_sources import PythonLaunchDescriptionSource
@@ -45,7 +46,7 @@ from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.substitutions import FindPackageShare
 
 
-def choose_lidar(context):
+def choose_lidar(context: LaunchContext) -> List[LaunchDescriptionEntity]:
     # Robot description and ros_gz bridge config chosen based on passed lidar_dimension argument
     lidar_dim = LaunchConfiguration("lidar_dim").perform(context)
     name = LaunchConfiguration("name")
@@ -108,6 +109,7 @@ def choose_lidar(context):
             "sdf_file": sdf_file_modified,
             "sitl_config_file": sitl_config_file,
             "bridge_config_file": bridge_config_file,
+            "command": "arducopter",
             "name": name,
             "x": LaunchConfiguration("x"),
             "y": LaunchConfiguration("y"),
@@ -122,7 +124,7 @@ def choose_lidar(context):
 
     return [log, robot]
 
-def generate_launch_arguments():
+def generate_launch_arguments() -> List[LaunchDescriptionEntity]:
     """Generate a list of launch arguments"""
     return [
         DeclareLaunchArgument(
@@ -134,6 +136,17 @@ def generate_launch_arguments():
             "lidar_dim", 
             default_value="3", 
             description="Whether to use a 2D or 3D lidar"
+        ),
+        DeclareLaunchArgument(
+            "instance",
+            default_value="0",
+            description="Set instance of SITL "
+            "(adds 10*instance to all port numbers).",
+        ),
+        DeclareLaunchArgument(
+            "sysid",
+            default_value="",
+            description="Set SYSID_THISMAV.",
         ),
         # Gazebo model launch arguments.
         DeclareLaunchArgument(
@@ -171,20 +184,9 @@ def generate_launch_arguments():
             default_value="0",
             description="The intial yaw angle (radians).",
         ),
-        DeclareLaunchArgument(
-            "instance",
-            default_value="0",
-            description="Set instance of SITL "
-            "(adds 10*instance to all port numbers).",
-        ),
-        DeclareLaunchArgument(
-            "sysid",
-            default_value="",
-            description="Set SYSID_THISMAV.",
-        ),
     ]
 
-def generate_launch_description():
+def generate_launch_description() -> LaunchDescription:
     """Generate a launch description for a iris quadrotor"""
 
     launch_arguments = generate_launch_arguments()

@@ -14,6 +14,7 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 """Launch multiple vehicles in Gazebo and Rviz."""
+from enum import Enum
 from pathlib import Path
 
 from ament_index_python.packages import get_package_share_directory
@@ -26,6 +27,28 @@ from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 
 
+class Vehicle(Enum):
+    IRIS = "iris_with_gimbal"
+    IRIS_LIDAR = "iris_lidar"
+    WILD_THUMPER = "wildthumper"
+
+
+VEHICLE_PATHS = {
+    Vehicle.IRIS: {
+        "launch": "iris.launch.py",
+        "rviz": "iris.rviz",
+    },
+    Vehicle.IRIS_LIDAR: {
+        "launch": "iris_lidar.launch.py",
+        "rviz": "iris_with_lidar.rviz",
+    },
+    Vehicle.WILD_THUMPER: {
+        "launch": "wildthumper.launch.py",
+        "rviz": "wildthumper.rviz",
+    },
+}
+
+
 def generate_launch_description():
     """Generate a launch description for a iris quadcopter."""
     pkg_project_bringup = get_package_share_directory("ardupilot_gz_bringup")
@@ -33,8 +56,9 @@ def generate_launch_description():
     pkg_ros_gz_sim = get_package_share_directory("ros_gz_sim")
     
     robots = [
-        {'name': 'drone1', "model": "iris_with_gimbal", 'position': ['0.0', '0.0', '0.195', '0', '0', '1.5708']}, # [x, y, z, roll, pitch, yaw]
-        {'name': 'drone2', "model": "iris_with_gimbal", 'position': ['0.0', '1.0', '0.195', '0', '0', '1.5708']}
+        {'name': 'drone1', "model": Vehicle.IRIS, 'position': ['0.0', '0.0', '0.195', '0', '0', '1.5708']}, # [x, y, z, roll, pitch, yaw]
+        {'name': 'drone2', "model": Vehicle.IRIS_LIDAR, 'position': ['1.0', '0.0', '0.195', '0', '0', '1.5708']},
+        {'name': 'rover1', "model": Vehicle.WILD_THUMPER, 'position': ['-1.0', '0.0', '0.195', '0', '0', '1.5708']}
     ]
 
     launch_actions = [
@@ -78,13 +102,12 @@ def generate_launch_description():
                             FindPackageShare("ardupilot_gz_bringup"),
                             "launch",
                             "robots",
-                            "iris.launch.py",
+                            VEHICLE_PATHS[model]["launch"],
                         ]
                     ),
                 ]
             ),
             launch_arguments={
-                "model": model,
                 "name": name,
                 "x": position[0],
                 "y": position[1],
@@ -102,7 +125,7 @@ def generate_launch_description():
             package="rviz2",
             executable="rviz2",
             namespace=name,
-            arguments=["-d", f'{Path(pkg_project_bringup) / "rviz" / "iris.rviz"}'],
+            arguments=["-d", f'{Path(pkg_project_bringup) / "rviz" / VEHICLE_PATHS[model]["rviz"]}'],
             condition=IfCondition(LaunchConfiguration("rviz")),
             remappings=[
                 ("/tf", "tf"),

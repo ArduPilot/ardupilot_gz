@@ -38,13 +38,20 @@ import os
 from ament_index_python.packages import get_package_share_directory
 
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, OpaqueFunction, LogInfo, IncludeLaunchDescription, RegisterEventHandler
+from launch.actions import (
+    DeclareLaunchArgument,
+    OpaqueFunction,
+    LogInfo,
+    IncludeLaunchDescription,
+    RegisterEventHandler,
+)
 from launch.conditions import IfCondition
 from launch.event_handlers import OnProcessStart
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
+
 
 def launch_spawn_robot(context):
     """Return a Gazebo spawn robot launch description"""
@@ -58,7 +65,7 @@ def launch_spawn_robot(context):
     rot_y = LaunchConfiguration("Y")
 
     # spawn robot
-    spawn_robot =  Node(
+    spawn_robot = Node(
         package="ros_gz_sim",
         executable="create",
         namespace=name,
@@ -92,9 +99,11 @@ def launch_spawn_robot(context):
 def launch_state_pub_with_bridge(context):
     # Robot description and ros_gz bridge config chosen based on passed lidar_dimension argument
     lidar_dim = LaunchConfiguration("lidar_dim").perform(context)
-    pkg_ardupilot_gz_description = get_package_share_directory("ardupilot_gz_description")
+    pkg_ardupilot_gz_description = get_package_share_directory(
+        "ardupilot_gz_description"
+    )
     pkg_project_bringup = get_package_share_directory("ardupilot_gz_bringup")
-    
+
     sdf_file = os.path.join(
         pkg_ardupilot_gz_description, "models", "iris_with_lidar", "model.sdf"
     )
@@ -108,19 +117,24 @@ def launch_state_pub_with_bridge(context):
     # Load SDF file and choose ros_gz bridge config based on lidar dimensions
     if lidar_dim == "2":
         log = LogInfo(msg="Using iris_with_2d_lidar_model ")
-        robot_desc = robot_desc.replace("<uri>model://lidar_2d</uri>", "<uri>model://lidar_2d</uri>")
+        robot_desc = robot_desc.replace(
+            "<uri>model://lidar_2d</uri>", "<uri>model://lidar_2d</uri>"
+        )
         ros_gz_bridge_config = "iris_2Dlidar_bridge.yaml"
     elif lidar_dim == "3":
         log = LogInfo(msg="Using iris_with_3d_lidar_model")
-        robot_desc = robot_desc.replace("<uri>model://lidar_2d</uri>", "<uri>model://lidar_3d</uri>")
+        robot_desc = robot_desc.replace(
+            "<uri>model://lidar_2d</uri>", "<uri>model://lidar_3d</uri>"
+        )
         ros_gz_bridge_config = "iris_3Dlidar_bridge.yaml"
     else:
         log = LogInfo(msg="ERROR: unknown lidar dimensions! Defaulting to 3d lidar")
-        robot_desc = robot_desc.replace("<uri>model://lidar_2d</uri>", "<uri>model://lidar_3d</uri>")
+        robot_desc = robot_desc.replace(
+            "<uri>model://lidar_2d</uri>", "<uri>model://lidar_3d</uri>"
+        )
         ros_gz_bridge_config = "iris_3Dlidar_bridge.yaml"
 
-
-    # Publish /tf and /tf_static.
+    # Publish /ap/tf and /ap/tf_static.
     robot_state_publisher = Node(
         package="robot_state_publisher",
         executable="robot_state_publisher",
@@ -129,6 +143,10 @@ def launch_state_pub_with_bridge(context):
         parameters=[
             {"robot_description": robot_desc},
             {"frame_prefix": ""},
+        ],
+        remappings=[
+            ("/tf", "/ap/tf"),
+            ("/tf_static", "/ap/tf_static"),
         ],
     )
 
@@ -153,7 +171,7 @@ def launch_state_pub_with_bridge(context):
         executable="relay",
         arguments=[
             "/gz/tf",
-            "/tf",
+            "/ap/tf",
         ],
         output="screen",
         respawn=False,
@@ -161,29 +179,23 @@ def launch_state_pub_with_bridge(context):
     )
 
     event = RegisterEventHandler(
-                OnProcessStart(
-                    target_action=bridge,
-                    on_start=[
-                        topic_tools_tf
-                    ]
-                )
-            )
+        OnProcessStart(target_action=bridge, on_start=[topic_tools_tf])
+    )
 
     return [log, robot_state_publisher, bridge, event]
+
 
 def generate_launch_arguments():
     """Generate a list of launch arguments"""
     return [
         DeclareLaunchArgument(
-                "use_gz_tf", 
-                default_value="true", 
-                description="Use Gazebo TF."
-            ),
+            "use_gz_tf", default_value="true", description="Use Gazebo TF."
+        ),
         DeclareLaunchArgument(
-                "lidar_dim", 
-                default_value="3", 
-                description="Whether to use a 2D or 3D lidar"
-            ),
+            "lidar_dim",
+            default_value="3",
+            description="Whether to use a 2D or 3D lidar",
+        ),
         # Gazebo model launch arguments.
         DeclareLaunchArgument(
             "model",
@@ -226,6 +238,7 @@ def generate_launch_arguments():
             description="The intial yaw angle (radians).",
         ),
     ]
+
 
 def generate_launch_description():
     """Generate a launch description for a iris quadrotor"""

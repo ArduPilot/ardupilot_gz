@@ -54,7 +54,6 @@ from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 
 
-
 def generate_launch_description():
     """Generate a launch description for a wild thumper rover."""
     pkg_ardupilot_sitl = get_package_share_directory("ardupilot_sitl")
@@ -126,14 +125,15 @@ def generate_launch_description():
         # substitute `models://` with `package://ardupilot_sitl_models/models/`
         # for sdformat_urdf plugin used by robot_state_publisher
         robot_desc = robot_desc.replace(
-            "model://wildthumper",
-            "package://ardupilot_sitl_models/models/wildthumper")
+            "model://wildthumper", "package://ardupilot_sitl_models/models/wildthumper"
+        )
 
         robot_desc = robot_desc.replace(
             "model://wildthumper_with_lidar",
-            "package://ardupilot_sitl_models/models/wildthumper_with_lidar")
+            "package://ardupilot_sitl_models/models/wildthumper_with_lidar",
+        )
 
-    # Publish /tf and /tf_static.
+    # Publish /ap/tf and /ap/tf_static.
     robot_state_publisher = Node(
         package="robot_state_publisher",
         executable="robot_state_publisher",
@@ -142,6 +142,10 @@ def generate_launch_description():
         parameters=[
             {"robot_description": robot_desc},
             {"frame_prefix": ""},
+        ],
+        remappings=[
+            ("/tf", "/ap/tf"),
+            ("/tf_static", "/ap/tf_static"),
         ],
     )
 
@@ -166,7 +170,7 @@ def generate_launch_description():
         executable="relay",
         arguments=[
             "/gz/tf",
-            "/tf",
+            "/ap/tf",
         ],
         output="screen",
         respawn=False,
@@ -182,12 +186,7 @@ def generate_launch_description():
             robot_state_publisher,
             bridge,
             RegisterEventHandler(
-                OnProcessStart(
-                    target_action=bridge,
-                    on_start=[
-                        topic_tools_tf
-                    ]
-                )
+                OnProcessStart(target_action=bridge, on_start=[topic_tools_tf])
             ),
         ]
     )

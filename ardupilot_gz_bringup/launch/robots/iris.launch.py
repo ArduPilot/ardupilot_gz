@@ -54,7 +54,6 @@ from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 
 
-
 def generate_launch_description():
     """Generate a launch description for a iris quadcopter."""
     pkg_ardupilot_sitl = get_package_share_directory("ardupilot_sitl")
@@ -122,7 +121,7 @@ def generate_launch_description():
         robot_desc = infp.read()
         # print(robot_desc)
 
-    # Publish /tf and /tf_static.
+    # Publish /ap/tf and /ap/tf_static.
     robot_state_publisher = Node(
         package="robot_state_publisher",
         executable="robot_state_publisher",
@@ -131,6 +130,10 @@ def generate_launch_description():
         parameters=[
             {"robot_description": robot_desc},
             {"frame_prefix": ""},
+        ],
+        remappings=[
+            ("/tf", "/ap/tf"),
+            ("/tf_static", "/ap/tf_static"),
         ],
     )
 
@@ -156,7 +159,7 @@ def generate_launch_description():
     #     executable="transform",
     #     arguments=[
     #         "/gz/tf",
-    #         "/tf",
+    #         "/ap/tf",
     #         "tf2_msgs/msg/TFMessage",
     #         "tf2_msgs.msg.TFMessage(transforms=[x for x in m.transforms if x.header.frame_id == 'odom'])",
     #         "--import",
@@ -173,7 +176,7 @@ def generate_launch_description():
         executable="relay",
         arguments=[
             "/gz/tf",
-            "/tf",
+            "/ap/tf",
         ],
         output="screen",
         respawn=False,
@@ -189,12 +192,7 @@ def generate_launch_description():
             robot_state_publisher,
             bridge,
             RegisterEventHandler(
-                OnProcessStart(
-                    target_action=bridge,
-                    on_start=[
-                        topic_tools_tf
-                    ]
-                )
+                OnProcessStart(target_action=bridge, on_start=[topic_tools_tf])
             ),
         ]
     )

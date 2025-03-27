@@ -108,8 +108,8 @@ $ ros2 topic list
 /parameter_events
 /robot_description
 /rosout
-/tf
-/tf_static
+/ap/tf
+/ap/tf_static
 ```
 
 ## Advanced variations

@@ -104,6 +104,10 @@ def generate_launch_description():
             f'{Path(pkg_project_bringup) / "rviz" / "iris_with_lidar.rviz"}',
         ],
         condition=IfCondition(LaunchConfiguration("rviz")),
+        remappings=[
+            ("/tf", "/ap/tf"),
+            ("/tf_static", "/ap/tf_static"),
+        ],
     )
 
     return LaunchDescription(

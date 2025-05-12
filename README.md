@@ -20,7 +20,7 @@ The project is adapted from the [`ros_gz_project_template`](https://github.com/g
 ## Prerequisites
 
 - Install [ROS 2 Humble](https://docs.ros.org/en/humble/index.html)
-- Install [Gazebo Harmonic (recommended)](https://gazebosim.org/docs/harmonic) or [Gazebo Garden](https://gazebosim.org/docs/garden)
+- Install [Gazebo Harmonic (recommended)](https://gazebosim.org/docs/harmonic) or [Gazebo Ionic](https://gazebosim.org/docs/ionic)
 - Follow the [`Installing Build Dependencies`](https://github.com/ArduPilot/ardupilot/tree/master/libraries/AP_DDS#installing-build-dependencies) section of `AP_DDS`'s README
 
 ## Install
@@ -38,7 +38,7 @@ cd ~/ros2_ws
 vcs import --input https://raw.githubusercontent.com/ArduPilot/ardupilot_gz/main/ros2_gz.repos --recursive src
 ```
 
-#### 3. Set the Gazebo version to Harmonic or Garden:
+#### 3. Set the Gazebo version to Harmonic or Ionic
 
 It is recommended to put this in your `~/.bashrc` or equivalent file.
 

@@ -8,23 +8,47 @@ find_package(ament_cmake REQUIRED)
 # --------------------------------------------------------------------------- #
 # Find gz-sim and dependencies.
 
-find_package(gz-cmake3 REQUIRED)
-set(GZ_CMAKE_VER ${gz-cmake3_VERSION_MAJOR})
-
-find_package(gz-plugin2 REQUIRED COMPONENTS register)
-set(GZ_PLUGIN_VER ${gz-plugin2_VERSION_MAJOR})
-
-find_package(gz-common5 REQUIRED COMPONENTS profiler)
-set(GZ_COMMON_VER ${gz-common5_VERSION_MAJOR})
-
 # Garden
 if("$ENV{GZ_VERSION}" STREQUAL "garden")
+  find_package(gz-cmake3 REQUIRED)
+  set(GZ_CMAKE_VER ${gz-cmake3_VERSION_MAJOR})
+
+  gz_find_package(gz-plugin2 REQUIRED COMPONENTS register)
+  set(GZ_PLUGIN_VER ${gz-plugin2_VERSION_MAJOR})
+
+  gz_find_package(gz-common5 REQUIRED COMPONENTS profiler)
+  set(GZ_COMMON_VER ${gz-common5_VERSION_MAJOR})
+  
   gz_find_package(gz-sim7 REQUIRED)
   set(GZ_SIM_VER ${gz-sim7_VERSION_MAJOR})
 
   message(STATUS "Compiling against Gazebo Garden")
+# Ionic
+elseif("$ENV{GZ_VERSION}" STREQUAL "ionic")
+  find_package(gz-cmake4 REQUIRED)
+  set(GZ_CMAKE_VER ${gz-cmake4_VERSION_MAJOR})
+
+  gz_find_package(gz-plugin3 REQUIRED COMPONENTS register)
+  set(GZ_PLUGIN_VER ${gz-plugin3_VERSION_MAJOR})
+
+  gz_find_package(gz-common6 REQUIRED COMPONENTS profiler)
+  set(GZ_COMMON_VER ${gz-common6_VERSION_MAJOR})
+
+  gz_find_package(gz-sim9 REQUIRED)
+  set(GZ_SIM_VER ${gz-sim9_VERSION_MAJOR})
+
+  message(STATUS "Compiling against Gazebo Ionic")
 # Harmonic (default)
 elseif("$ENV{GZ_VERSION}" STREQUAL "harmonic" OR NOT DEFINED "ENV{GZ_VERSION}")
+  find_package(gz-cmake3 REQUIRED)
+  set(GZ_CMAKE_VER ${gz-cmake3_VERSION_MAJOR})
+
+  gz_find_package(gz-plugin2 REQUIRED COMPONENTS register)
+  set(GZ_PLUGIN_VER ${gz-plugin2_VERSION_MAJOR})
+
+  gz_find_package(gz-common5 REQUIRED COMPONENTS profiler)
+  set(GZ_COMMON_VER ${gz-common5_VERSION_MAJOR})
+
   gz_find_package(gz-sim8 REQUIRED)
   set(GZ_SIM_VER ${gz-sim8_VERSION_MAJOR})
 

@@ -133,6 +133,13 @@ This simulation includes a skid-steer rover equipped with a 2d lidar in a plaype
 ros2 launch ardupilot_gz_bringup wildthumper_playpen.launch.py rviz:=true use_gz_tf:=true
 ```
 
+### 3. Multi-vehicle simulation
+
+This simulation includes the three currently available models (iris camera, iris lidar, and wild thumper) but can be expanded to an abitrary amount of robots by changing the `robots` list in the launch file.
+
+```bash
+ros2 launch ardupilot_gz_bringup multiagent.launch.py rviz:=true use_gz_tf:=true
+```
 
 ## Notes
 

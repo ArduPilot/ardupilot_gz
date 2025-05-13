@@ -33,15 +33,11 @@
 from pathlib import Path
 
 from ament_index_python.packages import get_package_share_directory
-
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument
-from launch.actions import IncludeLaunchDescription
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
 from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration
-from launch.substitutions import PathJoinSubstitution
-
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 
@@ -65,7 +61,16 @@ def generate_launch_description():
                     ]
                 ),
             ]
-        )
+        ),
+        launch_arguments={
+            "name": "iris",
+            "x": "0.0",
+            "y": "0.0",
+            "z": "0.195",
+            "R": "0.0",
+            "P": "0.0",
+            "Y": "1.5708",
+        }.items(),
     )
 
     # Gazebo.
@@ -84,20 +89,31 @@ def generate_launch_description():
             f'{Path(pkg_ros_gz_sim) / "launch" / "gz_sim.launch.py"}'
         ),
         launch_arguments={"gz_args": "-v4 -g"}.items(),
+        condition=IfCondition(LaunchConfiguration("gui")),
     )
 
     # RViz.
     rviz = Node(
         package="rviz2",
         executable="rviz2",
+        namespace="iris",
         arguments=["-d", f'{Path(pkg_project_bringup) / "rviz" / "iris.rviz"}'],
         condition=IfCondition(LaunchConfiguration("rviz")),
+        remappings=[
+            ("/tf", "tf"),
+            ("/tf_static", "tf_static"),
+        ],
     )
 
     return LaunchDescription(
         [
             DeclareLaunchArgument(
                 "rviz", default_value="true", description="Open RViz."
+            ),
+            DeclareLaunchArgument(
+                "gui",
+                default_value="true",
+                description="Run Gazebo simulation headless.",
             ),
             gz_sim_server,
             gz_sim_gui,

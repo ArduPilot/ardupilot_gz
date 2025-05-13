@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <sdf version="1.9">
-  <world name="playpen">
+  <world name="map">
     <physics name="1ms" type="ignore">
       <max_step_size>0.001</max_step_size>
       <real_time_factor>1.0</real_time_factor>
@@ -62,12 +62,5 @@
       <pose degrees="true">0 0 0 0 0 0</pose>
       <uri>model://rover_playpen</uri>
     </include>
-
-    <include>
-      <pose degrees="true">0 0 0.15 0 0 0</pose>
-      <uri>model://wildthumper_with_lidar</uri>
-      <name>wildthumper</name>
-    </include>
-
   </world>
 </sdf>

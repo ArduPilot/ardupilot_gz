@@ -36,15 +36,16 @@ sitl:=127.0.0.1:5501
 import os
 
 from ament_index_python.packages import get_package_share_directory
-
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, OpaqueFunction, LogInfo, IncludeLaunchDescription, RegisterEventHandler
+from launch.actions import (DeclareLaunchArgument, IncludeLaunchDescription,
+                            LogInfo, OpaqueFunction, RegisterEventHandler)
 from launch.conditions import IfCondition
 from launch.event_handlers import OnProcessStart
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
+
 
 def launch_spawn_robot(context):
     """Return a Gazebo spawn robot launch description"""
@@ -175,15 +176,15 @@ def generate_launch_arguments():
     """Generate a list of launch arguments"""
     return [
         DeclareLaunchArgument(
-                "use_gz_tf", 
-                default_value="true", 
-                description="Use Gazebo TF."
-            ),
+            "use_gz_tf", 
+            default_value="true", 
+            description="Use Gazebo TF."
+        ),
         DeclareLaunchArgument(
-                "lidar_dim", 
-                default_value="3", 
-                description="Whether to use a 2D or 3D lidar"
-            ),
+            "lidar_dim",
+            default_value="3",
+            description="Whether to use a 2D or 3D lidar",
+        ),
         # Gazebo model launch arguments.
         DeclareLaunchArgument(
             "model",

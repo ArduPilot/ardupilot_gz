@@ -133,6 +133,15 @@ This simulation includes a skid-steer rover equipped with a 2d lidar in a plaype
 ros2 launch ardupilot_gz_bringup wildthumper_playpen.launch.py rviz:=true use_gz_tf:=true
 ```
 
+### 3. Iris Warehouse with Mecanum drive
+
+This simulation includes a iris in a warehouse setting.
+
+
+```bash
+ros2 launch ardupilot_gz_bringup iris_warehouse.launch.py rviz:=true use_gz_tf:=true
+```
+
 
 ## Notes
 

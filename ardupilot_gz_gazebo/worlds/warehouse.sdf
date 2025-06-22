@@ -1,0 +1,238 @@
+<?xml version="1.0" ?>
+<sdf version="1.9">
+  <world name="warehouse">
+    <physics name="1ms" type="ignore">
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+    </physics>
+
+    <plugin
+      filename="gz-sim-physics-system"
+      name="gz::sim::systems::Physics">
+    </plugin>
+    <plugin
+      filename="gz-sim-sensors-system"
+      name="gz::sim::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+    </plugin>
+    <plugin
+      filename="gz-sim-user-commands-system"
+      name="gz::sim::systems::UserCommands">
+    </plugin>
+    <plugin
+      filename="gz-sim-scene-broadcaster-system"
+      name="gz::sim::systems::SceneBroadcaster">
+    </plugin>
+    <plugin filename="gz-sim-air-pressure-system"
+      name="gz::sim::systems::AirPressure">
+    </plugin>
+    <plugin filename="gz-sim-air-speed-system"
+      name="gz::sim::systems::AirSpeed">
+    </plugin>
+    <plugin filename="gz-sim-altimeter-system"
+      name="gz::sim::systems::Altimeter">
+    </plugin>
+    <plugin filename="gz-sim-imu-system"
+      name="gz::sim::systems::Imu">
+    </plugin>
+    <plugin filename="gz-sim-magnetometer-system"
+      name="gz::sim::systems::Magnetometer">
+    </plugin>
+    <plugin filename="gz-sim-navsat-system"
+      name="gz::sim::systems::NavSat">
+    </plugin>
+
+    <scene>
+      <ambient>1.0 1.0 1.0</ambient>
+      <background>0.8 0.8 0.8</background>
+      <sky></sky>
+    </scene>
+    
+    <spherical_coordinates>
+      <latitude_deg>-35.363262</latitude_deg>
+      <longitude_deg>149.165237</longitude_deg>
+      <elevation>584</elevation>
+      <heading_deg>0</heading_deg>
+      <surface_model>EARTH_WGS84</surface_model>
+    </spherical_coordinates>
+
+    <include>
+        <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Depot</uri>
+    </include>
+
+    <include>
+        <pose>-9.4 1.6 0 0 0 -0.5</pose>
+        <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Mecanum lift</uri>
+    </include>
+
+    <include>
+        <pose>-13.2 -6.0 0.15 0 0 0</pose>
+        <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/fog emitter</uri>
+    </include>
+
+    <!-- missing table (see below) -->
+    <!-- <include>
+        <pose>-9.0 -1.8 1.038 0 0 0</pose>
+        <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Panda with Ignition position controller model</uri>
+    </include> -->
+
+    <!-- model has incorrect fuel server details -->
+    <!-- <include>
+        <pose degrees="true">-9.0 -2.4 0 0 0 90</pose>
+        <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Reflective table</uri>
+    </include> -->
+
+    <!-- model has incorrect fuel server details -->
+    <!-- <include>
+        <pose degrees="true">-13.2 -6.0 0 0 0 90</pose>
+        <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Rescue Randy Sitting</uri>
+    </include> -->
+
+    <include>
+        <pose degrees="true">-9.0 -6.21 5.0 0 51.5 -180</pose>
+        <static>true</static>
+        <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/16-Bit Thermal Camera</uri>
+    </include>
+
+    <include>
+        <pose degrees="true">-9.0 -5.95 5.0 0 51.5 -180</pose>
+        <static>true</static>
+        <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/8-Bit Thermal Camera</uri>
+    </include>
+
+    <include>
+        <pose degrees="true">-9.075 -6.15 4.995 0 51.5 -180</pose>
+        <static>true</static>
+        <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Camera</uri>
+    </include>
+
+    <include degrees="true">
+        <pose>-9.04 -6.04 4.97 0 51.5 -180</pose>
+        <static>true</static>
+        <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Depth Camera</uri>
+    </include>
+
+    <!-- uniform temperature object for comparison against rescue randy's heat signature -->
+    <model name="uniform_temp_box">
+      <pose>-13.2 -5.3 0.2 0 0 0</pose>
+      <link name="box_link">
+        <inertial>
+          <inertia>
+            <ixx>1</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>1</iyy>
+            <iyz>0</iyz>
+            <izz>1</izz>
+          </inertia>
+          <mass>1.0</mass>
+        </inertial>
+        <collision name="box_collision">
+          <geometry>
+            <box>
+              <size>0.4 0.4 0.4</size>
+            </box>
+          </geometry>
+        </collision>
+
+        <visual name="box_visual">
+          <geometry>
+            <box>
+              <size>0.4 0.4 0.4</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 0 0 1</ambient>
+            <diffuse>1 0 0 1</diffuse>
+            <specular>1 0 0 1</specular>
+          </material>
+          <plugin
+            filename="gz-sim-thermal-system"
+            name="gz::sim::systems::Thermal">
+            <temperature>285.0</temperature>
+          </plugin>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Mecanum drive teleop -->
+
+    <!-- Moving Forward: w -->
+    <plugin filename="gz-sim-triggered-publisher-system"
+      name="gz::sim::systems::TriggeredPublisher">
+        <input type="gz.msgs.Int32" topic="/keyboard/keypress">
+            <match field="data">87</match>
+        </input>
+        <output type="gz.msgs.Twist" topic="/model/Mecanum_lift/cmd_vel">
+                linear: {x: 1.0, y: 0.0}, angular: {z: 0.0}
+        </output>
+    </plugin>
+
+    <!-- Moving Backward: x -->
+    <plugin filename="gz-sim-triggered-publisher-system"
+      name="gz::sim::systems::TriggeredPublisher">
+        <input type="gz.msgs.Int32" topic="/keyboard/keypress">
+            <match field="data">88</match>
+        </input>
+        <output type="gz.msgs.Twist" topic="/model/Mecanum_lift/cmd_vel">
+                linear: {x: -1.0, y: 0.0}, angular: {z: 0.0}
+        </output>
+    </plugin>
+
+    <!-- Moving right: d -->
+    <plugin filename="gz-sim-triggered-publisher-system"
+      name="gz::sim::systems::TriggeredPublisher">
+        <input type="gz.msgs.Int32" topic="/keyboard/keypress">
+            <match field="data">68</match>
+        </input>
+        <output type="gz.msgs.Twist" topic="/model/Mecanum_lift/cmd_vel">
+                linear: {x: 0.0, y: -1.0}, angular: {z: 0.0}
+        </output>
+    </plugin>
+
+    <!--Moving left: a -->
+    <plugin filename="gz-sim-triggered-publisher-system"
+      name="gz::sim::systems::TriggeredPublisher">
+        <input type="gz.msgs.Int32" topic="/keyboard/keypress">
+            <match field="data">65</match>
+        </input>
+        <output type="gz.msgs.Twist" topic="/model/Mecanum_lift/cmd_vel">
+                linear: {x: 0.0, y: 1.0}, angular: {z: 0.0}
+        </output>
+    </plugin>
+
+    <!-- Rotating right: e -->
+    <plugin filename="gz-sim-triggered-publisher-system"
+      name="gz::sim::systems::TriggeredPublisher">
+        <input type="gz.msgs.Int32" topic="/keyboard/keypress">
+            <match field="data">69</match>
+        </input>
+        <output type="gz.msgs.Twist" topic="/model/Mecanum_lift/cmd_vel">
+                linear: {x: 0.0, y: 0.0}, angular: {z: -1.0}
+        </output>
+    </plugin>
+
+    <!--Rotating left: q -->
+    <plugin filename="gz-sim-triggered-publisher-system"
+      name="gz::sim::systems::TriggeredPublisher">
+        <input type="gz.msgs.Int32" topic="/keyboard/keypress">
+            <match field="data">81</match>
+        </input>
+        <output type="gz.msgs.Twist" topic="/model/Mecanum_lift/cmd_vel">
+                linear: {x: 0.0, y: 0.0}, angular: {z: 1.0}
+        </output>
+    </plugin>
+
+    <!--Stop: s -->
+    <plugin filename="gz-sim-triggered-publisher-system"
+      name="gz::sim::systems::TriggeredPublisher">
+        <input type="gz.msgs.Int32" topic="/keyboard/keypress">
+            <match field="data">83</match>
+        </input>
+        <output type="gz.msgs.Twist" topic="/model/Mecanum_lift/cmd_vel">
+                linear: {x: 0.0, y: 0.0}, angular: {z: 0.0}
+        </output>
+    </plugin>
+
+  </world>
+</sdf>

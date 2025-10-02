@@ -16,6 +16,8 @@ The project is adapted from the [`ros_gz_project_template`](https://github.com/g
 
 * `ardupilot_gz_bringup` - Contains launch files and high level utilities.
 
+* `ardupilot_gui` - A simple QT-based GUI for sending commands to ArduPilot
+
 
 ## Prerequisites
 

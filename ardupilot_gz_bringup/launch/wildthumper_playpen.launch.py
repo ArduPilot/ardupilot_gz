@@ -51,6 +51,7 @@ def generate_launch_description():
     pkg_project_bringup = get_package_share_directory("ardupilot_gz_bringup")
     pkg_project_gazebo = get_package_share_directory("ardupilot_gz_gazebo")
     pkg_ros_gz_sim = get_package_share_directory("ros_gz_sim")
+    pkg_gui = get_package_share_directory("ardupilot_gui")
 
     # Wild Thumper rover.
     rover = IncludeLaunchDescription(
@@ -94,6 +95,13 @@ def generate_launch_description():
         condition=IfCondition(LaunchConfiguration("rviz")),
     )
 
+    # Ardupilot GUI
+    ardupilot_gz_gui = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            f'{Path(pkg_gui) / "launch" / "ardupilot_gui.launch.py"}'
+        ),
+    )
+
     return LaunchDescription(
         [
             DeclareLaunchArgument(
@@ -103,5 +111,6 @@ def generate_launch_description():
             gz_sim_gui,
             rover,
             rviz,
+            ardupilot_gz_gui,
         ]
     )

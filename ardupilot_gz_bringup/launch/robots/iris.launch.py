@@ -84,6 +84,13 @@ def generate_launch_description():
             "slave": "0",
             "instance": "0",
             "defaults": os.path.join(
+                pkg_ardupilot_sitl,
+                "config",
+                "default_params",
+                "copter.parm",
+            )
+            + ","
+            + os.path.join(
                 pkg_ardupilot_gazebo,
                 "config",
                 "gazebo-iris-gimbal.parm",

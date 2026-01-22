@@ -38,6 +38,21 @@ elseif("$ENV{GZ_VERSION}" STREQUAL "ionic")
   set(GZ_SIM_VER ${gz-sim9_VERSION_MAJOR})
 
   message(STATUS "Compiling against Gazebo Ionic")
+# Jetty
+elseif("$ENV{GZ_VERSION}" STREQUAL "jetty")
+  find_package(gz-cmake REQUIRED)
+  set(GZ_CMAKE_VER "")
+
+  gz_find_package(gz-plugin REQUIRED COMPONENTS register)
+  set(GZ_PLUGIN_VER "")
+
+  gz_find_package(gz-common REQUIRED COMPONENTS profiler)
+  set(GZ_COMMON_VER "")
+
+  gz_find_package(gz-sim REQUIRED)
+  set(GZ_SIM_VER "")
+
+  message(STATUS "Compiling against Gazebo Jetty")
 # Harmonic (default)
 elseif("$ENV{GZ_VERSION}" STREQUAL "harmonic" OR NOT DEFINED "ENV{GZ_VERSION}")
   find_package(gz-cmake3 REQUIRED)

@@ -14,7 +14,7 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 """
-Launch an iris quadcopter in Gazebo and Rviz.
+Launch an iris quadcopter with lidar in Gazebo and Rviz.
 
 ros2 launch ardupilot_sitl sitl_dds_udp.launch.py
 transport:=udp4
@@ -33,93 +33,80 @@ sim_address:=127.0.0.1
 master:=tcp:127.0.0.1:5760
 sitl:=127.0.0.1:5501
 """
+from typing import List
+
+import math
 import os
 
 from ament_index_python.packages import get_package_share_directory
+
+from launch import LaunchContext
 from launch import LaunchDescription
-from launch.actions import (DeclareLaunchArgument, IncludeLaunchDescription,
-                            LogInfo, OpaqueFunction, RegisterEventHandler)
+
+from launch.actions import DeclareLaunchArgument
+from launch.actions import IncludeLaunchDescription
+from launch.actions import LogInfo
+from launch.actions import OpaqueFunction
+from launch.actions import RegisterEventHandler
+
 from launch.conditions import IfCondition
+
 from launch.event_handlers import OnProcessStart
+
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
+from launch.substitutions import LaunchConfiguration
+from launch.substitutions import PathJoinSubstitution
+
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 
 
-def launch_spawn_robot(context):
-    """Return a Gazebo spawn robot launch description"""
-    # Get substitutions for arguments
-    name = LaunchConfiguration("name")
-    pos_x = LaunchConfiguration("x")
-    pos_y = LaunchConfiguration("y")
-    pos_z = LaunchConfiguration("z")
-    rot_r = LaunchConfiguration("R")
-    rot_p = LaunchConfiguration("P")
-    rot_y = LaunchConfiguration("Y")
-
-    # spawn robot
-    spawn_robot =  Node(
-        package="ros_gz_sim",
-        executable="create",
-        namespace=name,
-        arguments=[
-            "-world",
-            "",
-            "-param",
-            "",
-            "-name",
-            name,
-            "-topic",
-            "/robot_description",
-            "-x",
-            pos_x,
-            "-y",
-            pos_y,
-            "-z",
-            pos_z,
-            "-R",
-            rot_r,
-            "-P",
-            rot_p,
-            "-Y",
-            rot_y,
-        ],
-        output="screen",
+def generate_robot_launch_actions(context: LaunchContext, *args, **kwargs):
+    """Launch the robot_state_publisher and ros_gz bridge nodes."""
+    pkg_ardupilot_gz_description = get_package_share_directory(
+        "ardupilot_gz_description"
     )
-    return [spawn_robot]
-
-
-def launch_state_pub_with_bridge(context):
-    # Robot description and ros_gz bridge config chosen based on passed lidar_dimension argument
-    lidar_dim = LaunchConfiguration("lidar_dim").perform(context)
-    pkg_ardupilot_gz_description = get_package_share_directory("ardupilot_gz_description")
     pkg_project_bringup = get_package_share_directory("ardupilot_gz_bringup")
-    
+
+    # Load SDF file.
     sdf_file = os.path.join(
         pkg_ardupilot_gz_description, "models", "iris_with_lidar", "model.sdf"
     )
-
     with open(sdf_file, "r") as infp:
         robot_desc = infp.read()
-        # print(robot_desc)
 
+    # Substitute `models://` with `package://ardupilot_gazebo/models/`
+    # for sdformat_urdf plugin used by robot_state_publisher
+    robot_desc = robot_desc.replace(
+        "model://iris_with_standoffs",
+        "package://ardupilot_gazebo/models/iris_with_standoffs",
+    )
+
+    # Substitute `models://` with `package://ardupilot_gz_description/models/`
+    # for sdformat_urdf plugin used by robot_state_publisher
+    robot_desc = robot_desc.replace(
+        "model://lidar_3d", "package://ardupilot_gz_description/models/lidar_3d"
+    )
+
+    # The robot description and ros_gz bridge config are chosen based
+    # on the `lidar_dim` argument. The default is 3d.
+    lidar_dim = LaunchConfiguration("lidar_dim").perform(context)
     ros_gz_bridge_config = "iris_3Dlidar_bridge.yaml"
-
-    # Load SDF file and choose ros_gz bridge config based on lidar dimensions
-    if lidar_dim == "2":
-        log = LogInfo(msg="Using iris_with_2d_lidar_model ")
-        robot_desc = robot_desc.replace("<uri>model://lidar_2d</uri>", "<uri>model://lidar_2d</uri>")
-        ros_gz_bridge_config = "iris_2Dlidar_bridge.yaml"
-    elif lidar_dim == "3":
+    if lidar_dim == "3":
         log = LogInfo(msg="Using iris_with_3d_lidar_model")
-        robot_desc = robot_desc.replace("<uri>model://lidar_2d</uri>", "<uri>model://lidar_3d</uri>")
-        ros_gz_bridge_config = "iris_3Dlidar_bridge.yaml"
+    elif lidar_dim == "2":
+        log = LogInfo(msg="Using iris_with_2d_lidar_model")
+        robot_desc = robot_desc.replace("models/lidar_3d", "models/lidar_2d")
+        ros_gz_bridge_config = "iris_2Dlidar_bridge.yaml"
     else:
         log = LogInfo(msg="ERROR: unknown lidar dimensions! Defaulting to 3d lidar")
-        robot_desc = robot_desc.replace("<uri>model://lidar_2d</uri>", "<uri>model://lidar_3d</uri>")
-        ros_gz_bridge_config = "iris_3Dlidar_bridge.yaml"
 
+    # Ensure the ArduPilot plugin and SITL have a consistent sim_address
+    sim_address = LaunchConfiguration("sim_address").perform(context)
+    robot_desc = robot_desc.replace(
+        "<fdm_addr>127.0.0.1</fdm_addr>",
+        f"<fdm_addr>{sim_address}</fdm_addr>",
+    )
 
     # Publish /tf and /tf_static.
     robot_state_publisher = Node(
@@ -131,6 +118,36 @@ def launch_state_pub_with_bridge(context):
             {"robot_description": robot_desc},
             {"frame_prefix": ""},
         ],
+    )
+
+    # Spawn robot
+    spawn_robot = Node(
+        package="ros_gz_sim",
+        executable="create",
+        namespace=LaunchConfiguration("robot_name"),
+        arguments=[
+            "-world",
+            "",
+            "-param",
+            "",
+            "-name",
+            LaunchConfiguration("robot_name"),
+            "-topic",
+            "/robot_description",
+            "-x",
+            LaunchConfiguration("x"),
+            "-y",
+            LaunchConfiguration("y"),
+            "-z",
+            LaunchConfiguration("z"),
+            "-R",
+            LaunchConfiguration("R"),
+            "-P",
+            LaunchConfiguration("P"),
+            "-Y",
+            LaunchConfiguration("Y"),
+        ],
+        output="screen",
     )
 
     # Bridge
@@ -161,79 +178,26 @@ def launch_state_pub_with_bridge(context):
         condition=IfCondition(LaunchConfiguration("use_gz_tf")),
     )
 
-    event = RegisterEventHandler(
-                OnProcessStart(
-                    target_action=bridge,
-                    on_start=[
-                        topic_tools_tf
-                    ]
-                )
-            )
+    on_robot_state_publisher_start = RegisterEventHandler(
+        OnProcessStart(target_action=robot_state_publisher, on_start=[spawn_robot])
+    )
 
-    return [log, robot_state_publisher, bridge, event]
+    on_bridge_start = RegisterEventHandler(
+        OnProcessStart(target_action=bridge, on_start=[topic_tools_tf])
+    )
 
-def generate_launch_arguments():
-    """Generate a list of launch arguments"""
     return [
-        DeclareLaunchArgument(
-            "use_gz_tf", 
-            default_value="true", 
-            description="Use Gazebo TF."
-        ),
-        DeclareLaunchArgument(
-            "lidar_dim",
-            default_value="3",
-            description="Whether to use a 2D or 3D lidar",
-        ),
-        # Gazebo model launch arguments.
-        DeclareLaunchArgument(
-            "model",
-            default_value="iris_with_lidar",
-            description="Name or filepath of the model to load.",
-        ),
-        DeclareLaunchArgument(
-            "name",
-            default_value="iris",
-            description="Name for the model instance.",
-        ),
-        DeclareLaunchArgument(
-            "x",
-            default_value="0",
-            description="The intial 'x' position (m).",
-        ),
-        DeclareLaunchArgument(
-            "y",
-            default_value="0",
-            description="The intial 'y' position (m).",
-        ),
-        DeclareLaunchArgument(
-            "z",
-            default_value="0",
-            description="The intial 'z' position (m).",
-        ),
-        DeclareLaunchArgument(
-            "R",
-            default_value="0",
-            description="The intial roll angle (radians).",
-        ),
-        DeclareLaunchArgument(
-            "P",
-            default_value="0",
-            description="The intial pitch angle (radians).",
-        ),
-        DeclareLaunchArgument(
-            "Y",
-            default_value="0",
-            description="The intial yaw angle (radians).",
-        ),
+        log,
+        robot_state_publisher,
+        bridge,
+        on_robot_state_publisher_start,
+        on_bridge_start,
     ]
+
 
 def generate_launch_description():
     """Generate a launch description for a iris quadrotor"""
-
     launch_arguments = generate_launch_arguments()
-
-    pkg_ardupilot_sitl = get_package_share_directory("ardupilot_sitl")
 
     # Include component launch files.
     sitl_dds = IncludeLaunchDescription(
@@ -249,37 +213,9 @@ def generate_launch_description():
             ]
         ),
         launch_arguments={
-            "transport": "udp4",
-            "port": "2019",
-            "synthetic_clock": "True",
-            "wipe": "False",
-            "model": "json",
-            "speedup": "1",
-            "slave": "0",
-            "instance": "0",
-            "defaults": os.path.join(
-                pkg_ardupilot_sitl,
-                "config",
-                "default_params",
-                "copter.parm",
-            )
-            + ","
-            + os.path.join(
-                pkg_ardupilot_sitl,
-                "config",
-                "default_params",
-                "gazebo-iris.parm",
-            )
-            + ","
-            + os.path.join(
-                pkg_ardupilot_sitl,
-                "config",
-                "default_params",
-                "dds_udp.parm",
-            ),
-            "sim_address": "127.0.0.1",
-            "master": "tcp:127.0.0.1:5760",
-            "sitl": "127.0.0.1:5501",
+            "model": LaunchConfiguration("model"),
+            "defaults": LaunchConfiguration("defaults"),
+            "synthetic_clock": LaunchConfiguration("synthetic_clock"),
         }.items(),
     )
 
@@ -294,11 +230,99 @@ def generate_launch_description():
         else:
             os.environ["SDF_PATH"] = gz_sim_resource_path
 
-    opfunc_robot_state_publisher = OpaqueFunction(function=launch_state_pub_with_bridge)
-    opfunc_spawn_robot = OpaqueFunction(function=launch_spawn_robot)
+    robot_launch_actions = OpaqueFunction(function=generate_robot_launch_actions)
+
     ld = LaunchDescription(launch_arguments)
     ld.add_action(sitl_dds)
-    ld.add_action(opfunc_robot_state_publisher)
-    ld.add_action(opfunc_spawn_robot)
+    ld.add_action(robot_launch_actions)
 
     return ld
+
+
+def generate_launch_arguments() -> List[DeclareLaunchArgument]:
+    """Generate a list of launch arguments"""
+    pkg_ardupilot_sitl = get_package_share_directory("ardupilot_sitl")
+
+    return [
+        # sitl_dds
+        DeclareLaunchArgument(
+            "model",
+            default_value="json",
+            description="Set simulation model. Set default to 'json' for Gazebo.",
+        ),
+        DeclareLaunchArgument(
+            "defaults",
+            default_value=(
+                os.path.join(
+                    pkg_ardupilot_sitl,
+                    "config",
+                    "default_params",
+                    "copter.parm",
+                )
+                + ","
+                + os.path.join(
+                    pkg_ardupilot_sitl,
+                    "config",
+                    "default_params",
+                    "gazebo-iris.parm",
+                )
+                + ","
+                + os.path.join(
+                    pkg_ardupilot_sitl,
+                    "config",
+                    "default_params",
+                    "dds_udp.parm",
+                ),
+            ),
+            description="Set path to default params for the iris with DDS.",
+        ),
+        DeclareLaunchArgument(
+            "synthetic_clock",
+            default_value="True",
+        ),
+        # topic_tools_tf
+        DeclareLaunchArgument(
+            "use_gz_tf", default_value="true", description="Use Gazebo TF."
+        ),
+        # spawn_robot - the robot name must agree with the name used in the config/{robot}.yaml
+        DeclareLaunchArgument(
+            "robot_name",
+            default_value="iris",
+            description="Name for the model instance.",
+        ),
+        DeclareLaunchArgument(
+            "x",
+            default_value="0.0",
+            description="The initial 'x' position (m).",
+        ),
+        DeclareLaunchArgument(
+            "y",
+            default_value="0.0",
+            description="The initial 'y' position (m).",
+        ),
+        DeclareLaunchArgument(
+            "z",
+            default_value="0.2",
+            description="The initial 'z' position (m).",
+        ),
+        DeclareLaunchArgument(
+            "R",
+            default_value="0.0",
+            description="The initial roll angle (radians).",
+        ),
+        DeclareLaunchArgument(
+            "P",
+            default_value="0.0",
+            description="The initial pitch angle (radians).",
+        ),
+        DeclareLaunchArgument(
+            "Y",
+            default_value="0.0",
+            description="The initial yaw angle (radians).",
+        ),
+        DeclareLaunchArgument(
+            "lidar_dim",
+            default_value="3",
+            description="Whether to use a 2D or 3D lidar",
+        ),
+    ]

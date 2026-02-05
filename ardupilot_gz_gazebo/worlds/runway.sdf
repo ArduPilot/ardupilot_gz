@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <sdf version="1.9">
-  <world name="map">
+  <world name="runway">
     <physics name="1ms" type="ignore">
       <max_step_size>0.001</max_step_size>
       <real_time_factor>1.0</real_time_factor>
@@ -70,12 +70,6 @@
     <include>
       <uri>model://runway</uri>
         <pose degrees="true">-29 545 0 0 0 363</pose>
-    </include>
-
-    <include>
-      <uri>model://iris_with_gimbal</uri>
-      <name>iris</name>
-      <pose degrees="true">0 0 0.195 0 0 90</pose>
     </include>
 
   </world>

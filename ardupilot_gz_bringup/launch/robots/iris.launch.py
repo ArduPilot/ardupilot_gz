@@ -37,6 +37,7 @@ from typing import List
 
 import math
 import os
+import tempfile
 
 from ament_index_python.packages import get_package_share_directory
 
@@ -126,14 +127,35 @@ def generate_robot_launch_actions(context: LaunchContext, *args, **kwargs):
     )
 
     # Bridge.
+    config_template_file = os.path.join(
+        pkg_project_bringup, "config", "iris_bridge.yaml"
+    )
+    with open(config_template_file, "r") as infp:
+        config = infp.read()
+
+    world_name = LaunchConfiguration("world_name").perform(context)
+    config = config.replace(
+        "{{ world_name }}",
+        f"{world_name}",
+    )
+
+    robot_name = LaunchConfiguration("robot_name").perform(context)
+    config = config.replace(
+        "{{ robot_name }}",
+        f"{robot_name}",
+    )
+
+    temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".yaml")
+    config_file = temp_file.name
+    with open(config_file, "w") as outfp:
+        outfp.write(config)
+
     bridge = Node(
         package="ros_gz_bridge",
         executable="parameter_bridge",
         parameters=[
             {
-                "config_file": os.path.join(
-                    pkg_project_bringup, "config", "iris_bridge.yaml"
-                ),
+                "config_file": config_file,
                 "qos_overrides./tf_static.publisher.durability": "transient_local",
             }
         ],
@@ -260,7 +282,12 @@ def generate_launch_arguments() -> List[DeclareLaunchArgument]:
         DeclareLaunchArgument(
             "use_gz_tf", default_value="true", description="Use Gazebo TF."
         ),
-        # spawn_robot - the robot name must agree with the name used in the config/{robot}.yaml
+        # bridge, spawn_robot
+        DeclareLaunchArgument(
+            "world_name",
+            default_value="runway",
+            description="Name for the world instance.",
+        ),
         DeclareLaunchArgument(
             "robot_name",
             default_value="iris",

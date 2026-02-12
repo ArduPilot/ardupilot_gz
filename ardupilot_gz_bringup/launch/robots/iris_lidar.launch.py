@@ -35,8 +35,8 @@ sitl:=127.0.0.1:5501
 """
 from typing import List
 
-import math
 import os
+import tempfile
 
 from ament_index_python.packages import get_package_share_directory
 
@@ -91,13 +91,13 @@ def generate_robot_launch_actions(context: LaunchContext, *args, **kwargs):
     # The robot description and ros_gz bridge config are chosen based
     # on the `lidar_dim` argument. The default is 3d.
     lidar_dim = LaunchConfiguration("lidar_dim").perform(context)
-    ros_gz_bridge_config = "iris_3Dlidar_bridge.yaml"
+    config_name = "iris_3Dlidar_bridge.yaml"
     if lidar_dim == "3":
         log = LogInfo(msg="Using iris_with_3d_lidar_model")
     elif lidar_dim == "2":
         log = LogInfo(msg="Using iris_with_2d_lidar_model")
         robot_desc = robot_desc.replace("models/lidar_3d", "models/lidar_2d")
-        ros_gz_bridge_config = "iris_2Dlidar_bridge.yaml"
+        config_name = "iris_2Dlidar_bridge.yaml"
     else:
         log = LogInfo(msg="ERROR: unknown lidar dimensions! Defaulting to 3d lidar")
 
@@ -151,14 +151,35 @@ def generate_robot_launch_actions(context: LaunchContext, *args, **kwargs):
     )
 
     # Bridge
+    config_template_file = os.path.join(
+        pkg_project_bringup, "config", config_name
+    )
+    with open(config_template_file, "r") as infp:
+        config = infp.read()
+
+    world_name = LaunchConfiguration("world_name").perform(context)
+    config = config.replace(
+        "{{ world_name }}",
+        f"{world_name}",
+    )
+
+    robot_name = LaunchConfiguration("robot_name").perform(context)
+    config = config.replace(
+        "{{ robot_name }}",
+        f"{robot_name}",
+    )
+
+    temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".yaml")
+    config_file = temp_file.name
+    with open(config_file, "w") as outfp:
+        outfp.write(config)
+
     bridge = Node(
         package="ros_gz_bridge",
         executable="parameter_bridge",
         parameters=[
             {
-                "config_file": os.path.join(
-                    pkg_project_bringup, "config", ros_gz_bridge_config
-                ),
+                "config_file": config_file,
                 "qos_overrides./tf_static.publisher.durability": "transient_local",
             }
         ],
@@ -284,7 +305,12 @@ def generate_launch_arguments() -> List[DeclareLaunchArgument]:
         DeclareLaunchArgument(
             "use_gz_tf", default_value="true", description="Use Gazebo TF."
         ),
-        # spawn_robot - the robot name must agree with the name used in the config/{robot}.yaml
+        # bridge, spawn_robot
+        DeclareLaunchArgument(
+            "world_name",
+            default_value="maze",
+            description="Name for the world instance.",
+        ),
         DeclareLaunchArgument(
             "robot_name",
             default_value="iris",

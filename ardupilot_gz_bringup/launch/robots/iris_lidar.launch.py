@@ -36,6 +36,7 @@ sitl:=127.0.0.1:5501
 import os
 
 from ament_index_python.packages import get_package_share_directory
+
 from launch import LaunchDescription
 from launch.actions import (DeclareLaunchArgument, IncludeLaunchDescription,
                             LogInfo, OpaqueFunction, RegisterEventHandler)
@@ -43,12 +44,13 @@ from launch.conditions import IfCondition
 from launch.event_handlers import OnProcessStart
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
+
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 
 
 def launch_spawn_robot(context):
-    """Return a Gazebo spawn robot launch description"""
+    """Return a Gazebo spawn robot launch description."""
     # Get substitutions for arguments
     name = LaunchConfiguration("name")
     pos_x = LaunchConfiguration("x")
@@ -59,7 +61,7 @@ def launch_spawn_robot(context):
     rot_y = LaunchConfiguration("Y")
 
     # spawn robot
-    spawn_robot =  Node(
+    spawn_robot = Node(
         package="ros_gz_sim",
         executable="create",
         namespace=name,
@@ -91,11 +93,20 @@ def launch_spawn_robot(context):
 
 
 def launch_state_pub_with_bridge(context):
-    # Robot description and ros_gz bridge config chosen based on passed lidar_dimension argument
+    """
+    Robot description and ros_gz bridge config.
+
+    Chosen based on passed lidar_dimension argument.
+    """
+    # strings to comply with colcon test of lines being too long.
+    ardu_gz_desc_string = "ardupilot_gz_description"
+    lidar_2d_string = "<uri>model://lidar_2d</uri>"
+    lidar_3d_string = "<uri>model://lidar_3d</uri>"
+
     lidar_dim = LaunchConfiguration("lidar_dim").perform(context)
-    pkg_ardupilot_gz_description = get_package_share_directory("ardupilot_gz_description")
+    pkg_ardupilot_gz_description = get_package_share_directory(ardu_gz_desc_string)
     pkg_project_bringup = get_package_share_directory("ardupilot_gz_bringup")
-    
+
     sdf_file = os.path.join(
         pkg_ardupilot_gz_description, "models", "iris_with_lidar", "model.sdf"
     )
@@ -109,17 +120,16 @@ def launch_state_pub_with_bridge(context):
     # Load SDF file and choose ros_gz bridge config based on lidar dimensions
     if lidar_dim == "2":
         log = LogInfo(msg="Using iris_with_2d_lidar_model ")
-        robot_desc = robot_desc.replace("<uri>model://lidar_2d</uri>", "<uri>model://lidar_2d</uri>")
+        robot_desc = robot_desc.replace(lidar_2d_string, lidar_2d_string)
         ros_gz_bridge_config = "iris_2Dlidar_bridge.yaml"
     elif lidar_dim == "3":
         log = LogInfo(msg="Using iris_with_3d_lidar_model")
-        robot_desc = robot_desc.replace("<uri>model://lidar_2d</uri>", "<uri>model://lidar_3d</uri>")
+        robot_desc = robot_desc.replace(lidar_2d_string, lidar_3d_string)
         ros_gz_bridge_config = "iris_3Dlidar_bridge.yaml"
     else:
         log = LogInfo(msg="ERROR: unknown lidar dimensions! Defaulting to 3d lidar")
-        robot_desc = robot_desc.replace("<uri>model://lidar_2d</uri>", "<uri>model://lidar_3d</uri>")
+        robot_desc = robot_desc.replace(lidar_2d_string, lidar_3d_string)
         ros_gz_bridge_config = "iris_3Dlidar_bridge.yaml"
-
 
     # Publish /tf and /tf_static.
     robot_state_publisher = Node(
@@ -172,12 +182,13 @@ def launch_state_pub_with_bridge(context):
 
     return [log, robot_state_publisher, bridge, event]
 
+
 def generate_launch_arguments():
-    """Generate a list of launch arguments"""
+    """Generate a list of launch arguments."""
     return [
         DeclareLaunchArgument(
-            "use_gz_tf", 
-            default_value="true", 
+            "use_gz_tf",
+            default_value="true",
             description="Use Gazebo TF."
         ),
         DeclareLaunchArgument(
@@ -228,11 +239,10 @@ def generate_launch_arguments():
         ),
     ]
 
+
 def generate_launch_description():
-    """Generate a launch description for a iris quadrotor"""
-
+    """Generate a launch description for a iris quadrotor."""
     launch_arguments = generate_launch_arguments()
-
     pkg_ardupilot_sitl = get_package_share_directory("ardupilot_sitl")
 
     # Include component launch files.

@@ -18,7 +18,7 @@ if("$ENV{GZ_VERSION}" STREQUAL "garden")
 
   gz_find_package(gz-common5 REQUIRED COMPONENTS profiler)
   set(GZ_COMMON_VER ${gz-common5_VERSION_MAJOR})
-  
+
   gz_find_package(gz-sim7 REQUIRED)
   set(GZ_SIM_VER ${gz-sim7_VERSION_MAJOR})
 
@@ -68,7 +68,7 @@ elseif("$ENV{GZ_VERSION}" STREQUAL "harmonic" OR NOT DEFINED "ENV{GZ_VERSION}")
   set(GZ_SIM_VER ${gz-sim8_VERSION_MAJOR})
 
   message(STATUS "Compiling against Gazebo Harmonic")
-else()  
+else()
   message(FATAL_ERROR "Unsupported GZ_VERSION: $ENV{GZ_VERSION}")
 endif()
 

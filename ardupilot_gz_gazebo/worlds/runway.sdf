@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <sdf version="1.9">
-  <world name="playpen">
+  <world name="runway">
     <physics name="1ms" type="ignore">
       <max_step_size>0.001</max_step_size>
       <real_time_factor>1.0</real_time_factor>
@@ -19,6 +19,15 @@
     </plugin>
     <plugin filename="gz-sim-scene-broadcaster-system"
       name="gz::sim::systems::SceneBroadcaster">
+    </plugin>
+    <plugin filename="gz-sim-air-pressure-system"
+      name="gz::sim::systems::AirPressure">
+    </plugin>
+    <plugin filename="gz-sim-air-speed-system"
+      name="gz::sim::systems::AirSpeed">
+    </plugin>
+    <plugin filename="gz-sim-altimeter-system"
+      name="gz::sim::systems::Altimeter">
     </plugin>
     <plugin filename="gz-sim-imu-system"
       name="gz::sim::systems::Imu">
@@ -59,14 +68,8 @@
     </spherical_coordinates>
 
     <include>
-      <pose degrees="true">0 0 0 0 0 0</pose>
-      <uri>model://rover_playpen</uri>
-    </include>
-
-    <include>
-      <pose degrees="true">0 0 0.15 0 0 0</pose>
-      <uri>model://wildthumper_with_lidar</uri>
-      <name>wildthumper</name>
+      <uri>model://runway</uri>
+        <pose degrees="true">-29 545 0 0 0 363</pose>
     </include>
 
   </world>

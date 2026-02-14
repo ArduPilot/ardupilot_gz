@@ -49,7 +49,7 @@ def generate_launch_description():
     pkg_ros_gz_sim = get_package_share_directory("ros_gz_sim")
 
     # Iris.
-    iris = IncludeLaunchDescription(
+    robot = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             [
                 PathJoinSubstitution(
@@ -62,16 +62,7 @@ def generate_launch_description():
                 ),
             ]
         ),
-        launch_arguments={
-            "model": "iris_with_lidar",
-            "name": "iris",
-            "x": "0",
-            "y": "0",
-            "z": "0.194923",
-            "R": "0.0",
-            "P": "0.0",
-            "lidar_dim": LaunchConfiguration("lidar_dim"),
-        }.items(),
+        condition=IfCondition(LaunchConfiguration("spawn_robot")),
     )
 
     # Gazebo.
@@ -81,8 +72,9 @@ def generate_launch_description():
         ),
         launch_arguments={
             "gz_args": "-v4 -s -r "
-            + f'{Path(pkg_project_gazebo) / "worlds" / "iris_maze.sdf"}'
+            + f'{Path(pkg_project_gazebo) / "worlds" / "maze.sdf"}'
         }.items(),
+        condition=IfCondition(LaunchConfiguration("use_gz_sim_server")),
     )
 
     gz_sim_gui = IncludeLaunchDescription(
@@ -90,6 +82,7 @@ def generate_launch_description():
             f'{Path(pkg_ros_gz_sim) / "launch" / "gz_sim.launch.py"}'
         ),
         launch_arguments={"gz_args": "-v4 -g"}.items(),
+        condition=IfCondition(LaunchConfiguration("use_gz_sim_gui")),
     )
 
     # RViz.
@@ -106,16 +99,26 @@ def generate_launch_description():
     return LaunchDescription(
         [
             DeclareLaunchArgument(
-                "rviz", default_value="true", description="Open RViz."
+                "use_gz_sim_server",
+                default_value="true",
+                description="Run the Gazebo server.",
             ),
             DeclareLaunchArgument(
-                "lidar_dim",
-                default_value="3",
-                description="Whether to use a 2D or 3D lidar",
+                "use_gz_sim_gui",
+                default_value="true",
+                description="Run the Gazebo GUI.",
+            ),
+            DeclareLaunchArgument(
+                "spawn_robot",
+                default_value="true",
+                description="Spawn the robot and start SITL+ROS.",
+            ),
+            DeclareLaunchArgument(
+                "rviz", default_value="true", description="Open RViz."
             ),
             gz_sim_server,
             gz_sim_gui,
-            iris,
+            robot,
             rviz,
         ]
     )

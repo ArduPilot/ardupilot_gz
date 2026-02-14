@@ -37,6 +37,12 @@
   gz_type_name: "gz.msgs.BatteryState"
   direction: GZ_TO_ROS
 
+- ros_topic_name: "scan"
+  gz_topic_name: "/lidar"
+  ros_type_name: "sensor_msgs/msg/LaserScan"
+  gz_type_name: "gz.msgs.LaserScan"
+  direction: GZ_TO_ROS
+
 - ros_topic_name: "cloud_in"
   gz_topic_name: "/lidar/points"
   ros_type_name: "sensor_msgs/msg/PointCloud2"

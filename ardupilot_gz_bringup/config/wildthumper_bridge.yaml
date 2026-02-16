@@ -43,6 +43,12 @@
   gz_type_name: "gz.msgs.NavSat"
   direction: GZ_TO_ROS
 
+- ros_topic_name: "gpsfix"
+  gz_topic_name: "/world/playpen/model/wildthumper/link/base_link/sensor/navsat_sensor/navsat"
+  ros_type_name: "gps_msgs/msg/GPSFix"
+  gz_type_name: "gz.msgs.NavSat"
+  direction: GZ_TO_ROS
+
 - ros_topic_name: "battery"
   gz_topic_name: "/model/{{ robot_name }}/battery/linear_battery/state"
   ros_type_name: "sensor_msgs/msg/BatteryState"

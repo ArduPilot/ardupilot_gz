@@ -1,0 +1,75 @@
+<?xml version="1.0" ?>
+<robot name="learm">
+  <group name="arm">
+    <chain base_link="arm_base_link" tip_link="grip_left_link"/>
+  </group>
+  <group_state group="arm" name="home">
+    <joint name="shoulder_pan" value="0"/>
+    <joint name="shoulder_lift" value="-0.3"/>
+    <joint name="elbow" value="-1.57"/>
+    <joint name="wrist_flex" value="1.57"/>
+    <joint name="wrist_roll" value="0"/>
+    <joint name="grip_left" value="0"/>
+  </group_state>
+  <end_effector group="arm" name="gripper" parent_link="hand_link"/>
+  <virtual_joint child_link="arm_base_link" name="world" parent_frame="world" type="fixed"/>
+  <passive_joint name="tendon_right"/>
+  <passive_joint name="tendon_left"/>
+  <passive_joint name="finger_right"/>
+  <passive_joint name="grip_right"/>
+  <passive_joint name="finger_left"/>
+  <disable_collisions link1="arm_base_link" link2="humerus_link" reason="Never"/>
+  <disable_collisions link1="arm_base_link" link2="shoulder_link" reason="Adjacent"/>
+  <disable_collisions link1="finger_left_link" link2="forearm_link" reason="Never"/>
+  <disable_collisions link1="finger_left_link" link2="grip_left_link" reason="Adjacent"/>
+  <disable_collisions link1="finger_left_link" link2="grip_right_link" reason="Never"/>
+  <disable_collisions link1="finger_left_link" link2="hand_link" reason="Never"/>
+  <disable_collisions link1="finger_left_link" link2="humerus_link" reason="Never"/>
+  <disable_collisions link1="finger_left_link" link2="shoulder_link" reason="Never"/>
+  <disable_collisions link1="finger_left_link" link2="tendon_left_link" reason="Default"/>
+  <disable_collisions link1="finger_left_link" link2="tendon_right_link" reason="Never"/>
+  <disable_collisions link1="finger_left_link" link2="wrist_link" reason="Never"/>
+  <disable_collisions link1="finger_right_link" link2="forearm_link" reason="Never"/>
+  <disable_collisions link1="finger_right_link" link2="grip_left_link" reason="Never"/>
+  <disable_collisions link1="finger_right_link" link2="grip_right_link" reason="Adjacent"/>
+  <disable_collisions link1="finger_right_link" link2="hand_link" reason="Never"/>
+  <disable_collisions link1="finger_right_link" link2="humerus_link" reason="Never"/>
+  <disable_collisions link1="finger_right_link" link2="tendon_left_link" reason="Never"/>
+  <disable_collisions link1="finger_right_link" link2="tendon_right_link" reason="Default"/>
+  <disable_collisions link1="finger_right_link" link2="wrist_link" reason="Never"/>
+  <disable_collisions link1="forearm_link" link2="grip_left_link" reason="Never"/>
+  <disable_collisions link1="forearm_link" link2="grip_right_link" reason="Never"/>
+  <disable_collisions link1="forearm_link" link2="hand_link" reason="Never"/>
+  <disable_collisions link1="forearm_link" link2="humerus_link" reason="Adjacent"/>
+  <disable_collisions link1="forearm_link" link2="shoulder_link" reason="Never"/>
+  <disable_collisions link1="forearm_link" link2="tendon_left_link" reason="Never"/>
+  <disable_collisions link1="forearm_link" link2="tendon_right_link" reason="Never"/>
+  <disable_collisions link1="forearm_link" link2="wrist_link" reason="Adjacent"/>
+  <disable_collisions link1="grip_left_link" link2="grip_right_link" reason="Never"/>
+  <disable_collisions link1="grip_left_link" link2="hand_link" reason="Adjacent"/>
+  <disable_collisions link1="grip_left_link" link2="humerus_link" reason="Never"/>
+  <disable_collisions link1="grip_left_link" link2="shoulder_link" reason="Never"/>
+  <disable_collisions link1="grip_left_link" link2="tendon_left_link" reason="Never"/>
+  <disable_collisions link1="grip_left_link" link2="tendon_right_link" reason="Never"/>
+  <disable_collisions link1="grip_left_link" link2="wrist_link" reason="Never"/>
+  <disable_collisions link1="grip_right_link" link2="hand_link" reason="Adjacent"/>
+  <disable_collisions link1="grip_right_link" link2="humerus_link" reason="Never"/>
+  <disable_collisions link1="grip_right_link" link2="tendon_left_link" reason="Never"/>
+  <disable_collisions link1="grip_right_link" link2="tendon_right_link" reason="Never"/>
+  <disable_collisions link1="grip_right_link" link2="wrist_link" reason="Never"/>
+  <disable_collisions link1="hand_link" link2="humerus_link" reason="Never"/>
+  <disable_collisions link1="hand_link" link2="shoulder_link" reason="Never"/>
+  <disable_collisions link1="hand_link" link2="tendon_left_link" reason="Adjacent"/>
+  <disable_collisions link1="hand_link" link2="tendon_right_link" reason="Adjacent"/>
+  <disable_collisions link1="hand_link" link2="wrist_link" reason="Adjacent"/>
+  <disable_collisions link1="humerus_link" link2="shoulder_link" reason="Adjacent"/>
+  <disable_collisions link1="humerus_link" link2="tendon_left_link" reason="Never"/>
+  <disable_collisions link1="humerus_link" link2="tendon_right_link" reason="Never"/>
+  <disable_collisions link1="humerus_link" link2="wrist_link" reason="Never"/>
+  <disable_collisions link1="shoulder_link" link2="tendon_left_link" reason="Never"/>
+  <disable_collisions link1="shoulder_link" link2="tendon_right_link" reason="Never"/>
+  <disable_collisions link1="shoulder_link" link2="wrist_link" reason="Never"/>
+  <disable_collisions link1="tendon_left_link" link2="tendon_right_link" reason="Never"/>
+  <disable_collisions link1="tendon_left_link" link2="wrist_link" reason="Never"/>
+  <disable_collisions link1="tendon_right_link" link2="wrist_link" reason="Never"/>
+</robot>

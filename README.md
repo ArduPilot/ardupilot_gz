@@ -142,6 +142,14 @@ This simulation includes a iris in a warehouse setting.
 ros2 launch ardupilot_gz_bringup iris_warehouse.launch.py rviz:=true use_gz_tf:=true
 ```
 
+### 4. Iris with 6DOF arm
+
+This simulation has an iris copter equipped with a Hiwonder 6DOF LeArm and cameras in a runway world. Arm reference: [hiwonder learm_ros2](https://github.com/andrewda/learm_ros2).
+
+```bash
+ros2 launch ardupilot_gz_bringup iris_arm_runway.launch.py rviz:=true use_gz_tf:=true
+```
+
 
 ## Notes
 

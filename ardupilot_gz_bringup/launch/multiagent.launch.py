@@ -37,6 +37,7 @@ class Vehicle(Enum):
     IRIS = "iris_with_gimbal"
     IRIS_LIDAR = "iris_lidar"
     WILD_THUMPER = "wildthumper"
+    ALTI_TRANSITION = "alti_transition"
 
 
 VEHICLE_PATHS = {
@@ -51,6 +52,10 @@ VEHICLE_PATHS = {
     Vehicle.WILD_THUMPER: {
         "launch": "wildthumper.launch.py",
         "rviz": "wildthumper.rviz",
+    },
+    Vehicle.ALTI_TRANSITION: {
+        "launch": "alti_transition.launch.py",
+        "rviz": "alti_transition.rviz",
     },
 }
 
@@ -90,6 +95,11 @@ def generate_launch_description():
             "name": "rover1",
             "model": Vehicle.WILD_THUMPER,
             "position": ["-1.0", "0.0", "0.195", "0", "0", "1.5708"],
+        },
+        {
+            "name": "plane1",
+            "model": Vehicle.ALTI_TRANSITION,
+            "position": ["-4.0", "0.0", "0.195", "0", "0", "1.5708"],
         },
     ]
 

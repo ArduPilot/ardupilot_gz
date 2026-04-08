@@ -106,6 +106,11 @@ def generate_launch_description():
     def generate_launch_actions(context: LaunchContext, *args, **kwargs):
         launch_actions = [
             DeclareLaunchArgument(
+                "namespace",
+                default_value="",
+                description="Robot namespace.",
+            ),
+            DeclareLaunchArgument(
                 "rviz", default_value="true", description="Open RViz."
             ),
             DeclareLaunchArgument(
@@ -135,6 +140,7 @@ def generate_launch_description():
             instance = i
             sysid = i + 1
 
+            namespace = robot["name"]
             name = robot["name"]
             model = robot["model"]
             position = robot["position"]
@@ -156,6 +162,7 @@ def generate_launch_description():
             drone_launch_arguments = get_default_launch_arguments(drone_lds, context)
             drone_launch_arguments.update(
                 {
+                    "namespace": namespace,
                     "robot_name": name,
                     "world_name": "runway",
                     "x": position[0],
@@ -183,7 +190,7 @@ def generate_launch_description():
             rviz = Node(
                 package="rviz2",
                 executable="rviz2",
-                namespace=name,
+                namespace=namespace,
                 arguments=[
                     "-d",
                     f'{Path(pkg_project_bringup) / "rviz" / VEHICLE_PATHS[model]["rviz"]}',

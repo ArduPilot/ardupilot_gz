@@ -92,7 +92,7 @@ def generate_launch_description():
     rviz = Node(
         package="rviz2",
         executable="rviz2",
-        namespace="iris",
+        namespace=LaunchConfiguration("namespace"),
         arguments=["-d", f'{Path(pkg_project_bringup) / "rviz" / "iris.rviz"}'],
         condition=IfCondition(LaunchConfiguration("rviz")),
         remappings=[
@@ -103,6 +103,11 @@ def generate_launch_description():
 
     return LaunchDescription(
         [
+            DeclareLaunchArgument(
+                "namespace",
+                default_value="",
+                description="Robot namespace.",
+            ),
             DeclareLaunchArgument(
                 "use_gz_sim_server",
                 default_value="true",

@@ -106,6 +106,7 @@ def generate_robot_launch_actions(context: LaunchContext, *args, **kwargs):
             ]
         ),
         launch_arguments={
+            "namespace": LaunchConfiguration("namespace"),
             "use_gz_tf": LaunchConfiguration("use_gz_tf"),
             "sdf_file": sdf_file_modified,
             "bridge_config_file": bridge_config_file,
@@ -137,6 +138,12 @@ def generate_launch_arguments() -> List[DeclareLaunchArgument]:
     pkg_ardupilot_sitl = get_package_share_directory("ardupilot_sitl")
 
     return [
+        # ros-args
+        DeclareLaunchArgument(
+            "namespace",
+            default_value="",
+            description="Robot namespace.",
+        ),
         # sitl_dds
         DeclareLaunchArgument(
             "model",

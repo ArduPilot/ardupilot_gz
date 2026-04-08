@@ -59,6 +59,7 @@ def replace_robot_name(input_file: str, robot_name: str, world_name: str) -> str
 def launch_spawn_robot(context: LaunchContext) -> List[LaunchDescriptionEntity]:
     """Return a Gazebo spawn robot launch description"""
     # Get substitutions for arguments
+    namespace = LaunchConfiguration("namespace")
     name = LaunchConfiguration("robot_name")
     pos_x = LaunchConfiguration("x")
     pos_y = LaunchConfiguration("y")
@@ -71,7 +72,7 @@ def launch_spawn_robot(context: LaunchContext) -> List[LaunchDescriptionEntity]:
     spawn_robot = Node(
         package="ros_gz_sim",
         executable="create",
-        namespace=name,
+        namespace=namespace,
         arguments=[
             "-world",
             "",
@@ -102,6 +103,7 @@ def launch_spawn_robot(context: LaunchContext) -> List[LaunchDescriptionEntity]:
 def launch_state_pub_with_bridge(
     context: LaunchContext,
 ) -> List[LaunchDescriptionEntity]:
+    namespace = LaunchConfiguration("namespace").perform(context)
     robot_name = LaunchConfiguration("robot_name").perform(context)
     world_name = LaunchConfiguration("world_name").perform(context)
     sdf_file = LaunchConfiguration("sdf_file").perform(context)
@@ -124,7 +126,7 @@ def launch_state_pub_with_bridge(
     robot_state_publisher = Node(
         package="robot_state_publisher",
         executable="robot_state_publisher",
-        namespace=robot_name,
+        namespace=namespace,
         output="both",
         parameters=[
             {"robot_description": robot_desc},
@@ -141,7 +143,7 @@ def launch_state_pub_with_bridge(
     bridge = Node(
         package="ros_gz_bridge",
         executable="parameter_bridge",
-        namespace=robot_name,
+        namespace=namespace,
         parameters=[
             {
                 "config_file": tmp_bridge_file,
@@ -155,7 +157,7 @@ def launch_state_pub_with_bridge(
     topic_tools_tf = Node(
         package="topic_tools",
         executable="relay",
-        namespace=robot_name,
+        namespace=namespace,
         arguments=[
             "gz/tf",
             "tf",
@@ -262,6 +264,12 @@ def generate_launch_arguments() -> List[LaunchDescriptionEntity]:
     pkg_ardupilot_sitl = get_package_share_directory("ardupilot_sitl")
 
     return [
+        # ros-args
+        DeclareLaunchArgument(
+            "namespace",
+            default_value="",
+            description="Robot namespace.",
+        ),
         # sitl_dds
         DeclareLaunchArgument(
             "model",

@@ -135,11 +135,11 @@ ros2 launch ardupilot_gz_bringup wildthumper_playpen.launch.py rviz:=true use_gz
 
 ### 3. Iris Warehouse with Mecanum drive
 
-This simulation includes a iris in a warehouse setting.
+This simulation includes a iris equipped with RGBD camera in a warehouse setting.
 
 
 ```bash
-ros2 launch ardupilot_gz_bringup iris_warehouse.launch.py rviz:=true use_gz_tf:=true
+ros2 launch ardupilot_gz_bringup iris_warehouse.launch.py rviz:=true use_gz_tf:=true rqt:=true
 ```
 
 ### 4. Multi-vehicle simulation

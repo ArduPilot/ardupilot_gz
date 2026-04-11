@@ -29,7 +29,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Launch an iris quadcopter in Gazebo and Rviz."""
+"""Launch an iris quadcopter with RGBD camera in Gazebo and RViz."""
 from pathlib import Path
 
 from ament_index_python.packages import get_package_share_directory
@@ -41,6 +41,7 @@ from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
 from launch.substitutions import PathJoinSubstitution
+from launch.substitutions import PythonExpression
 
 from launch_ros.actions import Node
 
@@ -60,7 +61,7 @@ def generate_launch_description():
                         pkg_project_bringup,
                         "launch",
                         "robots",
-                        "iris_lidar.launch.py",
+                        "iris_rgbd.launch.py",
                     ]
                 ),
             ]
@@ -99,13 +100,26 @@ def generate_launch_description():
         namespace=LaunchConfiguration("namespace"),
         arguments=[
             "-d",
-            f'{Path(pkg_project_bringup) / "rviz" / "iris_with_lidar.rviz"}',
+            f'{Path(pkg_project_bringup) / "rviz" / "iris_with_rgbd.rviz"}',
         ],
         condition=IfCondition(LaunchConfiguration("rviz")),
         remappings=[
             ("/tf", "tf"),
             ("/tf_static", "tf_static"),
         ],
+    )
+
+    # RQT
+    rqt_topic = PythonExpression([
+        "'",
+        LaunchConfiguration("namespace"),
+        "' + '/camera/depth/image'",
+    ])
+    rqt = Node(
+        package="rqt_image_view",
+        executable="rqt_image_view",
+        arguments=[rqt_topic],
+        condition=IfCondition(LaunchConfiguration("rqt")),
     )
 
     return LaunchDescription(
@@ -143,9 +157,13 @@ def generate_launch_description():
             DeclareLaunchArgument(
                 "rviz", default_value="true", description="Open RViz."
             ),
+            DeclareLaunchArgument(
+                "rqt", default_value="false", description="Open rqt_image_view."
+            ),
             gz_sim_server,
             gz_sim_gui,
             robot,
             rviz,
+            rqt,
         ]
     )

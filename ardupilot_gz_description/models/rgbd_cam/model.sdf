@@ -1,0 +1,79 @@
+<?xml version='1.0'?>
+<sdf version="1.9">
+
+  <model name="rgbd_cam">
+    <link name='camera_link'>
+      <pose degrees="true">0 0 0 0 0 0</pose>
+      <inertial>
+        <mass>0.05</mass>
+        <inertia>
+          <ixx>0.000166667</ixx>
+          <iyy>0.000166667</iyy>
+          <izz>0.000166667</izz>
+        </inertia>
+      </inertial>
+      <visual name='visual'>
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.05 0.05 0.05</size>
+          </box>
+        </geometry>
+      </visual>
+      <collision name='collision'>
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.05 0.05 0.05</size>
+          </box>
+        </geometry>
+      </collision>
+      <sensor name="camera" type="camera">
+        <gz_frame_id>camera_link</gz_frame_id>
+        <pose degrees="true">0 0 0.05 0 0 0</pose>
+        <camera>
+          <horizontal_fov>2.0</horizontal_fov>
+          <image>
+            <width>640</width>
+            <height>480</height>
+          </image>
+          <clip>
+            <near>0.05</near>
+            <far>15000</far>
+          </clip>
+        </camera>
+        <always_on>1</always_on>
+        <update_rate>10</update_rate>
+        <visualize>1</visualize>
+        <plugin name="GstCameraPlugin"
+            filename="GstCameraPlugin">
+          <udp_host>127.0.0.1</udp_host>
+          <udp_port>5600</udp_port>
+          <use_basic_pipeline>true</use_basic_pipeline>
+          <use_cuda>false</use_cuda>
+        </plugin>
+      </sensor>
+      <sensor name="rgbd_camera" type="rgbd_camera">
+        <gz_frame_id>camera_link</gz_frame_id>
+        <pose degrees="true">0 0 0.05 0 0 0</pose>
+        <camera>
+          <optical_frame_id>camera_link</optical_frame_id>
+          <horizontal_fov>2.0</horizontal_fov>
+          <image>
+            <width>640</width>
+            <height>480</height>
+            <format>R8G8B8</format>
+          </image>
+          <clip>
+            <near>0.1</near>
+            <far>10.0</far>
+          </clip>
+        </camera>
+        <always_on>1</always_on>
+        <update_rate>10</update_rate>
+        <visualize>1</visualize>
+      </sensor>
+    </link>
+  </model>
+
+</sdf>

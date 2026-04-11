@@ -1,0 +1,9 @@
+# Default initial positions for iris_with_arm's ros2_control fake system
+
+initial_positions:
+  arm_Shoulder_Rotation: 0.0
+  arm_Shoulder_Pitch: -1.6
+  arm_Elbow: 1.45
+  arm_Wrist_Pitch: 1.1
+  arm_Wrist_Roll: 1.5708
+  arm_Gripper: 0.0

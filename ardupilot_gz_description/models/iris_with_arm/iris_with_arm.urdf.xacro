@@ -1,0 +1,455 @@
+<xacro:robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <xacro:macro name="iris_with_arm" params="">
+        <link name="arm_Fixed_Gripper">
+            <inertial>
+                <mass value="0.0929859" />
+                <origin xyz="0.00552377 -0.0280167 0.000483583" rpy="1.0761e-17 2.41537e-17 -5.07571e-18" />
+                <inertia ixx="4.33282e-05" ixy="7.09654e-06" ixz="5.99839e-07" iyy="3.04452e-05" iyz="-1.58743e-07" izz="5.02461e-05" />
+            </inertial>
+            <visual>
+                <origin xyz="-5.55112e-16 -3.33067e-16 1.48974e-16" rpy="2.1522e-17 4.83075e-17 -1.01514e-17" />
+                <geometry>
+                    <mesh filename="package://so_arm_100_description/models/so_arm_100_5dof/meshes/Fixed_Gripper.STL" scale="1 1 1" />
+                </geometry>
+                <material name="arm_Fixed_Gripperarm_Fixed_Gripper_visual">
+                    <texture />
+                    <color rgba="1 1 0.00588235 1" />
+                </material>
+            </visual>
+            <visual>
+                <origin xyz="-5.56025e-16 -0.09 1.47037e-16" rpy="2.1522e-17 4.83075e-17 -1.01514e-17" />
+                <geometry>
+                    <box size="0.01 0.01 0.01" />
+                </geometry>
+                <material name="arm_Fixed_Gripperarm_Fixed_Gripper_fixed_joint_lump__arm_End_Effector_visual_1">
+                    <texture />
+                    <color rgba="1 0 0 1" />
+                </material>
+            </visual>
+            <collision>
+                <origin xyz="-5.55112e-16 -3.33067e-16 1.48974e-16" rpy="2.1522e-17 4.83075e-17 -1.01514e-17" />
+                <geometry>
+                    <mesh filename="package://so_arm_100_description/models/so_arm_100_5dof/meshes/Fixed_Gripper.STL" scale="0.9 0.9 0.9" />
+                </geometry>
+            </collision>
+        </link>
+        <link name="arm_Lower_Arm">
+            <inertial>
+                <mass value="0.147968" />
+                <origin xyz="-0.00339604 0.00137796 0.0768007" rpy="1.46693e-17 -4.08422e-17 1.15721e-17" />
+                <inertia ixx="0.000105334" ixy="1.73059e-07" ixz="-1.17203e-05" iyy="0.000138767" iyz="1.7743e-06" izz="5.08742e-05" />
+            </inertial>
+            <visual>
+                <origin xyz="-8.05514e-17 2.22045e-16 3.05311e-16" rpy="2.93385e-17 -8.16844e-17 2.31441e-17" />
+                <geometry>
+                    <mesh filename="package://so_arm_100_description/models/so_arm_100_5dof/meshes/Lower_Arm.STL" scale="1 1 1" />
+                </geometry>
+                <material name="arm_Lower_Armarm_Lower_Arm_visual">
+                    <texture />
+                    <color rgba="1 1 0.00588235 1" />
+                </material>
+            </visual>
+            <collision>
+                <origin xyz="-8.05514e-17 2.22045e-16 3.05311e-16" rpy="2.93385e-17 -8.16844e-17 2.31441e-17" />
+                <geometry>
+                    <mesh filename="package://so_arm_100_description/models/so_arm_100_5dof/meshes/Lower_Arm.STL" scale="0.9 0.9 0.9" />
+                </geometry>
+            </collision>
+        </link>
+        <link name="arm_Moving_Jaw">
+            <inertial>
+                <mass value="0.0202444" />
+                <origin xyz="-0.00161745 -0.0303473 0.000449646" rpy="-4.90738e-17 2.60974e-17 -3.11774e-19" />
+                <inertia ixx="1.10911e-05" ixy="-5.35077e-07" ixz="-9.46106e-09" iyy="3.03576e-06" iyz="-1.71146e-07" izz="8.99161e-06" />
+            </inertial>
+            <visual>
+                <origin xyz="1.11022e-16 -3.33067e-16 2.66265e-16" rpy="-9.81475e-17 5.21948e-17 -6.23548e-19" />
+                <geometry>
+                    <mesh filename="package://so_arm_100_description/models/so_arm_100_5dof/meshes/Moving_Jaw.STL" scale="1 1 1" />
+                </geometry>
+                <material name="arm_Moving_Jawarm_Moving_Jaw_visual">
+                    <texture />
+                    <color rgba="1 1 0.00588235 1" />
+                </material>
+            </visual>
+            <collision>
+                <origin xyz="1.11022e-16 -3.33067e-16 2.66265e-16" rpy="-9.81475e-17 5.21948e-17 -6.23548e-19" />
+                <geometry>
+                    <mesh filename="package://so_arm_100_description/models/so_arm_100_5dof/meshes/Moving_Jaw.STL" scale="0.9 0.9 0.9" />
+                </geometry>
+            </collision>
+        </link>
+        <link name="arm_Shoulder_Rotation_Pitch">
+            <inertial>
+                <mass value="0.119226" />
+                <origin xyz="-9.07886e-05 0.0590972 0.031089" rpy="1.46693e-17 -4.08422e-17 1.15721e-17" />
+                <inertia ixx="5.90409e-05" ixy="4.90801e-07" ixz="-5.90452e-08" iyy="3.21499e-05" iyz="-4.58026e-06" izz="5.86059e-05" />
+            </inertial>
+            <visual>
+                <origin xyz="-1.36222e-17 2.77556e-17 4.51028e-17" rpy="2.93385e-17 -8.16844e-17 2.31441e-17" />
+                <geometry>
+                    <mesh filename="package://so_arm_100_description/models/so_arm_100_5dof/meshes/Shoulder_Rotation_Pitch.STL" scale="1 1 1" />
+                </geometry>
+                <material name="arm_Shoulder_Rotation_Pitcharm_Shoulder_Rotation_Pitch_visual">
+                    <texture />
+                    <color rgba="1 1 0.00588235 1" />
+                </material>
+            </visual>
+            <collision>
+                <origin xyz="-1.36222e-17 2.77556e-17 4.51028e-17" rpy="2.93385e-17 -8.16844e-17 2.31441e-17" />
+                <geometry>
+                    <mesh filename="package://so_arm_100_description/models/so_arm_100_5dof/meshes/Shoulder_Rotation_Pitch.STL" scale="0.9 0.9 0.9" />
+                </geometry>
+            </collision>
+        </link>
+        <link name="arm_Upper_Arm">
+            <inertial>
+                <mass value="0.162409" />
+                <origin xyz="-1.72052e-05 0.0701802 0.00310545" rpy="1.46693e-17 -4.08422e-17 1.15721e-17" />
+                <inertia ixx="0.000167153" ixy="1.03903e-06" ixz="-1.20162e-08" iyy="7.01947e-05" iyz="2.11885e-06" izz="0.00021328" />
+            </inertial>
+            <visual>
+                <origin xyz="-6.18104e-17 1.66533e-16 1.52656e-16" rpy="2.93385e-17 -8.16844e-17 2.31441e-17" />
+                <geometry>
+                    <mesh filename="package://so_arm_100_description/models/so_arm_100_5dof/meshes/Upper_Arm.STL" scale="1 1 1" />
+                </geometry>
+                <material name="arm_Upper_Armarm_Upper_Arm_visual">
+                    <texture />
+                    <color rgba="1 1 0.00588235 1" />
+                </material>
+            </visual>
+            <collision>
+                <origin xyz="-6.18104e-17 1.66533e-16 1.52656e-16" rpy="2.93385e-17 -8.16844e-17 2.31441e-17" />
+                <geometry>
+                    <mesh filename="package://so_arm_100_description/models/so_arm_100_5dof/meshes/Upper_Arm.STL" scale="0.9 0.9 0.9" />
+                </geometry>
+            </collision>
+        </link>
+        <link name="arm_Wrist_Pitch_Roll">
+            <inertial>
+                <mass value="0.0661321" />
+                <origin xyz="-0.00852653 -0.0352279 -2.34622e-05" rpy="1.40347e-22 2.6432e-22 -2.96628e-17" />
+                <inertia ixx="1.95717e-05" ixy="-6.62714e-07" ixz="5.20089e-09" iyy="2.38028e-05" iyz="4.09549e-08" izz="3.45401e-05" />
+            </inertial>
+            <visual>
+                <origin xyz="-1.62365e-16 -1.11022e-16 4.44089e-16" rpy="2.80694e-22 5.28641e-22 -5.93256e-17" />
+                <geometry>
+                    <mesh filename="package://so_arm_100_description/models/so_arm_100_5dof/meshes/Wrist_Pitch_Roll.STL" scale="1 1 1" />
+                </geometry>
+                <material name="arm_Wrist_Pitch_Rollarm_Wrist_Pitch_Roll_visual">
+                    <texture />
+                    <color rgba="1 1 0.00588235 1" />
+                </material>
+            </visual>
+            <collision>
+                <origin xyz="-1.62365e-16 -1.11022e-16 4.44089e-16" rpy="2.80694e-22 5.28641e-22 -5.93256e-17" />
+                <geometry>
+                    <mesh filename="package://so_arm_100_description/models/so_arm_100_5dof/meshes/Wrist_Pitch_Roll.STL" scale="0.9 0.9 0.9" />
+                </geometry>
+            </collision>
+        </link>
+        <link name="arm_base_link">
+            <inertial>
+                <mass value="0.193184" />
+                <origin xyz="-0.0611418 2.45961e-07 0.0104253" rpy="3.14159 -8.21939e-33 -1.5708" />
+                <inertia ixx="0.000137031" ixy="2.10136e-08" ixz="4.24087e-09" iyy="0.00016909" iyz="2.26515e-05" izz="0.000145098" />
+            </inertial>
+            <visual>
+                <origin xyz="-0.03 -4.59322e-18 0.028" rpy="3.14159 1.55342e-32 -1.5708" />
+                <geometry>
+                    <mesh filename="package://so_arm_100_description/models/so_arm_100_5dof/meshes/Base.STL" scale="1 1 1" />
+                </geometry>
+                <material name="arm_base_linkarm_base_link_fixed_joint_lump__arm_Base_visual">
+                    <texture />
+                    <color rgba="1 1 0.00588235 1" />
+                </material>
+            </visual>
+            <collision>
+                <origin xyz="-0.03 -4.59322e-18 0.028" rpy="3.14159 1.55342e-32 -1.5708" />
+                <geometry>
+                    <mesh filename="package://so_arm_100_description/models/so_arm_100_5dof/meshes/Base.STL" scale="0.9 0.9 0.9" />
+                </geometry>
+            </collision>
+        </link>
+        <link name="base_link">
+            <inertial>
+                <mass value="1.5" />
+                <origin xyz="0 0 0" rpy="0 -0 0" />
+                <inertia ixx="0.008" ixy="0" ixz="0" iyy="0.015" iyz="0" izz="0.017" />
+            </inertial>
+            <visual>
+                <origin xyz="0 0 0" rpy="0 -0 0" />
+                <geometry>
+                    <mesh filename="package://ardupilot_gazebo/models/iris_with_standoffs/meshes/iris.dae" scale="1 1 1" />
+                </geometry>
+                <material name="base_linkbase_visual">
+                    <texture />
+                    <color rgba="0.06 0.06 0.06 1" />
+                </material>
+            </visual>
+            <visual>
+                <origin xyz="0.123 0.22 -0.11" rpy="0 -0 0" />
+                <geometry>
+                    <cylinder radius="0.005" length="0.17" />
+                </geometry>
+                <material name="base_linkfront_left_leg_visual">
+                    <texture />
+                    <color rgba="0.06 0.06 0.06 1" />
+                </material>
+            </visual>
+            <visual>
+                <origin xyz="0.123 -0.22 -0.11" rpy="0 -0 0" />
+                <geometry>
+                    <cylinder radius="0.005" length="0.17" />
+                </geometry>
+                <material name="base_linkfront_right_leg_visual">
+                    <texture />
+                    <color rgba="0.06 0.06 0.06 1" />
+                </material>
+            </visual>
+            <visual>
+                <origin xyz="-0.14 0.21 -0.11" rpy="0 -0 0" />
+                <geometry>
+                    <cylinder radius="0.005" length="0.17" />
+                </geometry>
+                <material name="base_linkrear_left_leg_visual">
+                    <texture />
+                    <color rgba="0.06 0.06 0.06 1" />
+                </material>
+            </visual>
+            <visual>
+                <origin xyz="-0.14 -0.21 -0.11" rpy="0 -0 0" />
+                <geometry>
+                    <cylinder radius="0.005" length="0.17" />
+                </geometry>
+                <material name="base_linkrear_right_leg_visual">
+                    <texture />
+                    <color rgba="0.06 0.06 0.06 1" />
+                </material>
+            </visual>
+            <collision>
+                <origin xyz="0 0 0" rpy="0 -0 0" />
+                <geometry>
+                    <mesh filename="package://ardupilot_gazebo/models/iris_with_standoffs/meshes/iris_collision.stl" scale="1 1 1" />
+                </geometry>
+            </collision>
+            <collision>
+                <origin xyz="0.123 0.22 -0.11" rpy="0 -0 0" />
+                <geometry>
+                    <cylinder radius="0.005" length="0.17" />
+                </geometry>
+            </collision>
+            <collision>
+                <origin xyz="0.123 -0.22 -0.11" rpy="0 -0 0" />
+                <geometry>
+                    <cylinder radius="0.005" length="0.17" />
+                </geometry>
+            </collision>
+            <collision>
+                <origin xyz="-0.14 0.21 -0.11" rpy="0 -0 0" />
+                <geometry>
+                    <cylinder radius="0.005" length="0.17" />
+                </geometry>
+            </collision>
+            <collision>
+                <origin xyz="-0.14 -0.21 -0.11" rpy="0 -0 0" />
+                <geometry>
+                    <cylinder radius="0.005" length="0.17" />
+                </geometry>
+            </collision>
+        </link>
+        <link name="imu_link">
+            <inertial>
+                <mass value="0.15" />
+                <origin xyz="0 0 0" rpy="0 -0 0" />
+                <inertia ixx="1e-05" ixy="0" ixz="0" iyy="2e-05" iyz="0" izz="2e-05" />
+            </inertial>
+        </link>
+        <link name="rotor_0">
+            <inertial>
+                <mass value="0.025" />
+                <origin xyz="0 0 0" rpy="0 -0 0" />
+                <inertia ixx="9.75e-06" ixy="0" ixz="0" iyy="0.000166704" iyz="0" izz="0.000167604" />
+            </inertial>
+            <visual>
+                <origin xyz="0 0 0" rpy="0 -0 0" />
+                <geometry>
+                    <mesh filename="package://ardupilot_gazebo/models/iris_with_standoffs/meshes/iris_prop_ccw.dae" scale="1 1 1" />
+                </geometry>
+                <material name="rotor_0visual">
+                    <texture />
+                    <color rgba="0 0 1 1" />
+                </material>
+            </visual>
+            <collision>
+                <origin xyz="0 0 0" rpy="0 -0 0" />
+                <geometry>
+                    <cylinder radius="0.1" length="0.005" />
+                </geometry>
+            </collision>
+        </link>
+        <link name="rotor_1">
+            <inertial>
+                <mass value="0.025" />
+                <origin xyz="0 0 0" rpy="0 -0 0" />
+                <inertia ixx="9.75e-06" ixy="0" ixz="0" iyy="0.000166704" iyz="0" izz="0.000167604" />
+            </inertial>
+            <visual>
+                <origin xyz="0 0 0" rpy="0 -0 0" />
+                <geometry>
+                    <mesh filename="package://ardupilot_gazebo/models/iris_with_standoffs/meshes/iris_prop_ccw.dae" scale="1 1 1" />
+                </geometry>
+                <material name="rotor_1visual">
+                    <texture />
+                    <color rgba="0 0 1 1" />
+                </material>
+            </visual>
+            <collision>
+                <origin xyz="0 0 0" rpy="0 -0 0" />
+                <geometry>
+                    <cylinder radius="0.1" length="0.005" />
+                </geometry>
+            </collision>
+        </link>
+        <link name="rotor_2">
+            <inertial>
+                <mass value="0.025" />
+                <origin xyz="0 0 0" rpy="0 -0 0" />
+                <inertia ixx="9.75e-06" ixy="0" ixz="0" iyy="0.000166704" iyz="0" izz="0.000167604" />
+            </inertial>
+            <visual>
+                <origin xyz="0 0 0" rpy="0 -0 0" />
+                <geometry>
+                    <mesh filename="package://ardupilot_gazebo/models/iris_with_standoffs/meshes/iris_prop_cw.dae" scale="1 1 1" />
+                </geometry>
+                <material name="rotor_2visual">
+                    <texture />
+                    <color rgba="0 1 0 1" />
+                </material>
+            </visual>
+            <collision>
+                <origin xyz="0 0 0" rpy="0 -0 0" />
+                <geometry>
+                    <cylinder radius="0.1" length="0.005" />
+                </geometry>
+            </collision>
+        </link>
+        <link name="rotor_3">
+            <inertial>
+                <mass value="0.025" />
+                <origin xyz="0 0 0" rpy="0 -0 0" />
+                <inertia ixx="9.75e-06" ixy="0" ixz="0" iyy="0.000166704" iyz="0" izz="0.000167604" />
+            </inertial>
+            <visual>
+                <origin xyz="0 0 0" rpy="0 -0 0" />
+                <geometry>
+                    <mesh filename="package://ardupilot_gazebo/models/iris_with_standoffs/meshes/iris_prop_cw.dae" scale="1 1 1" />
+                </geometry>
+                <material name="rotor_3visual">
+                    <texture />
+                    <color rgba="0 1 0 1" />
+                </material>
+            </visual>
+            <collision>
+                <origin xyz="0 0 0" rpy="0 -0 0" />
+                <geometry>
+                    <cylinder radius="0.1" length="0.005" />
+                </geometry>
+            </collision>
+        </link>
+        <joint name="arm_Elbow" type="revolute">
+            <origin xyz="-5.41535e-17 0.11257 0.028" rpy="1.46693e-17 -4.08422e-17 1.15721e-17" />
+            <axis xyz="1 1.15721e-17 4.08422e-17" />
+            <parent link="arm_Upper_Arm" />
+            <child link="arm_Lower_Arm" />
+            <dynamics damping="0.1" friction="0" />
+            <limit effort="1000" velocity="5" lower="-1.5" upper="1.5" />
+        </joint>
+        <joint name="arm_Gripper" type="revolute">
+            <origin xyz="-0.0202 -0.0244 1.3205e-16" rpy="-3.14159 -1.63782e-16 -3.14159" />
+            <axis xyz="2.60974e-17 4.90738e-17 1" />
+            <parent link="arm_Fixed_Gripper" />
+            <child link="arm_Moving_Jaw" />
+            <dynamics damping="0.1" friction="0" />
+            <limit effort="1000" velocity="5" lower="-0.1792" upper="1.5708" />
+        </joint>
+        <joint name="arm_Shoulder_Pitch" type="revolute">
+            <origin xyz="-1.00885e-17 0.1025 0.0306" rpy="1.46693e-17 -4.08422e-17 1.15721e-17" />
+            <axis xyz="1 1.15721e-17 4.08422e-17" />
+            <parent link="arm_Shoulder_Rotation_Pitch" />
+            <child link="arm_Upper_Arm" />
+            <dynamics damping="0.1" friction="0" />
+            <limit effort="1000" velocity="5" lower="-1.745" upper="1.745" />
+        </joint>
+        <joint name="arm_Shoulder_Rotation" type="revolute">
+            <origin xyz="0.0152 1.64429e-17 0.0115" rpy="-1.57079 -4.08418e-17 -1.5708" />
+            <axis xyz="1.15721e-17 -1 -1.46693e-17" />
+            <parent link="arm_base_link" />
+            <child link="arm_Shoulder_Rotation_Pitch" />
+            <dynamics damping="0.1" friction="0" />
+            <limit effort="1000" velocity="5" lower="-1.96" upper="1.96" />
+        </joint>
+        <joint name="arm_Wrist_Pitch" type="revolute">
+            <origin xyz="-1.29097e-17 0.0052 0.1349" rpy="-1.57079 -7.19081e-17 9.88234e-17" />
+            <axis xyz="1 -2.96628e-17 -2.6432e-22" />
+            <parent link="arm_Lower_Arm" />
+            <child link="arm_Wrist_Pitch_Roll" />
+            <dynamics damping="0.1" friction="0" />
+            <limit effort="1000" velocity="5" lower="-1.658" upper="1.658" />
+        </joint>
+        <joint name="arm_Wrist_Roll" type="revolute">
+            <origin xyz="-7.77415e-17 -0.0601 2.77556e-16" rpy="0 1.5708 -3.21364e-16" />
+            <axis xyz="5.07571e-18 1 1.0761e-17" />
+            <parent link="arm_Wrist_Pitch_Roll" />
+            <child link="arm_Fixed_Gripper" />
+            <dynamics damping="0.1" friction="0" />
+            <limit effort="1000" velocity="5" lower="-2.75" upper="2.75" />
+        </joint>
+        <joint name="arm_base_joint" type="fixed">
+            <origin xyz="0 0 -0.05" rpy="0 -0 0" />
+            <axis xyz="0 0 0" />
+            <parent link="base_link" />
+            <child link="arm_base_link" />
+        </joint>
+        <joint name="imu_joint" type="revolute">
+            <origin xyz="0 0 0" rpy="0 -0 0" />
+            <axis xyz="0 0 1" />
+            <parent link="base_link" />
+            <child link="imu_link" />
+            <dynamics damping="1" friction="0" />
+            <limit effort="0" velocity="0" lower="0" upper="0" />
+        </joint>
+        <joint name="rotor_0_joint" type="revolute">
+            <origin xyz="0.13 -0.22 0.023" rpy="0 -0 0" />
+            <axis xyz="0 0 1" />
+            <parent link="base_link" />
+            <child link="rotor_0" />
+            <dynamics damping="0.004" friction="0" />
+            <limit effort="inf" velocity="inf" lower="-1e+16" upper="1e+16" />
+        </joint>
+        <joint name="rotor_1_joint" type="revolute">
+            <origin xyz="-0.13 0.2 0.023" rpy="0 -0 0" />
+            <axis xyz="0 0 1" />
+            <parent link="base_link" />
+            <child link="rotor_1" />
+            <dynamics damping="0.004" friction="0" />
+            <limit effort="inf" velocity="inf" lower="-1e+16" upper="1e+16" />
+        </joint>
+        <joint name="rotor_2_joint" type="revolute">
+            <origin xyz="0.13 0.22 0.023" rpy="0 -0 0" />
+            <axis xyz="0 0 1" />
+            <parent link="base_link" />
+            <child link="rotor_2" />
+            <dynamics damping="0.004" friction="0" />
+            <limit effort="inf" velocity="inf" lower="-1e+16" upper="1e+16" />
+        </joint>
+        <joint name="rotor_3_joint" type="revolute">
+            <origin xyz="-0.13 -0.2 0.023" rpy="0 -0 0" />
+            <axis xyz="0 0 1" />
+            <parent link="base_link" />
+            <child link="rotor_3" />
+            <dynamics damping="0.004" friction="0" />
+            <limit effort="inf" velocity="inf" lower="-1e+16" upper="1e+16" />
+        </joint>
+    </xacro:macro>
+</xacro:robot>

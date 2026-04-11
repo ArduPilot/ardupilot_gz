@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<robot name="iris_with_arm" xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:arg name="prefix" default="arm_" />
+  <xacro:arg name="initial_positions_file" default="initial_positions.yaml" />
+  <xacro:arg name="use_sim" default="true" />
+  <xacro:arg name="use_topic_hardware_interface" default="true" />
+  <xacro:arg name="use_fake_hardware" default="false" />
+  <xacro:arg name="ros2_control_type" default="so_arm_100_5dof_position" />
+  <xacro:arg name="ros2_controllers_file" default="" />
+
+  <!-- iris_with_arm -->
+  <xacro:include filename="$(find ardupilot_gz_description)/models/iris_with_arm/iris_with_arm.urdf.xacro" />
+
+  <xacro:iris_with_arm />
+
+  <!-- ros2_control -->
+  <xacro:include filename="$(find so_arm_100_description)/ros2_control/$(arg ros2_control_type).ros2_control.xacro" />
+
+  <xacro:so_arm_100_5dof_system
+    name="SOARM100System"
+    prefix="$(arg prefix)"
+    initial_positions_file="$(arg initial_positions_file)"
+    use_sim="$(arg use_sim)"
+    use_topic_hardware_interface="$(arg use_topic_hardware_interface)"
+    use_fake_hardware="$(arg use_fake_hardware)" />
+
+</robot>

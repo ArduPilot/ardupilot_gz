@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="iris_with_arm">
+    <xacro:arg name="initial_positions_file" default="initial_positions.yaml" />
+
+    <!-- Import iris_with_arm urdf file -->
+    <xacro:include filename="$(find ardupilot_gz_description)/models/iris_with_arm/model.urdf" />
+
+    <!-- Import control_xacro -->
+    <xacro:include filename="iris_with_arm.ros2_control.xacro" />
+
+    <xacro:iris_with_arm_ros2_control name="FakeSystem" initial_positions_file="$(arg initial_positions_file)"/>
+
+</robot>

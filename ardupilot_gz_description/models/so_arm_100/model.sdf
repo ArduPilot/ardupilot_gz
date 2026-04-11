@@ -1,0 +1,541 @@
+<sdf version="1.12">
+  <model name="so_arm_100">
+    <link name="arm_base_link">
+      <inertial>
+        <pose>-2.45960666746703e-07 0.031141816968790901 0.017574666100338199 0 0 0</pose>
+        <mass>0.19318412792759801</mass>
+        <inertia>
+          <ixx>0.0001370307094678769</ixx>
+          <ixy>2.1013612694499199e-08</ixy>
+          <ixz>4.24087422551286e-09</ixz>
+          <iyy>0.00016908955120925899</iyy>
+          <iyz>2.2651471103651421e-05</iyz>
+          <izz>0.00014509772085722399</izz>
+        </inertia>
+      </inertial>
+      <collision name="arm_base_link_fixed_joint_lump__arm_Base_collision">
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>0.90000000000000002 0.90000000000000002 0.90000000000000002</scale>
+            <uri>package://so_arm_100_description/models/so_arm_100_5dof/meshes/Base.STL</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name="arm_base_link_fixed_joint_lump__arm_Base_visual">
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>package://so_arm_100_description/models/so_arm_100_5dof/meshes/Base.STL</uri>
+          </mesh>
+        </geometry>
+        <material>
+          <diffuse>1 1 0.00490196096 1</diffuse>
+          <ambient>1 1 0.00490196096 1</ambient>
+        </material>
+      </visual>
+    </link>
+    <joint name="arm_Shoulder_Rotation" type="revolute">
+      <pose relative_to="arm_base_link">0 -0.045199999999999997 0.016500000000000001 1.5708 0 0</pose>
+      <parent>arm_base_link</parent>
+      <child>arm_Shoulder_Rotation_Pitch</child>
+      <axis>
+        <xyz>0 -1 0</xyz>
+        <limit>
+          <lower>-1.96</lower>
+          <upper>1.96</upper>
+          <effort>1000</effort>
+          <velocity>5</velocity>
+        </limit>
+        <dynamics>
+          <damping>0.10000000000000001</damping>
+          <friction>0</friction>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+      </axis>
+    </joint>
+    <link name="arm_Shoulder_Rotation_Pitch">
+      <pose relative_to="arm_Shoulder_Rotation">0 0 0 0 0 0</pose>
+      <inertial>
+        <pose>-9.0788622471259703e-05 0.059097182056831801 0.031089016892168999 0 0 0</pose>
+        <mass>0.119226314127197</mass>
+        <inertia>
+          <ixx>5.9040877562442897e-05</ixx>
+          <ixy>4.9080053285299802e-07</ixy>
+          <ixz>-5.9045177265438702e-08</ixz>
+          <iyy>3.2149860103888102e-05</iyy>
+          <iyz>-4.5802620666388503e-06</iyz>
+          <izz>5.86058514263952e-05</izz>
+        </inertia>
+      </inertial>
+      <collision name="arm_Shoulder_Rotation_Pitch_collision">
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>0.90000000000000002 0.90000000000000002 0.90000000000000002</scale>
+            <uri>package://so_arm_100_description/models/so_arm_100_5dof/meshes/Shoulder_Rotation_Pitch.STL</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name="arm_Shoulder_Rotation_Pitch_visual">
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>package://so_arm_100_description/models/so_arm_100_5dof/meshes/Shoulder_Rotation_Pitch.STL</uri>
+          </mesh>
+        </geometry>
+        <material>
+          <diffuse>1 1 0.00490196096 1</diffuse>
+          <ambient>1 1 0.00490196096 1</ambient>
+        </material>
+      </visual>
+    </link>
+    <joint name="arm_Shoulder_Pitch" type="revolute">
+      <pose relative_to="arm_Shoulder_Rotation_Pitch">0 0.10249999999999999 0.030599999999999999 0 0 0</pose>
+      <parent>arm_Shoulder_Rotation_Pitch</parent>
+      <child>arm_Upper_Arm</child>
+      <axis>
+        <xyz>1 0 0</xyz>
+        <limit>
+          <lower>-1.7450000000000001</lower>
+          <upper>1.7450000000000001</upper>
+          <effort>1000</effort>
+          <velocity>5</velocity>
+        </limit>
+        <dynamics>
+          <damping>0.10000000000000001</damping>
+          <friction>0</friction>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+      </axis>
+    </joint>
+    <link name="arm_Upper_Arm">
+      <pose relative_to="arm_Shoulder_Pitch">0 0 0 0 0 0</pose>
+      <inertial>
+        <pose>-1.7205170190925001e-05 0.070180215632769397 0.0031054511815567102 0 0 0</pose>
+        <mass>0.162409284599177</mass>
+        <inertia>
+          <ixx>0.00016715314661708099</ixx>
+          <ixy>1.03902689187701e-06</ixy>
+          <ixz>-1.20161820645189e-08</ixz>
+          <iyy>7.0194699221424493e-05</iyy>
+          <iyz>2.1188480629869802e-06</iyz>
+          <izz>0.000213280241160769</izz>
+        </inertia>
+      </inertial>
+      <collision name="arm_Upper_Arm_collision">
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>0.90000000000000002 0.90000000000000002 0.90000000000000002</scale>
+            <uri>package://so_arm_100_description/models/so_arm_100_5dof/meshes/Upper_Arm.STL</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name="arm_Upper_Arm_visual">
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>package://so_arm_100_description/models/so_arm_100_5dof/meshes/Upper_Arm.STL</uri>
+          </mesh>
+        </geometry>
+        <material>
+          <diffuse>1 1 0.00490196096 1</diffuse>
+          <ambient>1 1 0.00490196096 1</ambient>
+        </material>
+      </visual>
+    </link>
+    <joint name="arm_Elbow" type="revolute">
+      <pose relative_to="arm_Upper_Arm">0 0.11257 0.028000000000000001 0 0 0</pose>
+      <parent>arm_Upper_Arm</parent>
+      <child>arm_Lower_Arm</child>
+      <axis>
+        <xyz>1 0 0</xyz>
+        <limit>
+          <lower>-1.5</lower>
+          <upper>1.5</upper>
+          <effort>1000</effort>
+          <velocity>5</velocity>
+        </limit>
+        <dynamics>
+          <damping>0.10000000000000001</damping>
+          <friction>0</friction>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+      </axis>
+    </joint>
+    <link name="arm_Lower_Arm">
+      <pose relative_to="arm_Elbow">0 0 0 0 0 0</pose>
+      <inertial>
+        <pose>-0.0033960371018665102 0.00137796353960074 0.0768006751156044 0 0 0</pose>
+        <mass>0.14796777458229099</mass>
+        <inertia>
+          <ixx>0.000105333995841409</ixx>
+          <ixy>1.7305923722649899e-07</ixy>
+          <ixz>-1.1720305455211e-05</ixz>
+          <iyy>0.000138766654485212</iyy>
+          <iyz>1.7742996468410299e-06</iyz>
+          <izz>5.0874165251521398e-05</izz>
+        </inertia>
+      </inertial>
+      <collision name="arm_Lower_Arm_collision">
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>0.90000000000000002 0.90000000000000002 0.90000000000000002</scale>
+            <uri>package://so_arm_100_description/models/so_arm_100_5dof/meshes/Lower_Arm.STL</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name="arm_Lower_Arm_visual">
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>package://so_arm_100_description/models/so_arm_100_5dof/meshes/Lower_Arm.STL</uri>
+          </mesh>
+        </geometry>
+        <material>
+          <diffuse>1 1 0.00490196096 1</diffuse>
+          <ambient>1 1 0.00490196096 1</ambient>
+        </material>
+      </visual>
+    </link>
+    <joint name="arm_Wrist_Pitch" type="revolute">
+      <pose relative_to="arm_Lower_Arm">0 0.0051999999999999998 0.13489999999999999 -1.5707899999999999 0 0</pose>
+      <parent>arm_Lower_Arm</parent>
+      <child>arm_Wrist_Pitch_Roll</child>
+      <axis>
+        <xyz>1 0 0</xyz>
+        <limit>
+          <lower>-1.6579999999999999</lower>
+          <upper>1.6579999999999999</upper>
+          <effort>1000</effort>
+          <velocity>5</velocity>
+        </limit>
+        <dynamics>
+          <damping>0.10000000000000001</damping>
+          <friction>0</friction>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+      </axis>
+    </joint>
+    <link name="arm_Wrist_Pitch_Roll">
+      <pose relative_to="arm_Wrist_Pitch">0 0 0 0 0 0</pose>
+      <inertial>
+        <pose>-0.0085265312737241809 -0.035227899789792697 -2.3462248156941299e-05 0 0 0</pose>
+        <mass>0.066132067097722999</mass>
+        <inertia>
+          <ixx>1.9571749244344501e-05</ixx>
+          <ixy>-6.6271437441229304e-07</ixy>
+          <ixz>5.2008901644206601e-09</ixz>
+          <iyy>2.3802841756993302e-05</iyy>
+          <iyz>4.0954905586377601e-08</iyz>
+          <izz>3.4540143384536e-05</izz>
+        </inertia>
+      </inertial>
+      <collision name="arm_Wrist_Pitch_Roll_collision">
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>0.90000000000000002 0.90000000000000002 0.90000000000000002</scale>
+            <uri>package://so_arm_100_description/models/so_arm_100_5dof/meshes/Wrist_Pitch_Roll.STL</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name="arm_Wrist_Pitch_Roll_visual">
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>package://so_arm_100_description/models/so_arm_100_5dof/meshes/Wrist_Pitch_Roll.STL</uri>
+          </mesh>
+        </geometry>
+        <material>
+          <diffuse>1 1 0.00490196096 1</diffuse>
+          <ambient>1 1 0.00490196096 1</ambient>
+        </material>
+      </visual>
+    </link>
+    <joint name="arm_Wrist_Roll" type="revolute">
+      <pose relative_to="arm_Wrist_Pitch_Roll">0 -0.060100000000000001 0 0 1.5707900000103283 0</pose>
+      <parent>arm_Wrist_Pitch_Roll</parent>
+      <child>arm_Fixed_Gripper</child>
+      <axis>
+        <xyz>0 1 0</xyz>
+        <limit>
+          <lower>-2.75</lower>
+          <upper>2.75</upper>
+          <effort>1000</effort>
+          <velocity>5</velocity>
+        </limit>
+        <dynamics>
+          <damping>0.10000000000000001</damping>
+          <friction>0</friction>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+      </axis>
+    </joint>
+    <link name="arm_Fixed_Gripper">
+      <pose relative_to="arm_Wrist_Roll">0 0 0 0 0 0</pose>
+      <inertial>
+        <pose>0.0055237690642656297 -0.028016715335902099 0.00048358259284109201 0 0 0</pose>
+        <mass>0.092985913117689695</mass>
+        <inertia>
+          <ixx>4.3328249304210999e-05</ixx>
+          <ixy>7.09654328670947e-06</ixy>
+          <ixz>5.9983853087948401e-07</ixz>
+          <iyy>3.0445174736821201e-05</iyy>
+          <iyz>-1.5874324754541299e-07</iyz>
+          <izz>5.0246091350673397e-05</izz>
+        </inertia>
+      </inertial>
+      <collision name="arm_Fixed_Gripper_collision">
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>0.90000000000000002 0.90000000000000002 0.90000000000000002</scale>
+            <uri>package://so_arm_100_description/models/so_arm_100_5dof/meshes/Fixed_Gripper.STL</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name="arm_Fixed_Gripper_visual">
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>package://so_arm_100_description/models/so_arm_100_5dof/meshes/Fixed_Gripper.STL</uri>
+          </mesh>
+        </geometry>
+        <material>
+          <diffuse>1 1 0.00490196096 1</diffuse>
+          <ambient>1 1 0.00490196096 1</ambient>
+        </material>
+      </visual>
+      <visual name="arm_Fixed_Gripper_fixed_joint_lump__arm_End_Effector_visual_1">
+        <pose>0 -0.089999999999999997 0 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.01 0.01 0.01</size>
+          </box>
+        </geometry>
+        <material>
+          <diffuse>1 0 0 1</diffuse>
+          <ambient>1 0 0 1</ambient>
+        </material>
+      </visual>
+    </link>
+    <joint name="arm_Gripper" type="revolute">
+      <pose relative_to="arm_Fixed_Gripper">-0.020199999999999999 -0.024400000000000002 0 -3.1415853071795872 -1.5351330824471606e-27 -3.1415853071795872</pose>
+      <parent>arm_Fixed_Gripper</parent>
+      <child>arm_Moving_Jaw</child>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit>
+          <lower>-0.1792</lower>
+          <upper>1.5708</upper>
+          <effort>1000</effort>
+          <velocity>5</velocity>
+        </limit>
+        <dynamics>
+          <damping>0.10000000000000001</damping>
+          <friction>0</friction>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+      </axis>
+    </joint>
+    <link name="arm_Moving_Jaw">
+      <pose relative_to="arm_Gripper">0 0 0 0 0 0</pose>
+      <inertial>
+        <pose>-0.0016174460546824101 -0.030347258404647099 0.00044964596185365102 0 0 0</pose>
+        <mass>0.0202443794940372</mass>
+        <inertia>
+          <ixx>1.1091132508152501e-05</ixx>
+          <ixy>-5.3507650303331398e-07</ixy>
+          <ixz>-9.4610566210140298e-09</ixz>
+          <iyy>3.03576451001973e-06</iyy>
+          <iyz>-1.71146075110632e-07</iyz>
+          <izz>8.9916083370497993e-06</izz>
+        </inertia>
+      </inertial>
+      <collision name="arm_Moving_Jaw_collision">
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>0.90000000000000002 0.90000000000000002 0.90000000000000002</scale>
+            <uri>package://so_arm_100_description/models/so_arm_100_5dof/meshes/Moving_Jaw.STL</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name="arm_Moving_Jaw_visual">
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>package://so_arm_100_description/models/so_arm_100_5dof/meshes/Moving_Jaw.STL</uri>
+          </mesh>
+        </geometry>
+        <material>
+          <diffuse>1 1 0.00490196096 1</diffuse>
+          <ambient>1 1 0.00490196096 1</ambient>
+        </material>
+      </visual>
+    </link>
+    <plugin name="gz::sim::systems::JointStatePublisher" filename="gz-sim-joint-state-publisher-system" />
+    <plugin name="gz::sim::systems::PosePublisher" filename="gz-sim-pose-publisher-system" />
+    <plugin name="gz::sim::systems::JointPositionController" filename="gz-sim-joint-position-controller-system">
+      <joint_name>arm_Shoulder_Rotation</joint_name>
+      <p_gain>5.0</p_gain>
+      <i_gain>0.5</i_gain>
+      <d_gain>0.1</d_gain>
+      <i_max>1</i_max>
+      <i_min>-1</i_min>
+      <cmd_max>100.0</cmd_max>
+      <cmd_min>-100.0</cmd_min>
+      <initial_position>0.0</initial_position>
+    </plugin>
+    <plugin name="gz::sim::systems::JointPositionController" filename="gz-sim-joint-position-controller-system">
+      <joint_name>arm_Shoulder_Pitch</joint_name>
+      <p_gain>5.0</p_gain>
+      <i_gain>0.5</i_gain>
+      <d_gain>0.1</d_gain>
+      <i_max>1</i_max>
+      <i_min>-1</i_min>
+      <cmd_max>100.0</cmd_max>
+      <cmd_min>-100.0</cmd_min>
+      <initial_position>-1.6</initial_position>
+    </plugin>
+    <plugin name="gz::sim::systems::JointPositionController" filename="gz-sim-joint-position-controller-system">
+      <joint_name>arm_Elbow</joint_name>
+      <p_gain>5.0</p_gain>
+      <i_gain>0.5</i_gain>
+      <d_gain>0.1</d_gain>
+      <i_max>1</i_max>
+      <i_min>-1</i_min>
+      <cmd_max>100.0</cmd_max>
+      <cmd_min>-100.0</cmd_min>
+      <initial_position>1.45</initial_position>
+    </plugin>
+    <plugin name="gz::sim::systems::JointPositionController" filename="gz-sim-joint-position-controller-system">
+      <joint_name>arm_Wrist_Pitch</joint_name>
+      <p_gain>5.0</p_gain>
+      <i_gain>0.5</i_gain>
+      <d_gain>0.1</d_gain>
+      <i_max>1</i_max>
+      <i_min>-1</i_min>
+      <cmd_max>100.0</cmd_max>
+      <cmd_min>-100.0</cmd_min>
+      <initial_position>1.1</initial_position>
+    </plugin>
+    <plugin name="gz::sim::systems::JointPositionController" filename="gz-sim-joint-position-controller-system">
+      <joint_name>arm_Wrist_Roll</joint_name>
+      <p_gain>5.0</p_gain>
+      <i_gain>0.5</i_gain>
+      <d_gain>0.1</d_gain>
+      <i_max>1</i_max>
+      <i_min>-1</i_min>
+      <cmd_max>100.0</cmd_max>
+      <cmd_min>-100.0</cmd_min>
+      <initial_position>1.5708</initial_position>
+    </plugin>
+    <plugin name="gz::sim::systems::JointPositionController" filename="gz-sim-joint-position-controller-system">
+      <joint_name>arm_Gripper</joint_name>
+      <p_gain>5.0</p_gain>
+      <i_gain>0.5</i_gain>
+      <d_gain>0.1</d_gain>
+      <i_max>1</i_max>
+      <i_min>-1</i_min>
+      <cmd_max>100.0</cmd_max>
+      <cmd_min>-100.0</cmd_min>
+      <initial_position>0.0</initial_position>
+    </plugin>
+    <frame name="arm_base_link_joint" attached_to="arm_base_link">
+      <pose>0 0 0 0 0 0</pose>
+    </frame>
+    <frame name="arm_Base" attached_to="arm_base_link_joint">
+      <pose>0 0 0 0 0 0</pose>
+    </frame>
+    <frame name="arm_End_Effector_Joint" attached_to="arm_Fixed_Gripper">
+      <pose>0 -0.089999999999999997 0 0 0 0</pose>
+    </frame>
+    <frame name="arm_End_Effector" attached_to="arm_End_Effector_Joint">
+      <pose>0 0 0 0 0 0</pose>
+    </frame>
+    <ros2_control name="SOARM100System" type="system">
+      <hardware>
+        <plugin>joint_state_topic_hardware_interface/JointStateTopicSystem</plugin>
+        <param name="joint_commands_topic">robot_joint_commands</param>
+        <param name="joint_states_topic">robot_joint_states</param>
+      </hardware>
+      <joint name="arm_Shoulder_Rotation">
+        <command_interface name="position">
+          <param name="min">-3.14</param>
+          <param name="max">3.14</param>
+          <param name="initial_value">0.0</param>
+        </command_interface>
+        <state_interface name="position" />
+        <state_interface name="velocity" />
+        <state_interface name="effort" />
+      </joint>
+      <joint name="arm_Shoulder_Pitch">
+        <command_interface name="position">
+          <param name="min">-3.14</param>
+          <param name="max">3.14</param>
+          <param name="initial_value">-1.6</param>
+        </command_interface>
+        <state_interface name="position" />
+        <state_interface name="velocity" />
+        <state_interface name="effort" />
+      </joint>
+      <joint name="arm_Elbow">
+        <command_interface name="position">
+          <param name="min">-3.14</param>
+          <param name="max">3.14</param>
+          <param name="initial_value">1.45</param>
+        </command_interface>
+        <state_interface name="position" />
+        <state_interface name="velocity" />
+        <state_interface name="effort" />
+      </joint>
+      <joint name="arm_Wrist_Pitch">
+        <command_interface name="position">
+          <param name="min">-3.14</param>
+          <param name="max">3.14</param>
+          <param name="initial_value">1.1</param>
+        </command_interface>
+        <state_interface name="position" />
+        <state_interface name="velocity" />
+        <state_interface name="effort" />
+      </joint>
+      <joint name="arm_Wrist_Roll">
+        <command_interface name="position">
+          <param name="min">-3.14</param>
+          <param name="max">3.14</param>
+          <param name="initial_value">1.5708</param>
+        </command_interface>
+        <state_interface name="position" />
+        <state_interface name="velocity" />
+        <state_interface name="effort" />
+      </joint>
+      <joint name="arm_Gripper">
+        <command_interface name="position">
+          <param name="min">-0.1792</param>
+          <param name="max">1.57</param>
+          <param name="initial_value">0.0</param>
+        </command_interface>
+        <state_interface name="position" />
+        <state_interface name="velocity" />
+        <state_interface name="effort" />
+      </joint>
+    </ros2_control>
+  </model>
+</sdf>

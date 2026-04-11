@@ -1,0 +1,43 @@
+---
+- gz_topic_name: "/world/{{ world_name }}/model/{{ model_name }}/joint_state"
+  gz_type_name: "gz.msgs.Model"
+  ros_topic_name: "robot_joint_states"
+  ros_type_name: "sensor_msgs/msg/JointState"
+  direction: GZ_TO_ROS
+
+- gz_topic_name: "/model/{{ model_name }}/joint/{{ prefix }}Shoulder_Rotation/0/cmd_pos"
+  gz_type_name: "gz.msgs.Double"
+  ros_topic_name: "{{ prefix }}shoulder_rotation/cmd_pos"
+  ros_type_name: "std_msgs/msg/Float64"
+  direction: ROS_TO_GZ
+
+- gz_topic_name: "/model/{{ model_name }}/joint/{{ prefix }}Shoulder_Pitch/0/cmd_pos"
+  gz_type_name: "gz.msgs.Double"
+  ros_topic_name: "{{ prefix }}shoulder_pitch/cmd_pos"
+  ros_type_name: "std_msgs/msg/Float64"
+  direction: ROS_TO_GZ
+
+- gz_topic_name: "/model/{{ model_name }}/joint/{{ prefix }}Elbow/0/cmd_pos"
+  gz_type_name: "gz.msgs.Double"
+  ros_topic_name: "{{ prefix }}elbow/cmd_pos"
+  ros_type_name: "std_msgs/msg/Float64"
+  direction: ROS_TO_GZ
+
+- gz_topic_name: "/model/{{ model_name }}/joint/{{ prefix }}Wrist_Pitch/0/cmd_pos"
+  gz_type_name: "gz.msgs.Double"
+  ros_topic_name: "{{ prefix }}wrist_pitch/cmd_pos"
+  ros_type_name: "std_msgs/msg/Float64"
+  direction: ROS_TO_GZ
+
+- gz_topic_name: "/model/{{ model_name }}/joint/{{ prefix }}Wrist_Roll/0/cmd_pos"
+  gz_type_name: "gz.msgs.Double"
+  ros_topic_name: "{{ prefix }}wrist_roll/cmd_pos"
+  ros_type_name: "std_msgs/msg/Float64"
+  direction: ROS_TO_GZ
+
+- gz_topic_name: "/model/{{ model_name }}/joint/{{ prefix }}Gripper/0/cmd_pos"
+  gz_type_name: "gz.msgs.Double"
+  ros_topic_name: "{{ prefix }}gripper/cmd_pos"
+  ros_type_name: "std_msgs/msg/Float64"
+  direction: ROS_TO_GZ
+

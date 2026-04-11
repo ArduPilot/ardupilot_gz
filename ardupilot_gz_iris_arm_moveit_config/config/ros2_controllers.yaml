@@ -1,0 +1,43 @@
+# This config file is used by ros2_control
+/**/controller_manager:
+  ros__parameters:
+    update_rate: 100  # Hz
+
+    arm_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+
+    gripper_controller:
+      type: parallel_gripper_action_controller/GripperActionController
+
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+/**/arm_controller:
+  ros__parameters:
+    type: joint_trajectory_controller/JointTrajectoryController
+    joints:
+      - arm_Shoulder_Rotation
+      - arm_Shoulder_Pitch
+      - arm_Elbow
+      - arm_Wrist_Pitch
+      - arm_Wrist_Roll
+    interface_name: position
+    command_interfaces:
+      - position
+    state_interfaces:
+      - position
+      - velocity
+    allow_nonzero_velocity_at_trajectory_end: true
+    allow_partial_joints_goal: true
+
+/**/gripper_controller:
+  ros__parameters:
+    type: parallel_gripper_action_controller/GripperActionController
+    joint: arm_Gripper
+    interface_name: position
+    command_interfaces:
+      - position
+    state_interfaces:
+      - position
+      - velocity
+    allow_nonzero_velocity_at_trajectory_end: true

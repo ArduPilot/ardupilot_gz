@@ -12,6 +12,8 @@
   <exec_depend>ardupilot_gazebo</exec_depend>
   <exec_depend>ardupilot_gz_description</exec_depend>
   <exec_depend>ardupilot_gz_gazebo</exec_depend>
+  <exec_depend>ardupilot_gz_iris_arm_moveit_config</exec_depend>
+  <exec_depend>ardupilot_gz_utils</exec_depend>
   <exec_depend>ardupilot_sitl</exec_depend>
   <exec_depend>ardupilot_sitl_models</exec_depend>
   <exec_depend>launch</exec_depend>
@@ -22,6 +24,8 @@
   <exec_depend>ros_gz_bridge</exec_depend>  
   <exec_depend>robot_state_publisher</exec_depend>
   <exec_depend>sdformat_urdf</exec_depend>
+  <exec_depend>so_arm_100_bringup</exec_depend>
+  <exec_depend>so_arm_100_description</exec_depend>
   <exec_depend>topic_tools</exec_depend>
   <test_depend>ament_cmake_pytest</test_depend>
   <test_depend>ament_lint_auto</test_depend>

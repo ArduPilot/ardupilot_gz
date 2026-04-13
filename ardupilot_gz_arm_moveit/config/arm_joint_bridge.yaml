@@ -1,0 +1,36 @@
+---
+- ros_topic_name: "/shoulder_pan/cmd_pos"
+  gz_topic_name: "/shoulder_pan/cmd_pos"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "gz.msgs.Double"
+  direction: ROS_TO_GZ
+
+- ros_topic_name: "/shoulder_lift/cmd_pos"
+  gz_topic_name: "/shoulder_lift/cmd_pos"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "gz.msgs.Double"
+  direction: ROS_TO_GZ
+
+- ros_topic_name: "/elbow/cmd_pos"
+  gz_topic_name: "/elbow/cmd_pos"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "gz.msgs.Double"
+  direction: ROS_TO_GZ
+
+- ros_topic_name: "/wrist_flex/cmd_pos"
+  gz_topic_name: "/wrist_flex/cmd_pos"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "gz.msgs.Double"
+  direction: ROS_TO_GZ
+
+- ros_topic_name: "/wrist_roll/cmd_pos"
+  gz_topic_name: "/wrist_roll/cmd_pos"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "gz.msgs.Double"
+  direction: ROS_TO_GZ
+
+- ros_topic_name: "/grip/cmd_pos"
+  gz_topic_name: "/grip/cmd_pos"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "gz.msgs.Double"
+  direction: ROS_TO_GZ

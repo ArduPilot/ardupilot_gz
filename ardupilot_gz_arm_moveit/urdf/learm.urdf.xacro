@@ -1,0 +1,320 @@
+<?xml version="1.0" ?>
+<robot name="learm">
+  <!-- Arm base: cylinder mount matching iris_with_arm SDF -->
+  <link name="arm_base_link">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <cylinder radius="0.03" length="0.06"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="0.03" length="0.06"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="shoulder_link">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="package://ardupilot_gz_description/models/iris_with_arm/meshes/shoulder.stl"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.04 0.04 0.03"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="humerus_link">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="package://ardupilot_gz_description/models/iris_with_arm/meshes/humerus.stl"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="0.015" length="0.105"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="forearm_link">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="package://ardupilot_gz_description/models/iris_with_arm/meshes/forearm.stl"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="0.015" length="0.09"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="wrist_link">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="package://ardupilot_gz_description/models/iris_with_arm/meshes/wrist.stl"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.03 0.03 0.06"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="hand_link">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="package://ardupilot_gz_description/models/iris_with_arm/meshes/hand.stl"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.04 0.04 0.06"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="grip_left_link">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="package://ardupilot_gz_description/models/iris_with_arm/meshes/carpal-left.stl"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.02 0.015 0.03"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="grip_right_link">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="package://ardupilot_gz_description/models/iris_with_arm/meshes/carpal-right.stl"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.02 0.015 0.03"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="tendon_left_link">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="package://ardupilot_gz_description/models/iris_with_arm/meshes/tendon.stl"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.01 0.01 0.05"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="tendon_right_link">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="package://ardupilot_gz_description/models/iris_with_arm/meshes/tendon.stl"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.01 0.01 0.05"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="finger_left_link">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="package://ardupilot_gz_description/models/iris_with_arm/meshes/finger.stl"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.01 0.01 0.03"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="finger_right_link">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 3.14159"/>
+      <geometry>
+        <mesh filename="package://ardupilot_gz_description/models/iris_with_arm/meshes/finger.stl"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.01 0.01 0.03"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <!-- Main arm chain -->
+  <joint name="shoulder_pan" type="revolute">
+    <parent link="arm_base_link"/>
+    <child link="shoulder_link"/>
+    <origin xyz="0 0 0.059"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="1000" lower="-1.57" upper="1.57" velocity="0.5"/>
+  </joint>
+  <joint name="shoulder_lift" type="revolute">
+    <parent link="shoulder_link"/>
+    <child link="humerus_link"/>
+    <origin xyz="-0.010 0 0.028" rpy="0 1.5708 0"/>
+    <axis xyz="0 1 0"/>
+    <limit effort="1000" lower="-3.142" upper="0.0" velocity="0.5"/>
+  </joint>
+  <joint name="elbow" type="revolute">
+    <parent link="humerus_link"/>
+    <child link="forearm_link"/>
+    <origin xyz="0 0 0.105"/>
+    <axis xyz="0 -1 0"/>
+    <limit effort="1000" lower="-1.57" upper="1.57" velocity="0.5"/>
+  </joint>
+  <joint name="wrist_flex" type="revolute">
+    <parent link="forearm_link"/>
+    <child link="wrist_link"/>
+    <origin xyz="0 0 0.090"/>
+    <axis xyz="0 -1 0"/>
+    <limit effort="1000" lower="-1.57" upper="1.57" velocity="0.5"/>
+  </joint>
+  <joint name="wrist_roll" type="revolute">
+    <parent link="wrist_link"/>
+    <child link="hand_link"/>
+    <origin xyz="0 0 0.060"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="1000" lower="-1.57" upper="1.57" velocity="0.5"/>
+  </joint>
+
+  <!-- Gripper: grip_left is the driver joint, others mimic it -->
+  <joint name="grip_left" type="revolute">
+    <parent link="hand_link"/>
+    <child link="grip_left_link"/>
+    <origin rpy="-1.57 0 0" xyz="0 0.015 0.030"/>
+    <axis xyz="1 0 0"/>
+    <limit effort="1000" lower="0" upper="1.57" velocity="0.5"/>
+  </joint>
+  <joint name="grip_right" type="revolute">
+    <parent link="hand_link"/>
+    <child link="grip_right_link"/>
+    <origin rpy="1.57 0 0" xyz="0 -0.015 0.030"/>
+    <axis xyz="-1 0 0"/>
+    <limit effort="1000" lower="0" upper="1.57" velocity="0.5"/>
+    <mimic joint="grip_left" multiplier="1"/>
+  </joint>
+  <joint name="tendon_left" type="revolute">
+    <parent link="hand_link"/>
+    <child link="tendon_left_link"/>
+    <origin rpy="-1.57 0 0" xyz="0 0.005 0.050"/>
+    <axis xyz="1 0 0"/>
+    <limit effort="1000" lower="0" upper="1.57" velocity="0.5"/>
+    <mimic joint="grip_left" multiplier="1"/>
+  </joint>
+  <joint name="tendon_right" type="revolute">
+    <parent link="hand_link"/>
+    <child link="tendon_right_link"/>
+    <origin rpy="1.57 0 0" xyz="0 -0.005 0.050"/>
+    <axis xyz="-1 0 0"/>
+    <limit effort="1000" lower="0" upper="1.57" velocity="0.5"/>
+    <mimic joint="grip_left" multiplier="1"/>
+  </joint>
+  <joint name="finger_left" type="revolute">
+    <parent link="grip_left_link"/>
+    <child link="finger_left_link"/>
+    <origin rpy="1.57 0 0" xyz="0 0 0.030"/>
+    <axis xyz="-1 0 0"/>
+    <limit effort="1000" lower="0" upper="1.57" velocity="0.5"/>
+    <mimic joint="grip_left" multiplier="1"/>
+  </joint>
+  <joint name="finger_right" type="revolute">
+    <parent link="grip_right_link"/>
+    <child link="finger_right_link"/>
+    <origin rpy="-1.57 0 0" xyz="0 0 0.030"/>
+    <axis xyz="1 0 0"/>
+    <limit effort="1000" lower="0" upper="1.57" velocity="0.5"/>
+    <mimic joint="grip_left" multiplier="1"/>
+  </joint>
+
+  <!-- ros2_control interface for mock hardware (demo) -->
+  <ros2_control name="LeArmSystem" type="system">
+    <hardware>
+      <plugin>mock_components/GenericSystem</plugin>
+    </hardware>
+    <joint name="shoulder_pan">
+      <command_interface name="position"/>
+      <state_interface name="position"><param name="initial_value">0.0</param></state_interface>
+      <state_interface name="velocity"/>
+    </joint>
+    <joint name="shoulder_lift">
+      <command_interface name="position"/>
+      <state_interface name="position"><param name="initial_value">-0.3</param></state_interface>
+      <state_interface name="velocity"/>
+    </joint>
+    <joint name="elbow">
+      <command_interface name="position"/>
+      <state_interface name="position"><param name="initial_value">-1.57</param></state_interface>
+      <state_interface name="velocity"/>
+    </joint>
+    <joint name="wrist_flex">
+      <command_interface name="position"/>
+      <state_interface name="position"><param name="initial_value">1.57</param></state_interface>
+      <state_interface name="velocity"/>
+    </joint>
+    <joint name="wrist_roll">
+      <command_interface name="position"/>
+      <state_interface name="position"><param name="initial_value">0.0</param></state_interface>
+      <state_interface name="velocity"/>
+    </joint>
+    <joint name="grip_left">
+      <command_interface name="position"/>
+      <state_interface name="position"><param name="initial_value">0.0</param></state_interface>
+      <state_interface name="velocity"/>
+    </joint>
+  </ros2_control>
+</robot>

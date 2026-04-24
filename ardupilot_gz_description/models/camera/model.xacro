@@ -1,0 +1,154 @@
+<?xml version="1.0"?>
+<sdf version="1.9" xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <model name="cameras">
+    <static>true</static>
+    <link name="cameras_link">
+      <pose>0 0 0 0 0 0</pose>
+      <kinematic>true</kinematic>
+      <gravity>false</gravity>
+      <inertial>
+        <mass>0.0</mass>
+        <inertia>
+          <ixx>0.0</ixx>
+          <ixy>0.0</ixy>
+          <iyy>0.0</iyy>
+          <iyz>0.0</iyz>
+          <izz>0.0</izz>
+        </inertia>
+      </inertial>
+    </link>
+
+    <!-- Macro Definition for Camera -->
+    <xacro:macro name="camera_sensor"
+      params="name pose optical_pose horizontal_fov image_width image_height update_rate format intrinsics:='277 277 160 120' distortion:='0.0 0.0 0.0 0.0'">
+      <xacro:property name="fx" value="${intrinsics.split()[0]}" />
+      <xacro:property name="fy" value="${intrinsics.split()[1]}" />
+      <xacro:property name="cx" value="${intrinsics.split()[2]}" />
+      <xacro:property name="cy" value="${intrinsics.split()[3]}" />
+
+      <xacro:property name="k1" value="${distortion.split()[0]}" />
+      <xacro:property name="k2" value="${distortion.split()[1]}" />
+      <xacro:property name="p1" value="${distortion.split()[2]}" />
+      <xacro:property name="p2" value="${distortion.split()[3]}" />
+      <link name="${name}_link">
+        <pose>${pose}</pose>
+        <kinematic>true</kinematic>
+        <gravity>false</gravity>
+
+        <inertial>
+          <mass>0.0</mass>
+          <inertia>
+            <ixx>0.0</ixx>
+            <ixy>0.0</ixy>
+            <iyy>0.0</iyy>
+            <iyz>0.0</iyz>
+            <izz>0.0</izz>
+          </inertia>
+        </inertial>
+
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.05 0.05 0.05</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0 0 1 1</ambient>
+            <diffuse>0 0 1 1</diffuse>
+          </material>
+        </visual>
+
+        <visual name="landmark">
+          <geometry>
+            <cylinder>
+              <radius>0.01</radius>
+              <length>0.005</length>
+            </cylinder>
+          </geometry>
+          <pose>0.03 0 0 0 1.5708 0</pose>
+          <material>
+            <ambient>1 0 0 1</ambient>
+            <diffuse>1 0 0 1</diffuse>
+          </material>
+        </visual>
+
+        <sensor name="${name}" type="camera">
+          <gz_frame_id>${name}_optical_frame</gz_frame_id>
+          <pose>0 0 0 0 0 0</pose>
+          <camera>
+            <horizontal_fov>${horizontal_fov}</horizontal_fov>
+            <image>
+              <width>${image_width}</width>
+              <height>${image_height}</height>
+              <format>${format}</format>
+            </image>
+            <clip>
+              <near>0.1</near>
+              <far>100.0</far>
+            </clip>
+            <lens>
+              <intrinsics>
+                <fx>${fx}</fx>
+                <fy>${fy}</fy>
+                <cx>${cx}</cx>
+                <cy>${cy}</cy>
+                <s>0</s>
+              </intrinsics>
+            </lens>
+            <distortion>
+              <k1>${k1}</k1>
+              <k2>${k2}</k2>
+              <k3>0.0</k3>
+              <p1>${p1}</p1>
+              <p2>${p2}</p2>
+              <center>0.5 0.5</center>
+            </distortion>
+          </camera>
+          <update_rate>${update_rate}</update_rate>
+          <visualize>false</visualize>
+        </sensor>
+      </link>
+
+      <link name="${name}_optical_frame">
+        <pose>${optical_pose}</pose>
+        <kinematic>true</kinematic>
+        <gravity>false</gravity>
+
+        <inertial>
+          <mass>0.0</mass>
+          <inertia>
+            <ixx>0.0</ixx>
+            <ixy>0.0</ixy>
+            <iyy>0.0</iyy>
+            <iyz>0.0</iyz>
+            <izz>0.0</izz>
+          </inertia>
+        </inertial>
+      </link>
+
+      <joint name="${name}_optical_joint" type="fixed">
+        <parent>${name}_link</parent>
+        <child>${name}_optical_frame</child>
+      </joint>
+
+      <joint name="${name}_joint" type="fixed">
+        <parent>cameras_link</parent>
+        <child>${name}_link</child>
+        <preserve_fixed_joint>true</preserve_fixed_joint>
+      </joint>
+    </xacro:macro>
+
+    <!-- Add Camera Sensors -->
+    <xacro:camera_sensor
+      name="navigation_camera"
+      pose="-0.05 -0.02 -0.05 0 1.57 0"
+      optical_pose="-0.05 -0.02 -0.05 0 3.14 1.57"
+      horizontal_fov="1.448"
+      intrinsics="471.42701287242807 470.7784450086591 389.70874283839333 258.6696297186715"
+      distortion="-0.3141061887234863 0.12230478626307012 -0.00010883202540227276 -0.0003551641298941904"
+      image_width="752"
+      image_height="480"
+      update_rate="50"
+      format="L_INT8" />
+  </model>
+</sdf>

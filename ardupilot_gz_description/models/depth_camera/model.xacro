@@ -1,0 +1,93 @@
+<?xml version="1.0"?>
+<sdf version="1.9" xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <model name="depth_cameras">
+    <static>true</static>
+    <link name="depth_cameras_link">
+      <pose>0 0 0 0 0 0</pose>
+      <kinematic>true</kinematic>
+      <gravity>false</gravity>
+      <inertial>
+        <mass>0.0</mass>
+        <inertia>
+          <ixx>0.0</ixx>
+          <ixy>0.0</ixy>
+          <iyy>0.0</iyy>
+          <iyz>0.0</iyz>
+          <izz>0.0</izz>
+        </inertia>
+      </inertial>
+    </link>
+
+    <!-- Macro Definition for Depth Camera -->
+    <xacro:macro name="depth_camera_sensor"
+      params="name pose horizontal_fov image_width image_height update_rate">
+      <link name="${name}_link">
+        <pose>${pose}</pose>
+        <kinematic>true</kinematic>
+        <gravity>false</gravity>
+
+        <inertial>
+          <mass>0.0</mass>
+          <inertia>
+            <ixx>0.0</ixx>
+            <ixy>0.0</ixy>
+            <iyy>0.0</iyy>
+            <iyz>0.0</iyz>
+            <izz>0.0</izz>
+          </inertia>
+        </inertial>
+
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.05 0.05 0.05</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0 0 1 1</ambient>
+            <diffuse>0 0 1 1</diffuse>
+          </material>
+        </visual>
+
+        <visual name="landmark">
+          <geometry>
+            <cylinder>
+              <radius>0.01</radius>
+              <length>0.005</length>
+            </cylinder>
+          </geometry>
+          <pose>0.03 0 0 0 1.5708 0</pose>
+          <material>
+            <ambient>1 0 0 1</ambient>
+            <diffuse>1 0 0 1</diffuse>
+          </material>
+        </visual>
+
+        <sensor name="${name}" type="depth_camera">
+          <gz_frame_id>${name}_link</gz_frame_id>
+          <pose>0 0 0 0 0 0</pose>
+          <camera>
+            <horizontal_fov>${horizontal_fov}</horizontal_fov>
+            <image>
+              <width>${image_width}</width>
+              <height>${image_height}</height>
+              <format>R8G8B8</format>
+            </image>
+            <clip>
+              <near>0.1</near>
+              <far>100.0</far>
+            </clip>
+          </camera>
+          <update_rate>${update_rate}</update_rate>
+          <visualize>false</visualize>
+        </sensor>
+      </link>
+
+      <joint name="${name}_joint" type="fixed">
+        <parent>depth_cameras_link</parent>
+        <child>${name}_link</child>
+        <preserve_fixed_joint>true</preserve_fixed_joint>
+      </joint>
+    </xacro:macro>
+  </model>
+</sdf>

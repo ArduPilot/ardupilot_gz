@@ -1,0 +1,109 @@
+<?xml version="1.0"?>
+<sdf version="1.9" xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <model name="lidars">
+    <static>true</static>
+    <link name="lidars_link">
+      <pose>0 0 0 0 0 0</pose>
+      <kinematic>true</kinematic>
+      <gravity>false</gravity>
+      <inertial>
+        <mass>0.0</mass>
+        <inertia>
+          <ixx>0.0</ixx>
+          <ixy>0.0</ixy>
+          <iyy>0.0</iyy>
+          <iyz>0.0</iyz>
+          <izz>0.0</izz>
+        </inertia>
+      </inertial>
+    </link>
+
+    <!-- Macro Definition for LiDAR -->
+    <xacro:macro name="lidar_sensor"
+      params="name pose horizontal_fov vertical_fov horizontal_samples vertical_samples update_rate">
+      <link name="${name}_link">
+        <pose>${pose}</pose>
+        <kinematic>true</kinematic>
+        <gravity>false</gravity>
+
+        <inertial>
+          <mass>0.0</mass>
+          <inertia>
+            <ixx>0.0</ixx>
+            <ixy>0.0</ixy>
+            <iyy>0.0</iyy>
+            <iyz>0.0</iyz>
+            <izz>0.0</izz>
+          </inertia>
+        </inertial>
+
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.05 0.05 0.05</size>
+            </box>
+          </geometry>
+        </visual>
+
+        <visual name="landmark">
+          <geometry>
+            <cylinder>
+              <radius>0.01</radius>
+              <length>0.005</length>
+            </cylinder>
+          </geometry>
+          <pose>0.03 0 0 0 1.5708 0</pose>
+          <material>
+            <ambient>1 0 0 1</ambient>
+            <diffuse>1 0 0 1</diffuse>
+          </material>
+        </visual>
+
+        <sensor name="${name}" type="gpu_lidar">
+          <gz_frame_id>${name}_link</gz_frame_id>
+          <pose>0 0 0 0 0 0</pose>
+          <update_rate>${update_rate}</update_rate>
+          <lidar>
+            <scan>
+              <horizontal>
+                <samples>${horizontal_samples}</samples>
+                <resolution>1</resolution>
+                <min_angle>-${horizontal_fov}</min_angle>
+                <max_angle>${horizontal_fov}</max_angle>
+              </horizontal>
+              <vertical>
+                <samples>${vertical_samples}</samples>
+                <resolution>1</resolution>
+                <min_angle>-${vertical_fov}</min_angle>
+                <max_angle>${vertical_fov}</max_angle>
+              </vertical>
+            </scan>
+            <range>
+              <min>0.45</min>
+              <max>50.0</max>
+              <resolution>0.001</resolution>
+            </range>
+            <noise>
+              <type>gaussian</type>
+              <mean>0.0</mean>
+              <stddev>0.01</stddev>
+              <bias_mean>0.0</bias_mean>
+              <bias_stddev>0.001</bias_stddev>
+            </noise>
+          </lidar>
+          <visualize>false</visualize>
+        </sensor>
+      </link>
+
+      <joint name="${name}_joint" type="fixed">
+        <parent>lidars_link</parent>
+        <child>${name}_link</child>
+        <preserve_fixed_joint>true</preserve_fixed_joint>
+      </joint>
+    </xacro:macro>
+
+    <!-- Add LiDAR sensors -->
+    <xacro:lidar_sensor name="lidar_1" pose="0.12 0.02 0.0 0 1.57 0" horizontal_fov="3.14159"
+      vertical_fov="0.785398" horizontal_samples="512" vertical_samples="128" update_rate="20" />
+  </model>
+</sdf>

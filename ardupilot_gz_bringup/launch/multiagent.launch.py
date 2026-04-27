@@ -174,6 +174,7 @@ def generate_launch_description():
                     "instance": str(instance),
                     "sysid": str(sysid),
                     "use_instance_dir": "True",
+                    "use_ap_namespace": "True",
                 }
             )
 

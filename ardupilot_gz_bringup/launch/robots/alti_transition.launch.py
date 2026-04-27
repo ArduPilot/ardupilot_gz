@@ -112,6 +112,7 @@ def generate_robot_launch_actions(context: LaunchContext, *args, **kwargs):
             "sysid": LaunchConfiguration("sysid"),
             "use_instance_dir": LaunchConfiguration("use_instance_dir"),
             "use_dds_agent": LaunchConfiguration("use_dds_agent"),
+            "use_ap_namespace": LaunchConfiguration("use_ap_namespace"),
         }.items(),
     )
 
@@ -200,6 +201,11 @@ def generate_launch_arguments() -> List[DeclareLaunchArgument]:
         # topic_tools_tf
         DeclareLaunchArgument(
             "use_gz_tf", default_value="true", description="Use Gazebo TF."
+        ),
+        DeclareLaunchArgument(
+            "use_ap_namespace",
+            default_value="true",
+            description="If True, use namespaces for ardupilot clock sync (e.g. /ap/vN/clock)",
         ),
         # bridge, spawn_robot
         DeclareLaunchArgument(

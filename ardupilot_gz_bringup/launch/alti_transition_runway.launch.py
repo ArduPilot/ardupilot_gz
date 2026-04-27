@@ -49,6 +49,9 @@ def generate_launch_description():
                 ),
             ]
         ),
+        launch_arguments={
+            "use_ap_namespace": LaunchConfiguration("use_ap_namespace"),
+        }.items(),
         condition=IfCondition(LaunchConfiguration("spawn_robot")),
     )
 
@@ -91,6 +94,11 @@ def generate_launch_description():
                 "namespace",
                 default_value="",
                 description="Robot namespace.",
+            ),
+            DeclareLaunchArgument(
+                "use_ap_namespace",
+                default_value="true",
+                description="If True, use namespaces for ardupilot clock sync (e.g. /ap/vN/clock)",
             ),
             DeclareLaunchArgument(
                 "use_gz_sim_server",

@@ -167,8 +167,35 @@ def launch_state_pub_with_bridge(
         condition=IfCondition(LaunchConfiguration("use_gz_tf")),
     )
 
+    # Relay clock to /ap/vN/clock for timesync with ardupilot_sitl
+    # Or the /ap/clock topic if not using namespaces
+    topic_tools_clock_namespace = Node(
+        package="topic_tools",
+        executable="relay",
+        namespace=namespace,
+        arguments=[
+            "clock",
+            f"/ap/v{instance+1}/clock",
+        ],
+        output="screen",
+        respawn=False,
+        condition=IfCondition(LaunchConfiguration("use_ap_namespace")),
+    )
+    topic_tools_clock = Node(
+        package="topic_tools",
+        executable="relay",
+        namespace=namespace,
+        arguments=[
+            "clock",
+            "/ap/clock",
+        ],
+        output="screen",
+        respawn=False,
+        condition=UnlessCondition(LaunchConfiguration("use_ap_namespace")),
+    )
+
     event = RegisterEventHandler(
-        OnProcessStart(target_action=bridge, on_start=[topic_tools_tf])
+        OnProcessStart(target_action=bridge, on_start=[topic_tools_tf, topic_tools_clock_namespace, topic_tools_clock])
     )
 
     return [robot_state_publisher, bridge, event]
@@ -333,6 +360,11 @@ def generate_launch_arguments() -> List[LaunchDescriptionEntity]:
         # topic_tools_tf
         DeclareLaunchArgument(
             "use_gz_tf", default_value="true", description="Use Gazebo TF."
+        ),
+        DeclareLaunchArgument(
+            "use_ap_namespace",
+            default_value="true",
+            description="If True, use namespaces for ardupilot clock sync (e.g. /ap/vN/clock)",
         ),
         DeclareLaunchArgument(
             "sdf_file",

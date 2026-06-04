@@ -30,6 +30,7 @@ from launch.conditions import UnlessCondition
 from launch.event_handlers import OnProcessStart
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
+from launch.actions import ExecuteProcess
 from launch_ros.actions import Node
 
 
@@ -54,6 +55,31 @@ def replace_robot_name(input_file: str, robot_name: str, world_name: str) -> str
         temp_file.write(config)
 
     return temp_file_name
+
+
+def find_repo_script(script_name: str) -> str:
+    repo_root = os.getenv("OBDM_REPO_ROOT", "")
+    candidates = []
+    if repo_root:
+        candidates.append(os.path.join(repo_root, "scripts", script_name))
+
+    current_dir = os.path.dirname(os.path.realpath(__file__))
+    while current_dir and current_dir != os.path.dirname(current_dir):
+        candidates.append(os.path.join(current_dir, "scripts", script_name))
+        current_dir = os.path.dirname(current_dir)
+
+    package_share = get_package_share_directory("ardupilot_gz_bringup")
+    candidates.append(
+        os.path.normpath(
+            os.path.join(package_share, "..", "..", "..", "scripts", script_name)
+        )
+    )
+
+    for candidate in candidates:
+        if os.path.isfile(candidate):
+            return candidate
+
+    return candidates[-1]
 
 
 def launch_spawn_robot(context: LaunchContext) -> List[LaunchDescriptionEntity]:
@@ -116,6 +142,12 @@ def launch_state_pub_with_bridge(
     with open(sdf_file, "r") as infp:
         robot_desc = infp.read()
 
+    pkg_ardupilot_gazebo = get_package_share_directory("ardupilot_gazebo")
+    robot_desc = robot_desc.replace(
+        "package://ardupilot_gazebo/",
+        f"file://{pkg_ardupilot_gazebo}/",
+    )
+
     robot_desc = robot_desc.replace(
         "<fdm_port_in>9002</fdm_port_in>", f"<fdm_port_in>{control_port}</fdm_port_in>"
     )
@@ -151,6 +183,12 @@ def launch_state_pub_with_bridge(
         output="screen",
     )
 
+    rover_bridge_script = find_repo_script('rover_cmd_vel_to_wheels.py')
+    rover_bridge_exec = ExecuteProcess(
+        cmd=['python3', rover_bridge_script],
+        output='screen',
+    )
+
     # Relay - use instead of transform when Gazebo is only publishing odom -> base_link
     topic_tools_tf = Node(
         package="topic_tools",
@@ -169,7 +207,9 @@ def launch_state_pub_with_bridge(
         OnProcessStart(target_action=bridge, on_start=[topic_tools_tf])
     )
 
-    return [robot_state_publisher, bridge, event]
+    entities = [robot_state_publisher, bridge, event, rover_bridge_exec]
+
+    return entities
 
 
 def launch_sitl_dds(context: LaunchContext) -> List[LaunchDescriptionEntity]:

@@ -65,9 +65,14 @@ def generate_robot_launch_actions(context: LaunchContext, *args, **kwargs):
     with open(sdf_file, "r") as infp:
         robot_desc = infp.read()
 
-    # TODO: add model:// => package:// remapping for the iris
-    # and iris_with_gimbal models. Then the ardupilot_gazebo ros2 branch
-    # should no longer be required.
+    # RViz/resource_retriever cannot resolve Gazebo model:// mesh URIs.
+    # Publish package:// URIs in robot_description so RobotModel renders.
+    model_uri_rewrites = {
+        "model://iris_with_standoffs": "package://ardupilot_gazebo/models/iris_with_standoffs",
+        "model://gimbal_small_3d": "package://ardupilot_gazebo/models/gimbal_small_3d",
+    }
+    for model_uri, package_uri in model_uri_rewrites.items():
+        robot_desc = robot_desc.replace(model_uri, package_uri)
 
     # Ensure robot has the correct name
     robot_name = LaunchConfiguration("robot_name").perform(context)

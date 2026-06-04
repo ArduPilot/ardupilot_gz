@@ -112,6 +112,11 @@ install(
   DESTINATION share/${PROJECT_NAME}/worlds
 )
 
+install(
+  DIRECTORY models/
+  DESTINATION share/${PROJECT_NAME}/models
+)
+
 # --------------------------------------------------------------------------- #
 #  Build tests.
 

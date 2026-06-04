@@ -1,0 +1,312 @@
+Panels:
+  - Class: rviz_common/Displays
+    Name: Displays
+    Property Tree Widget:
+      Expanded:
+        - /Global Options1
+        - /Ruiz Integrated View1
+        - /Ruiz Integrated View1/Vehicle State1
+        - /Ruiz Integrated View1/Landing Target1
+        - /Ruiz Integrated View1/Camera Detection1
+        - /Ruiz Integrated View1/Environment1
+      Splitter Ratio: 0.5
+    Tree Height: 520
+  - Class: rviz_common/Selection
+    Name: Selection
+  - Class: rviz_common/Tool Properties
+    Expanded:
+      - /2D Goal Pose1
+      - /Publish Point1
+    Name: Tool Properties
+    Splitter Ratio: 0.5886790156364441
+  - Class: rviz_common/Views
+    Expanded:
+      - /Current View1
+    Name: Views
+    Splitter Ratio: 0.5
+  - Class: rviz_common/Time
+    Name: Time
+    SyncMode: 0
+    SyncSource: ""
+Visualization Manager:
+  Class: ""
+  Displays:
+    - Class: rviz_common/Group
+      Name: Ruiz Integrated View
+      Enabled: true
+      Displays:
+        - Class: rviz_default_plugins/Grid
+          Name: Ground Grid
+          Enabled: true
+          Alpha: 0.45
+          Cell Size: 1
+          Color: 150; 150; 150
+          Line Style:
+            Line Width: 0.03
+            Value: Lines
+          Normal Cell Count: 0
+          Offset:
+            X: 0
+            Y: 0
+            Z: 0
+          Plane: XY
+          Plane Cell Count: 50
+          Reference Frame: <Fixed Frame>
+          Value: true
+        - Class: rviz_common/Group
+          Name: Vehicle State
+          Enabled: true
+          Displays:
+            - Class: rviz_default_plugins/RobotModel
+              Name: Iris RobotModel
+              Enabled: true
+              Description File: /home/j/SynologyDrive/junsuk/devel/INCSL/OBDM_ws/simulation/rviz/iris_rviz.urdf
+              Description Source: File
+              Description Topic:
+                Value: ""
+                Depth: 5
+                Durability Policy: Volatile
+                History Policy: Keep Last
+                Reliability Policy: Reliable
+              TF Prefix: ""
+              Update Interval: 0
+              Visual Enabled: true
+              Collision Enabled: false
+              Alpha: 1
+              Value: true
+            - Class: rviz_default_plugins/TF
+              Name: TF Tree
+              Enabled: true
+              Frame Timeout: 15
+              Marker Scale: 0.6
+              Show Arrows: true
+              Show Axes: true
+              Show Names: false
+              Update Interval: 0
+              Value: true
+            - Class: rviz_default_plugins/Odometry
+              Name: Iris Odometry
+              Enabled: true
+              Topic:
+                Value: /iris/odometry
+                Depth: 10
+                Durability Policy: Volatile
+                History Policy: Keep Last
+                Reliability Policy: Reliable
+                Filter size: 10
+              Keep: 800
+              Position Tolerance: 0.05
+              Angle Tolerance: 0.05
+              Shape:
+                Value: Axes
+                Axes Length: 0.8
+                Axes Radius: 0.05
+                Color: 40; 255; 40
+                Alpha: 1
+              Covariance:
+                Value: false
+              Value: true
+        - Class: rviz_common/Group
+          Name: Landing Target
+          Enabled: true
+          Displays:
+            - Class: rviz_default_plugins/Odometry
+              Name: Camera Target Estimate
+              Enabled: true
+              Topic:
+                Value: /landing_marker/odom
+                Depth: 10
+                Durability Policy: Volatile
+                History Policy: Keep Last
+                Reliability Policy: Reliable
+                Filter size: 10
+              Keep: 500
+              Position Tolerance: 0.05
+              Angle Tolerance: 0.05
+              Shape:
+                Value: Arrow
+                Shaft Length: 0.8
+                Shaft Radius: 0.05
+                Head Length: 0.25
+                Head Radius: 0.1
+                Color: 255; 90; 20
+                Alpha: 1
+              Covariance:
+                Value: false
+              Value: true
+            - Class: rviz_default_plugins/Odometry
+              Name: Rover Target Ground Truth
+              Enabled: true
+              Topic:
+                Value: /landing_marker/ground_truth/odom
+                Depth: 10
+                Durability Policy: Volatile
+                History Policy: Keep Last
+                Reliability Policy: Reliable
+                Filter size: 10
+              Keep: 500
+              Position Tolerance: 0.05
+              Angle Tolerance: 0.05
+              Shape:
+                Value: Arrow
+                Shaft Length: 0.7
+                Shaft Radius: 0.04
+                Head Length: 0.22
+                Head Radius: 0.09
+                Color: 255; 230; 60
+                Alpha: 0.85
+              Covariance:
+                Value: false
+              Value: true
+            - Class: rviz_default_plugins/Pose
+              Name: Camera Target Pose
+              Enabled: true
+              Topic:
+                Value: /landing_marker/pose
+                Depth: 10
+                Durability Policy: Volatile
+                History Policy: Keep Last
+                Reliability Policy: Reliable
+              Shape: Arrow
+              Shaft Length: 0.55
+              Shaft Radius: 0.035
+              Head Length: 0.18
+              Head Radius: 0.08
+              Color: 255; 130; 40
+              Alpha: 1
+              Value: true
+        - Class: rviz_common/Group
+          Name: Camera Detection
+          Enabled: true
+          Displays:
+            - Class: rviz_default_plugins/Image
+              Name: Raw Gimbal Camera
+              Enabled: true
+              Topic:
+                Value: /iris/camera/image
+                Depth: 5
+                Durability Policy: Volatile
+                History Policy: Keep Last
+                Reliability Policy: Reliable
+              Normalize Range: true
+              Min Value: 0
+              Max Value: 1
+              Median window: 5
+              Value: true
+            - Class: rviz_default_plugins/Image
+              Name: Annotated ArUco Camera
+              Enabled: true
+              Topic:
+                Value: /landing_marker/annotated_image
+                Depth: 5
+                Durability Policy: Volatile
+                History Policy: Keep Last
+                Reliability Policy: Reliable
+              Normalize Range: true
+              Min Value: 0
+              Max Value: 1
+              Median window: 5
+              Value: true
+            - Class: rviz_default_plugins/MarkerArray
+              Name: ArUco Bounding Box Markers
+              Enabled: true
+              Topic:
+                Value: /landing_marker/bbox_markers
+                Depth: 10
+                Durability Policy: Volatile
+                History Policy: Keep Last
+                Reliability Policy: Reliable
+              Queue Size: 10
+              Value: true
+        - Class: rviz_common/Group
+          Name: Environment
+          Enabled: true
+          Displays:
+            - Class: rviz_default_plugins/Marker
+              Name: Wind Arrow
+              Enabled: true
+              Topic:
+                Value: /iris/wind_arrow
+                Depth: 10
+                Durability Policy: Volatile
+                History Policy: Keep Last
+                Reliability Policy: Reliable
+              Queue Size: 10
+              Namespaces:
+                wind: true
+              Value: true
+  Enabled: true
+  Global Options:
+    Background Color: 42; 42; 46
+    Fixed Frame: odom
+    Frame Rate: 30
+  Name: root
+  Tools:
+    - Class: rviz_default_plugins/Interact
+      Hide Inactive Objects: true
+    - Class: rviz_default_plugins/MoveCamera
+    - Class: rviz_default_plugins/Select
+    - Class: rviz_default_plugins/FocusCamera
+    - Class: rviz_default_plugins/Measure
+      Line color: 128; 128; 0
+    - Class: rviz_default_plugins/SetInitialPose
+      Topic:
+        Value: /initialpose
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+    - Class: rviz_default_plugins/SetGoal
+      Topic:
+        Value: /goal_pose
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+    - Class: rviz_default_plugins/PublishPoint
+      Single click: true
+      Topic:
+        Value: /clicked_point
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+  Transformation:
+    Current:
+      Class: rviz_default_plugins/TF
+  Value: true
+  Views:
+    Current:
+      Class: rviz_default_plugins/Orbit
+      Name: Current View
+      Target Frame: <Fixed Frame>
+      Distance: 24
+      Pitch: 0.72
+      Yaw: 5.35
+      Near Clip Distance: 0.01
+      Focal Point:
+        X: 5
+        Y: 0
+        Z: 1.5
+      Focal Shape Fixed Size: true
+      Focal Shape Size: 0.05
+      Invert Z Axis: false
+      Value: Orbit (rviz)
+    Saved: ~
+Window Geometry:
+  Width: 1440
+  Height: 920
+  X: 40
+  Y: 40
+  Hide Left Dock: false
+  Hide Right Dock: false
+  Displays:
+    collapsed: false
+  Selection:
+    collapsed: false
+  Tool Properties:
+    collapsed: false
+  Time:
+    collapsed: false
+  Views:
+    collapsed: false

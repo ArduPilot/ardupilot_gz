@@ -30,6 +30,7 @@
 # limitations under the License.
 
 """Launch an iris quadcopter in Gazebo and Rviz."""
+import os
 from pathlib import Path
 
 from ament_index_python.packages import get_package_share_directory
@@ -88,17 +89,23 @@ def generate_launch_description():
         condition=IfCondition(LaunchConfiguration("use_gz_sim_gui")),
     )
 
-    # RViz.
+    # RViz. Software GL fallback avoids GLXBadDrawable black-screen failures
+    # seen on some desktop/remote-display setups.
+    rviz_env = {}
+    if os.getenv("OBDM_RVIZ_SOFTWARE_GL", "1") == "1":
+        rviz_env["LIBGL_ALWAYS_SOFTWARE"] = "1"
+        rviz_env["MESA_GL_VERSION_OVERRIDE"] = "3.3"
+    qt_gl_backend = os.getenv("OBDM_RVIZ_QT_XCB_GL_INTEGRATION", "none")
+    if qt_gl_backend:
+        rviz_env["QT_XCB_GL_INTEGRATION"] = qt_gl_backend
+
     rviz = Node(
         package="rviz2",
         executable="rviz2",
-        namespace="iris",
-        arguments=["-d", f'{Path(pkg_project_bringup) / "rviz" / "iris.rviz"}'],
+        name="rviz2",
+        arguments=["-d", LaunchConfiguration("rviz_config")],
+        additional_env=rviz_env,
         condition=IfCondition(LaunchConfiguration("rviz")),
-        remappings=[
-            ("/tf", "tf"),
-            ("/tf_static", "tf_static"),
-        ],
     )
 
     return LaunchDescription(
@@ -120,6 +127,11 @@ def generate_launch_description():
             ),
             DeclareLaunchArgument(
                 "rviz", default_value="true", description="Open RViz."
+            ),
+            DeclareLaunchArgument(
+                "rviz_config",
+                default_value=f'{Path(pkg_project_bringup) / "rviz" / "ruiz.rviz"}',
+                description="Path to RViz config file.",
             ),
             gz_sim_server,
             gz_sim_gui,

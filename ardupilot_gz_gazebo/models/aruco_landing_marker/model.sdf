@@ -1,0 +1,92 @@
+<?xml version="1.0"?>
+<sdf version="1.9">
+  <model name="aruco_landing_marker">
+    <static>false</static>
+    <pose>0 0 0.04 0 0 0</pose>
+
+    <link name="marker_link">
+      <gravity>false</gravity>
+      <inertial>
+        <mass>200.0</mass>
+        <inertia>
+          <ixx>24.1</ixx>
+          <iyy>24.1</iyy>
+          <izz>48.0</izz>
+        </inertia>
+      </inertial>
+
+      <visual name="white_plate">
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>1.20 1.20 0.08</size>
+          </box>
+        </geometry>
+        <material>
+          <ambient>1 1 1 1</ambient>
+          <diffuse>1 1 1 1</diffuse>
+        </material>
+      </visual>
+
+      <visual name="multi_scale_aruco_landing_pad">
+        <pose>0 0 0.045 0 0 0</pose>
+        <geometry>
+          <plane>
+            <normal>0 0 1</normal>
+            <size>1.20 1.20</size>
+          </plane>
+        </geometry>
+        <material>
+          <ambient>1 1 1 1</ambient>
+          <diffuse>1 1 1 1</diffuse>
+          <pbr>
+            <metal>
+              <albedo_map>model://aruco_landing_marker/materials/textures/aruco_multi_scale_pad.png</albedo_map>
+              <roughness>1.0</roughness>
+              <metalness>0.0</metalness>
+            </metal>
+          </pbr>
+        </material>
+      </visual>
+
+      <collision name="marker_collision">
+        <!-- Raise and thicken collision box so the pad top is clearly above
+             the ground plane and reliably contacted by vehicle gear. The
+             model pose.z is 0.04; we offset the collision center by +0.02
+             so the collision top becomes ~0.12 m world-frame. -->
+        <pose>0 0 0.02 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>1.20 1.20 0.12</size>
+          </box>
+        </geometry>
+        <surface>
+          <friction>
+            <ode>
+              <mu>2.0</mu>
+              <mu2>2.0</mu2>
+            </ode>
+          </friction>
+          <contact>
+            <ode>
+              <!-- contact gains kept high for robust contact response -->
+              <kp>1000000</kp>
+              <kd>100</kd>
+              <max_vel>0.1</max_vel>
+              <min_depth>0.001</min_depth>
+            </ode>
+          </contact>
+        </surface>
+      </collision>
+
+    </link>
+
+    <plugin filename="gz-sim-velocity-control-system"
+      name="gz::sim::systems::VelocityControl">
+      <link_name>marker_link</link_name>
+      <topic>/model/aruco_landing_marker/cmd_vel</topic>
+      <initial_linear>0 0 0</initial_linear>
+      <initial_angular>0 0 0</initial_angular>
+    </plugin>
+  </model>
+</sdf>

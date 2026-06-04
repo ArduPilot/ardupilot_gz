@@ -42,10 +42,14 @@
   gz_type_name: "gz.msgs.FluidPressure"
   direction: GZ_TO_ROS
 
+# ros_gz_bridge does not provide a gz.msgs.AirSpeed -> ardupilot_msgs/Airspeed
+# conversion in this setup. The OBDM MATLAB workflow starts
+# scripts/gz_airspeed_to_ros2.py instead, publishing /iris/air_speed as
+# geometry_msgs/Vector3Stamped from the Gazebo differential-pressure sensor.
 # - ros_topic_name: "air_speed"
-#   gz_topic_name: "/world/$={{ world_name }}/model/{{ robot_name }}/link/base_link/sensor/air_speed_sensor/air_speed"
-#   ros_type_name: "geometry_msgs/msg/Vector3Stamped"
-#   gz_type_name: "gz.msgs.AirSpeedSensor"
+#   gz_topic_name: "/world/{{ world_name }}/model/{{ robot_name }}/link/base_link/sensor/air_speed_sensor/air_speed"
+#   ros_type_name: "ardupilot_msgs/msg/Airspeed"
+#   gz_type_name: "gz.msgs.AirSpeed"
 #   direction: GZ_TO_ROS
 
 # - ros_topic_name: "altimeter"
@@ -79,7 +83,13 @@
   direction: GZ_TO_ROS
 
 - ros_topic_name: "battery"
-  gz_topic_name: "/model/{{ robot_name }}/battery/linear_battery/state"
+  gz_topic_name: "/model/{{ robot_name }}/battery/lipo_3500mAh/state"
   ros_type_name: "sensor_msgs/msg/BatteryState"
   gz_type_name: "gz.msgs.BatteryState"
   direction: GZ_TO_ROS
+
+- ros_topic_name: "/model/r1_rover/cmd_vel"
+  gz_topic_name: "/model/r1_rover/cmd_vel"
+  ros_type_name: "geometry_msgs/msg/Twist"
+  gz_type_name: "gz.msgs.Twist"
+  direction: ROS_TO_GZ

@@ -14,19 +14,36 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 """Launch an alti transition quadplane in Gazebo and Rviz."""
+import os
 from pathlib import Path
+import subprocess
 
 from ament_index_python.packages import get_package_share_directory
 
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
 from launch.actions import IncludeLaunchDescription
+from launch.actions import OpaqueFunction
+from launch.actions import SetEnvironmentVariable
 from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
 from launch.substitutions import PathJoinSubstitution
 
 from launch_ros.actions import Node
+
+
+def cleanup_stale_processes(context, *args, **kwargs):
+    """Stop stale simulation processes that hold the fixed launch ports."""
+    cleanup_cmd = (
+        "pkill -9 -f '/home/j/.local/bin/mavproxy.py' || true; "
+        "pkill -9 -f 'arduplane --model json' || true; "
+        "pkill -9 -f 'micro_ros_agent' || true; "
+        "pkill -9 -f 'parameter_bridge' || true; "
+        "pkill -9 -f 'gz sim' || true"
+    )
+    subprocess.run(["bash", "-lc", cleanup_cmd], check=False)
+    return []
 
 
 def generate_launch_description():
@@ -87,6 +104,16 @@ def generate_launch_description():
 
     return LaunchDescription(
         [
+            OpaqueFunction(function=cleanup_stale_processes),
+            SetEnvironmentVariable(name="ROS_DOMAIN_ID", value="0"),
+            SetEnvironmentVariable(name="GZ_VERSION", value="harmonic"),
+            SetEnvironmentVariable(
+                name="DISPLAY", value=os.environ.get("DISPLAY", ":0")
+            ),
+            SetEnvironmentVariable(
+                name="XAUTHORITY", value=os.environ.get("XAUTHORITY", "")
+            ),
+            SetEnvironmentVariable(name="QT_X11_NO_MITSHM", value="1"),
             DeclareLaunchArgument(
                 "use_gz_sim_server",
                 default_value="true",
@@ -103,7 +130,7 @@ def generate_launch_description():
                 description="Spawn the robot and start SITL+ROS.",
             ),
             DeclareLaunchArgument(
-                "rviz", default_value="true", description="Open RViz."
+                "rviz", default_value="false", description="Open RViz."
             ),
             gz_sim_server,
             gz_sim_gui,

@@ -5,6 +5,8 @@ by ArduPilot SITL with DDS support in Gazebo.
 
 The project is adapted from the [`ros_gz_project_template`](https://github.com/gazebosim/ros_gz_project_template) project.
 
+ROS2 Humble and Jazzy are supported
+
 ## Included packages
 
 * `ardupilot_gz_description` - Contains the SDFormat description of the simulated
@@ -19,7 +21,7 @@ The project is adapted from the [`ros_gz_project_template`](https://github.com/g
 
 ## Prerequisites
 
-- Install [ROS 2 Humble](https://docs.ros.org/en/humble/index.html)
+- Install [ROS 2 Jazzy](https://docs.ros.org/en/jazzy/index.html)
 - Install [Gazebo Harmonic (default)](https://gazebosim.org/docs/harmonic) or [Gazebo Jetty](https://gazebosim.org/docs/jetty)
 - Follow the [`Installing Build Dependencies`](https://github.com/ArduPilot/ardupilot/tree/master/libraries/AP_DDS#installing-build-dependencies) section of `AP_DDS`'s README
 
@@ -50,7 +52,7 @@ export GZ_VERSION=harmonic
 
 ```bash
 cd ~/ros2_ws
-source /opt/ros/humble/setup.bash
+source /opt/ros/jazzy/setup.bash
 sudo apt update
 rosdep update
 rosdep install --from-paths src --ignore-src -y
@@ -85,7 +87,7 @@ source ~/ros2_ws/install/setup.sh
 ros2 launch ardupilot_gz_bringup iris_runway.launch.py rviz:=true use_gz_tf:=true
 ```
 
-#### 3. Launch a GCS (MAVPorxy)
+#### 3. Launch a GCS (MAVProxy)
 
 ```bash
 mavproxy.py --master udp:127.0.0.1:14550  --console --map
